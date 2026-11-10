@@ -1238,6 +1238,7 @@ function initHero() {
    als Reihe von Linienladungen senkrecht zur Bildebene gerechnet (2D-Kern),
    so entsteht zwischen ihnen ein homogenes Feld mit echtem Randfeld.
    Die Feldstaerke der Platten wird so skaliert, dass in der Mitte E = U/d gilt.
+   Fuer die Probeladung gilt zwischen den Platten exakt E = U/d (M1.inGap).
    ===================================================================== */
 function wpx(s, x, y) { return [s.ox + x * s.sc, s.oy - y * s.sc]; }
 function pxw(s, X, Y) { return [(X - s.ox) / s.sc, (s.oy - Y) / s.sc]; }
@@ -1332,7 +1333,13 @@ var M1 = {
     }
     return p;
   },
-  E: function (s, x, y) { var e = M1.Eraw(s, x, y); return [e[0] * s.scaleE, e[1] * s.scaleE]; },
+  /* Zwischen den Platten gilt das ideale homogene Feld E = U/d: Die Kraft auf die
+     Probeladung ist dort an jeder Stelle gleich. Ausserhalb bleibt das berechnete Randfeld. */
+  inGap: function (s, x, y) { return s.v.mode === 'platte' && Math.abs(x) < s.v.d / 2 && Math.abs(y) <= s.h / 2; },
+  E: function (s, x, y) {
+    if (M1.inGap(s, x, y)) return [s.v.U / (s.v.d * 0.01), 0];
+    var e = M1.Eraw(s, x, y); return [e[0] * s.scaleE, e[1] * s.scaleE];
+  },
   clampP: function (s) {
     var P = s.P, lim = s.wh / 2 - 0.4;
     P.x = clamp(P.x, -11.5, 11.5); P.y = clamp(P.y, -lim, lim);
@@ -1385,7 +1392,7 @@ var M1 = {
     r.push(['Kraft auf q = 1 nC', unitAuto(Em * 1e-9, 'N'), '', 'warn']);
     if (s.v.mode === 'platte') {
       r.push(['Rechnung U / d', unitAuto(s.v.U / (s.v.d * 0.01), 'V/m'), '']);
-      var phi = s.scaleE / 100 * (M1.Praw(s, P.x, P.y) - s.phiNeg);
+      var phi = M1.inGap(s, P.x, P.y) ? s.v.U * (s.v.d / 2 - P.x) / s.v.d : s.scaleE / 100 * (M1.Praw(s, P.x, P.y) - s.phiNeg);
       r.push(['Potenzial in P', nf(phi, 0), 'V', 'cool']);
     } else if (s.v.mode === 'punkt') r.push(['Abstand r', nf(Math.hypot(P.x, P.y), 1), 'cm']);
     return r;
