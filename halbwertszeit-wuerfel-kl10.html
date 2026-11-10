@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Halbwertszeit – Würfelsimulation</title>
+<style>
+  :root { --bg:#f6f7f9; --card:#fff; --text:#1c2230; --muted:#667085; --line:#e1e5ec; --accent:#2f6fed; --decay:#e5484d; }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg:#14171d; --card:#1d222b; --text:#e8ebf1; --muted:#9aa4b5; --line:#303744; --accent:#6c9bff; --decay:#ff6b6f; }
+  }
+  * { box-sizing:border-box; }
+  body { margin:0; font:16px/1.5 system-ui,sans-serif; background:var(--bg); color:var(--text); padding:16px; }
+  main { max-width:1000px; margin:0 auto; display:grid; gap:16px; }
+  h1 { font-size:1.5rem; margin:0; }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:16px; }
+  .controls { display:flex; flex-wrap:wrap; gap:10px; align-items:center; }
+  button, select { font:inherit; padding:8px 14px; border-radius:8px; border:1px solid var(--line); background:var(--card); color:var(--text); cursor:pointer; }
+  button.primary { background:var(--accent); color:#fff; border-color:var(--accent); }
+  .round { margin-left:auto; font-size:1.2rem; }
+  .round b { font-size:1.6rem; }
+  #grid { display:grid; grid-template-columns:repeat(10,1fr); gap:6px; }
+  .die { aspect-ratio:1; border-radius:8px; border:1px solid var(--line); display:flex; align-items:center; justify-content:center;
+         font-weight:600; font-size:clamp(.8rem,2.5vw,1.3rem); background:var(--card); transition:background .2s,opacity .2s; }
+  .die.decayed { background:var(--decay); color:#fff; border-color:var(--decay); }
+  .die.gone { opacity:.1; }
+  p.note { color:var(--muted); margin:8px 0 0; font-size:.9rem; }
+  #teacher { display:none; margin-top:10px; font-size:.95rem; }
+  label.t { color:var(--muted); font-size:.85rem; display:flex; gap:6px; align-items:center; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Halbwertszeit mit 100 Würfeln</h1>
+
+  <div class="card">
+    <div class="controls">
+      <label>Zerfallsregel:
+        <select id="rule">
+          <option value="2">gerade Zahl zerfällt (2, 4, 6)</option>
+          <option value="1">nur die 6 zerfällt</option>
+          <option value="3">1 oder 2 zerfällt</option>
+        </select>
+      </label>
+      <button class="primary" id="roll">Würfeln</button>
+      <button id="reset">Neu starten</button>
+      <div class="round">Wurf Nr. <b id="sRound">0</b></div>
+    </div>
+    <p class="note">Jeder Würfel steht für einen Atomkern. Zerfallene Würfel (rot) werden im nächsten Wurf aussortiert (blass), die übrigen werden erneut geworfen. Zählt nach jedem Wurf die übrigen Würfel und tragt sie in eure Tabelle ein.</p>
+    <label class="t" style="margin-top:10px"><input type="checkbox" id="tcheck"> Lösung für Lehrkraft anzeigen</label>
+    <div id="teacher">Übrige Würfel pro Wurf: <span id="tlist"></span></div>
+  </div>
+
+  <div class="card"><div id="grid"></div></div>
+</main>
+
+<script>
+const N0 = 100;
+const $ = id => document.getElementById(id);
+let dice, history;
+
+const decays = f => {
+  const r = $('rule').value;
+  return r === '2' ? f % 2 === 0 : r === '1' ? f === 6 : f <= 2;
+};
+
+function init() {
+  dice = Array.from({length:N0}, () => ({face:null, state:'alive'}));
+  history = [N0];
+  $('roll').disabled = false;
+  render();
+}
+
+function roll() {
+  let alive = 0;
+  dice.forEach(d => {
+    if (d.state === 'decayed') d.state = 'gone';
+    if (d.state === 'alive') {
+      d.face = 1 + Math.floor(Math.random() * 6);
+      if (decays(d.face)) d.state = 'decayed'; else alive++;
+    }
+  });
+  history.push(alive);
+  if (alive === 0) $('roll').disabled = true;
+  render();
+}
+
+function render() {
+  $('sRound').textContent = history.length - 1;
+  $('tlist').textContent = history.join(' → ');
+  $('grid').innerHTML = dice.map(d =>
+    `<div class="die ${d.state === 'decayed' ? 'decayed' : d.state === 'gone' ? 'gone' : ''}">${d.face ?? ''}</div>`).join('');
+}
+
+$('roll').onclick = roll;
+$('reset').onclick = init;
+$('rule').onchange = init;
+$('tcheck').onchange = e => $('teacher').style.display = e.target.checked ? 'block' : 'none';
+init();
+</script>
+</body>
+</html>

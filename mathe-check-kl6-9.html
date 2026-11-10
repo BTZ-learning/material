@@ -1,0 +1,995 @@
+<title>Mathe-Check Grundlagen</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+:root{
+  /* Layout: Karopapier-Kopfband in Türkis, darunter eine Arbeitsspalte bis 880px; Aufgaben- und Ergebniskarten blauviolett umrandet (Farbwelt der Mathe-Plattformen BTZ) */
+  --bg:#E3DCFA; --surface:#FFFFFF; --surface-2:#F4F1FD; --ink:#1C1A36; --muted:#55537A; --line:#CBC2EF;
+  --tq:#11A39E; --tq-strong:#08706F; --tq-soft:#D3F1EE; --on-tq:#FFFFFF;
+  --bv:#5A45D6; --bv-ink:#3D2BAE; --bv-soft:#EDEAFD; --on-bv:#FFFFFF;
+  --ok:#14743A; --ok-soft:#DDF3E4; --bad:#B23C0E; --bad-soft:#FCE8DC; --warn:#7A5000; --warn-soft:#FBF0D0; --warn-line:#D9A31A;
+  --band:#087F7B; --band-ink:#FFFFFF; --band-grid:rgba(255,255,255,.14);
+  --canvas-bg:#FFFFFF; --canvas-grid:#E3DEF7; --canvas-axis:#35545A;
+  --fig-a:#A99BF5; --fig-b:#6FD3CC; --fig-c:#F1C75E; --plot-grid:#B9AEEA;
+  --shadow:0 1px 2px rgba(8,60,60,.05), 0 10px 28px rgba(8,60,60,.07);
+  --font-display:'Bricolage Grotesque','Trebuchet MS',system-ui,sans-serif;
+  --font-body:'Atkinson Hyperlegible','Segoe UI',system-ui,-apple-system,sans-serif;
+  --font-mono:'JetBrains Mono',ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#1C1638; --surface:#251F45; --surface-2:#2E2853; --ink:#EEEBFB; --muted:#B2ADD6; --line:#463F7E;
+  --tq:#2EC9C2; --tq-strong:#62DDD6; --tq-soft:#0F3D3D; --on-tq:#05211F;
+  --bv:#A08FFF; --bv-ink:#C9BFFF; --bv-soft:#211C47; --on-bv:#140E33;
+  --ok:#5BD98A; --ok-soft:#10331E; --bad:#FF9A66; --bad-soft:#3A1F12; --warn:#F2C35A; --warn-soft:#33290C; --warn-line:#B38612;
+  --band:#0A3A3D; --band-ink:#E8FAF8; --band-grid:rgba(255,255,255,.07);
+  --canvas-bg:#211B40; --canvas-grid:#342D60; --canvas-axis:#9DC2C4;
+  --fig-a:#6A58D6; --fig-b:#1F8E88; --fig-c:#A07B1C; --plot-grid:#4E4690;
+  --shadow:0 1px 2px rgba(0,0,0,.3), 0 10px 28px rgba(0,0,0,.35);
+  color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --bg:#1C1638; --surface:#251F45; --surface-2:#2E2853; --ink:#EEEBFB; --muted:#B2ADD6; --line:#463F7E;
+  --tq:#2EC9C2; --tq-strong:#62DDD6; --tq-soft:#0F3D3D; --on-tq:#05211F;
+  --bv:#A08FFF; --bv-ink:#C9BFFF; --bv-soft:#211C47; --on-bv:#140E33;
+  --ok:#5BD98A; --ok-soft:#10331E; --bad:#FF9A66; --bad-soft:#3A1F12; --warn:#F2C35A; --warn-soft:#33290C; --warn-line:#B38612;
+  --band:#0A3A3D; --band-ink:#E8FAF8; --band-grid:rgba(255,255,255,.07);
+  --canvas-bg:#211B40; --canvas-grid:#342D60; --canvas-axis:#9DC2C4;
+  --fig-a:#6A58D6; --fig-b:#1F8E88; --fig-c:#A07B1C; --plot-grid:#4E4690;
+  --shadow:0 1px 2px rgba(0,0,0,.3), 0 10px 28px rgba(0,0,0,.35);
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--font-body);font-size:17px;line-height:1.55;-webkit-text-size-adjust:100%}
+.wrap{max-width:880px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1,h2,h3{font-family:var(--font-display);line-height:1.15;text-wrap:balance;margin:0}
+h2{font-size:1.45rem;font-weight:800}
+h3{font-size:1.12rem;font-weight:800}
+p{margin:0}
+button{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--bv);outline-offset:2px}
+.band{background-color:var(--band);background-image:linear-gradient(var(--band-grid) 1px,transparent 1px),linear-gradient(90deg,var(--band-grid) 1px,transparent 1px);background-size:22px 22px;color:var(--band-ink)}
+.band .wrap{padding-block:26px 30px;display:flex;flex-wrap:wrap;gap:10px 28px;align-items:flex-end;justify-content:space-between}
+.eyebrow{font-size:.78rem;letter-spacing:.12em;text-transform:uppercase;font-weight:700;opacity:.9}
+.band h1{font-size:clamp(2rem,6vw,3rem);font-weight:800;margin-top:4px}
+.band .lead{max-width:34em;margin-top:6px;opacity:.95}
+.band .kpis{display:flex;gap:18px;font-variant-numeric:tabular-nums}
+.band .kpis b{display:block;font-family:var(--font-display);font-size:1.8rem;line-height:1}
+.band .kpis span{font-size:.8rem;opacity:.9}
+main.wrap{padding-block:22px 40px;display:grid;grid-template-columns:minmax(0,1fr);gap:18px}
+main.wrap>*{min-width:0}
+.card{background:var(--surface);border:2px solid var(--bv);border-radius:14px;padding:20px;box-shadow:var(--shadow);min-width:0}
+.card.plain{border-color:var(--line)}
+.stack{display:grid;gap:14px}
+.muted{color:var(--muted)}
+.small{font-size:.88rem}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.btn{border:2px solid var(--bv);background:var(--bv);color:var(--on-bv);border-radius:10px;padding:10px 18px;font-weight:700;cursor:pointer;min-height:46px}
+.btn.alt{background:var(--surface);color:var(--bv-ink)}
+.btn.tq{background:var(--tq-strong);border-color:var(--tq-strong);color:var(--on-tq)}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.link{background:none;border:0;color:var(--bv-ink);text-decoration:underline;cursor:pointer;padding:6px 2px;font-weight:700}
+.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin:0;padding:0;list-style:none}
+.steps li{background:var(--surface-2);border-radius:10px;padding:12px 14px;min-width:0}
+.steps b{font-family:var(--font-display);color:var(--bv-ink);display:block;margin-bottom:2px}
+label.fld{display:grid;gap:4px;font-weight:700;font-size:.92rem;flex:1 1 200px}
+input.txt{font:inherit;font-weight:400;padding:10px 12px;border:2px solid var(--line);border-radius:10px;background:var(--surface-2);color:var(--ink);min-height:46px;width:100%}
+input.txt:focus,.fin input:focus,.nin input:focus,select:focus{border-color:var(--bv);outline:none}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{display:inline-flex;align-items:center;gap:8px;border:2px solid var(--line);border-radius:999px;padding:7px 14px;background:var(--surface);cursor:pointer;font-size:.95rem;user-select:none}
+.chip input{width:18px;height:18px;accent-color:var(--bv);margin:0}
+.chip:has(input:checked){border-color:var(--bv);background:var(--bv-soft)}
+.chip span{color:var(--muted);font-size:.82rem}
+.err-msg{color:var(--bad);font-weight:700}
+.note{background:var(--tq-soft);border-radius:10px;padding:12px 14px}
+.warnbox{background:var(--warn-soft);border:2px solid var(--warn-line);border-radius:10px;padding:12px 14px}
+/* Test */
+.topbar{display:grid;gap:8px}
+.topbar .row{justify-content:space-between}
+.prog{display:flex;gap:3px;height:10px}
+.prog i{flex:1;border-radius:3px;background:var(--surface);border:1px solid var(--line)}
+.prog i.d{background:var(--tq);border-color:var(--tq)}
+.prog i.s{background:var(--warn-line);border-color:var(--warn-line)}
+.prog i.c{outline:2px solid var(--bv);outline-offset:1px}
+.tag{display:inline-block;background:var(--bv-soft);color:var(--bv-ink);border-radius:999px;padding:3px 12px;font-weight:700;font-size:.82rem}
+.skill{color:var(--muted);font-size:.88rem}
+.ctx{background:var(--surface-2);border-left:4px solid var(--tq);border-radius:8px;padding:12px 14px}
+.q{font-size:1.08rem}
+.q .mjx-display, .q mjx-container[display="true"]{margin:.6em 0!important}
+.figbox{background:var(--canvas-bg);border:1px solid var(--line);border-radius:10px;padding:10px;overflow-x:auto}
+.opts{display:grid;gap:10px}
+.opts.figs{grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr))}
+.opt{display:flex;gap:12px;align-items:flex-start;text-align:left;border:2px solid var(--line);background:var(--surface);border-radius:12px;padding:12px 14px;cursor:pointer;width:100%;min-height:52px}
+.opt:hover{border-color:var(--bv)}
+.opt[aria-pressed="true"]{border-color:var(--bv);background:var(--bv-soft);box-shadow:inset 0 0 0 1px var(--bv)}
+.opt .lt{font-family:var(--font-display);font-weight:800;color:var(--bv-ink);flex:none;width:1.4em}
+.opt .oc{min-width:0;overflow-x:auto;flex:1}
+.cap{display:block;font-size:.88rem;color:var(--muted);margin-top:4px}
+.fin,.nin{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.fin input,.nin input,.tbl input{font:inherit;font-size:1.3rem;text-align:center;border:2px solid var(--line);border-radius:8px;padding:6px;background:var(--surface-2);color:var(--ink);font-variant-numeric:tabular-nums}
+.fin input{width:3.4em}
+.fin input.fw{width:2.6em;font-size:1.6rem}
+.nin input{width:7em}
+.fr{display:inline-flex;flex-direction:column;align-items:center;gap:5px}
+.fbar{display:block;width:100%;height:3px;background:var(--ink);border-radius:2px}
+.sgn{border:2px solid var(--bv);background:var(--surface);color:var(--bv-ink);border-radius:8px;min-width:52px;min-height:48px;font-size:1.5rem;font-weight:800;cursor:pointer;line-height:1}
+.sgn small{display:block;font-size:.6rem;font-weight:700;color:var(--muted)}
+.unit{font-weight:700;font-size:1.15rem}
+.eq{font-size:1.3rem;font-weight:700}
+.tbl{border-collapse:collapse;font-variant-numeric:tabular-nums}
+.tbl th,.tbl td{border:2px solid var(--line);padding:6px 10px;text-align:center;min-width:3.2em}
+.tbl th{background:var(--surface-2);font-family:var(--font-display)}
+.tbl input{width:3.2em;font-size:1.1rem;padding:4px}
+.tblwrap{overflow-x:auto}
+.split-ctl{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.split-ctl input[type=range]{flex:1 1 220px;accent-color:var(--bv);height:32px}
+.split-ctl .sgn{font-size:1.3rem}
+.split-out{font-weight:700;font-variant-numeric:tabular-nums}
+.selrow{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:8px 12px;align-items:center}
+select{font:inherit;padding:8px 10px;border:2px solid var(--line);border-radius:8px;background:var(--surface-2);color:var(--ink);min-height:44px}
+.confbox{border-top:2px dashed var(--line);padding-top:14px;display:grid;gap:8px}
+.confbox p{font-weight:700}
+.conf{display:flex;flex-wrap:wrap;gap:8px}
+.cbtn{flex:1 1 150px;border-radius:10px;padding:10px 12px;font-weight:700;cursor:pointer;min-height:50px;border:2px solid var(--tq-strong)}
+.cbtn.s{background:var(--tq-strong);color:var(--on-tq)}
+.cbtn.u{background:var(--surface);color:var(--tq-strong)}
+.cbtn.g{background:var(--surface);color:var(--muted);border-style:dashed;border-color:var(--muted)}
+.cbtn.on{box-shadow:0 0 0 3px var(--bv)}
+.cbtn:disabled{opacity:.35;cursor:not-allowed}
+.nav{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.done-hint{font-size:.88rem;color:var(--tq-strong);font-weight:700}
+/* Ergebnis */
+.score{display:flex;flex-wrap:wrap;gap:16px 28px;align-items:center}
+.big{font-family:var(--font-display);font-size:3rem;font-weight:800;line-height:1;font-variant-numeric:tabular-nums}
+.sumgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
+.sum{border-radius:12px;padding:16px;border:2px solid}
+.sum.plus{background:var(--ok-soft);border-color:var(--ok)}
+.sum.minus{background:var(--bad-soft);border-color:var(--bad)}
+.sum h3{margin-bottom:6px}
+.sum ul{margin:0;padding-left:1.2em}
+.prof{display:grid;gap:12px}
+.prow{display:grid;grid-template-columns:minmax(0,13em) minmax(0,1fr) auto;gap:6px 12px;align-items:center}
+.pbar{height:16px;background:var(--surface-2);border-radius:8px;overflow:hidden;display:flex;border:1px solid var(--line)}
+.pbar i{display:block;height:100%}
+.pbar .f1{background:var(--tq-strong)} .pbar .f2{background:var(--tq);opacity:.55} .pbar .f3{background:var(--bad)}
+.prow .meta{grid-column:1/-1;font-size:.82rem;color:var(--muted);margin-top:-4px}
+.pill{display:inline-block;border-radius:999px;padding:2px 10px;font-weight:700;font-size:.8rem;white-space:nowrap}
+.st-stark{background:var(--ok-soft);color:var(--ok)}
+.st-mittel{background:var(--warn-soft);color:var(--warn)}
+.st-schwach{background:var(--bad-soft);color:var(--bad)}
+.st-leer{background:var(--surface-2);color:var(--muted)}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:.82rem;color:var(--muted)}
+.legend i{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:5px;vertical-align:-1px}
+.matrix{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.mx{border-radius:12px;padding:12px 14px;border:2px solid var(--line);background:var(--surface-2)}
+.mx b{font-family:var(--font-display);font-size:1.8rem;display:block;line-height:1.1;font-variant-numeric:tabular-nums}
+.mx.m1{border-color:var(--ok)} .mx.m2{border-color:var(--warn-line)} .mx.m3{border-color:var(--bad);background:var(--bad-soft)} .mx.m4{border-color:var(--tq)}
+.fv{border:2px solid var(--bv);border-radius:12px;padding:16px;display:grid;gap:8px;background:var(--surface)}
+.fv.sure{border-color:var(--bad)}
+.fv h3{display:flex;gap:10px;align-items:baseline;flex-wrap:wrap}
+.fv dl{margin:0;display:grid;gap:6px}
+.fv dt{font-weight:700;font-size:.85rem;color:var(--bv-ink);text-transform:uppercase;letter-spacing:.06em}
+.fv dd{margin:0;min-width:0;overflow-x:auto}
+.plan{margin:0;padding-left:1.2em;display:grid;gap:4px}
+details.area{border:2px solid var(--line);border-radius:12px;background:var(--surface)}
+details.area>summary{cursor:pointer;padding:12px 14px;font-weight:700;display:flex;gap:10px;justify-content:space-between;flex-wrap:wrap}
+.rv{border-top:1px solid var(--line);padding:12px 14px;display:grid;gap:6px;min-width:0}
+.rv .rvq{min-width:0;overflow-x:auto}
+.rv .sv{max-width:min(100%,360px)}
+.rv details summary{cursor:pointer;color:var(--bv-ink);font-weight:700}
+.rv .sol{background:var(--surface-2);border-radius:8px;padding:10px 12px;margin-top:6px;overflow-x:auto}
+.kv{display:grid;grid-template-columns:auto minmax(0,1fr);gap:2px 10px;font-size:.95rem}
+.kv>span:nth-child(odd){color:var(--muted)}
+.kv>span{min-width:0;overflow-x:auto}
+.codebox{font-family:var(--font-mono);font-size:.8rem;width:100%;min-height:90px;border:2px dashed var(--bv);border-radius:10px;padding:10px;background:var(--surface-2);color:var(--ink);word-break:break-all;resize:vertical}
+/* Lehrkraft */
+.ttwrap{overflow-x:auto;border:1px solid var(--line);border-radius:10px}
+.tt{border-collapse:collapse;width:100%;font-variant-numeric:tabular-nums;font-size:.9rem}
+.tt th,.tt td{padding:6px 8px;border-bottom:1px solid var(--line);text-align:center;white-space:nowrap}
+.tt th{background:var(--surface-2);font-family:var(--font-display);position:sticky;top:0}
+.tt td:first-child,.tt th:first-child{text-align:left}
+.tt tr.sum td{font-weight:700;background:var(--bv-soft)}
+.hb{display:grid;grid-template-columns:minmax(0,1fr) 120px auto;gap:6px 10px;align-items:center;font-size:.92rem}
+.hb .bar{height:12px;background:var(--surface-2);border-radius:6px;overflow:hidden}
+.hb .bar i{display:block;height:100%;background:var(--bv)}
+textarea.tin{width:100%;min-height:120px;font-family:var(--font-mono);font-size:.8rem;border:2px solid var(--line);border-radius:10px;padding:10px;background:var(--surface-2);color:var(--ink)}
+/* SVG */
+.sv{display:block;max-width:100%;height:auto}
+.sv text{font-family:var(--font-body);font-size:15px;fill:var(--ink)}
+.sv .ft{font-size:15px;font-weight:700}
+.sv .tk{font-size:13px;fill:var(--muted)}
+.sv .sm{font-size:12px;fill:var(--muted)}
+.sv .ln{fill:none;stroke:var(--ink);stroke-width:1.6}
+.sv .thin{fill:none;stroke:var(--muted);stroke-width:1}
+.sv .dash{fill:none;stroke:var(--muted);stroke-width:1.4;stroke-dasharray:5 4}
+.sv .gd{stroke:var(--plot-grid);stroke-width:1.2}
+.sv .bg{fill:var(--canvas-bg)}
+.sv .ax{stroke:var(--canvas-axis);stroke-width:1.6;fill:none}
+.sv .axh{fill:var(--canvas-axis)}
+.sv .fa{fill:var(--fig-a)} .sv .fb{fill:var(--fig-b)} .sv .fc{fill:var(--fig-c)}
+.sv .cut{stroke:var(--bad);stroke-width:1.6;stroke-dasharray:4 3}
+.sv .gr{fill:none;stroke:var(--bv);stroke-width:3;stroke-linejoin:round;stroke-linecap:round}
+.sv .dot{fill:var(--bv)}
+.sv .mk{fill:var(--bad)}
+.sv .lad{stroke:var(--tq-strong);stroke-width:5;stroke-linecap:round}
+.sv .bd{fill:var(--bv-soft);stroke:var(--bv);stroke-width:1.5}
+.sv .bt{font-size:13px;font-weight:700;fill:var(--bv-ink)}
+.sv .it{font-style:italic;font-weight:700}
+/* Fußzeile */
+.foot{border-top:2px solid var(--bv);background:var(--surface)}
+.foot .wrap{padding-block:18px;display:flex;gap:16px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.foot-txt{font-size:.85rem;color:var(--muted);max-width:44em}
+.foot-copy{display:block;margin-top:6px;font-weight:700;color:var(--ink)}
+.foot-mark{margin:0;font-family:var(--font-display);font-weight:800;font-size:1.7rem;letter-spacing:.1em;border:2px solid currentColor;border-radius:10px;padding:0 14px;line-height:1.5;color:var(--bv-ink)}
+.fv dd,.opt .oc,.kv>span,.rv .rvq,.rv .sol,.q{overflow-y:hidden;padding-block:2px}
+@media (max-width:560px){
+  body{font-size:16px}
+  .card{padding:16px}
+  .prow{grid-template-columns:minmax(0,1fr) auto}
+  .prow .pbar{grid-column:1/-1;grid-row:2}
+  .selrow{grid-template-columns:minmax(0,1fr)}
+  .hb{grid-template-columns:minmax(0,1fr) 70px auto}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+
+<header class="band">
+  <div class="wrap">
+    <div>
+      <p class="eyebrow">Diagnose · Mathematik · Grundlagen Klasse 6–9</p>
+      <h1>Mathe-Check</h1>
+      <p class="lead">Finde heraus, was du schon sicher kannst und woran du noch arbeiten solltest. Am Ende bekommst du dein persönliches Stärken-Schwächen-Profil.</p>
+    </div>
+    <div class="kpis" aria-label="Umfang">
+      <div><b id="k-areas">9</b><span>Bereiche</span></div>
+      <div><b id="k-items">54</b><span>Aufgaben</span></div>
+    </div>
+  </div>
+</header>
+
+<main id="app" class="wrap" aria-live="polite">
+  <div class="card"><p>Der Mathe-Check wird geladen …</p></div>
+</main>
+
+<footer class="foot">
+  <div class="wrap">
+    <p class="foot-txt">Diagnoseplattform Mathematik · Grundlagen Klasse 6–9 · Brüche, gemischte Zahlen, Dezimalzahlen, rationale Zahlen, Rechengesetze, Zuordnungen und lineare Funktionen, Graphen, Sachaufgaben, Pythagoras · <a href="#lehrkraft" style="color:var(--bv-ink);font-weight:700">Für Lehrkräfte: Klassenauswertung</a><span class="foot-copy">© BTZ · Schuljahr 2026/27 · Nur für den Unterricht. Weitergabe und Veröffentlichung nicht gestattet.</span></p>
+    <p class="foot-mark" aria-label="Erstellt von BTZ">BTZ</p>
+  </div>
+</footer>
+
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']] },
+  svg: { fontCache: 'global' },
+  options: { enableMenu: false }
+};
+</script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-svg.min.js"></script>
+<script>
+(function(){
+'use strict';
+const T=String.raw;
+const app=document.getElementById('app');
+const KEY='btz-mathe-check-v1';
+
+/* ---------- Hilfen ---------- */
+const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const num=x=>String(+(+x).toFixed(4)).replace('.',',').replace('-','−');
+const gcd=(a,b)=>{a=Math.abs(a);b=Math.abs(b);while(b){[a,b]=[b,a%b];}return a;};
+function pnum(s){s=String(s).trim().replace(/\s/g,'').replace(',','.').replace('−','-');if(!/^-?(\d+\.?\d*|\.\d+)$/.test(s))return NaN;return Number(s);}
+function typeset(el){const M=window.MathJax;if(M&&M.startup&&M.startup.promise&&M.typesetPromise){M.startup.promise.then(()=>M.typesetPromise([el])).catch(()=>{});}}
+function mjClear(el){const M=window.MathJax;if(M&&M.typesetClear){try{M.typesetClear([el]);}catch(e){}}}
+
+/* ---------- SVG-Bausteine ---------- */
+function svg(w,h,inner,label){return `<svg class="sv" viewBox="0 0 ${w} ${h}" width="${w}" role="img" aria-label="${esc(label||'Abbildung')}">${inner}</svg>`;}
+function bar(x,y,w,h,n,sh){let s='';const g=w/n;(sh||[]).forEach(([a,b,c])=>{s+=`<rect x="${x+a*g}" y="${y}" width="${(b-a)*g}" height="${h}" class="${c}"/>`;});for(let k=1;k<n;k++)s+=`<line x1="${x+k*g}" y1="${y}" x2="${x+k*g}" y2="${y+h}" class="ln"/>`;return s+`<rect x="${x}" y="${y}" width="${w}" height="${h}" class="ln"/>`;}
+function fr(x,y,n,d){return `<text x="${x}" y="${y-5}" text-anchor="middle" class="ft">${n}</text><line x1="${x-9}" y1="${y}" x2="${x+9}" y2="${y}" class="ln"/><text x="${x}" y="${y+16}" text-anchor="middle" class="ft">${d}</text>`;}
+function tx(x,y,t,cls,a){return `<text x="${x}" y="${y}"${a?` text-anchor="${a}"`:''}${cls?` class="${cls}"`:''}>${t}</text>`;}
+function bdg(x,y,t){return `<circle cx="${x}" cy="${y}" r="11" class="bd"/><text x="${x}" y="${y+5}" text-anchor="middle" class="bt">${t}</text>`;}
+function cells(x,y,cols,rows,u,cls){let s=`<rect x="${x}" y="${y}" width="${cols*u}" height="${rows*u}" class="${cls}"/>`;for(let i=1;i<cols;i++)s+=`<line x1="${x+i*u}" y1="${y}" x2="${x+i*u}" y2="${y+rows*u}" class="thin"/>`;for(let j=1;j<rows;j++)s+=`<line x1="${x}" y1="${y+j*u}" x2="${x+cols*u}" y2="${y+j*u}" class="thin"/>`;return s+`<rect x="${x}" y="${y}" width="${cols*u}" height="${rows*u}" class="ln"/>`;}
+function circ(cx,cy,r,q,cls){let s='';if(q===4)s+=`<circle cx="${cx}" cy="${cy}" r="${r}" class="${cls}"/>`;else if(q>0){const a=q*Math.PI/2,ex=cx+r*Math.sin(a),ey=cy-r*Math.cos(a);s+=`<path d="M${cx} ${cy} L${cx} ${cy-r} A${r} ${r} 0 ${q>2?1:0} 1 ${ex.toFixed(1)} ${ey.toFixed(1)} Z" class="${cls}"/>`;}return s+`<circle cx="${cx}" cy="${cy}" r="${r}" class="ln"/><line x1="${cx-r}" y1="${cy}" x2="${cx+r}" y2="${cy}" class="ln"/><line x1="${cx}" y1="${cy-r}" x2="${cx}" y2="${cy+r}" class="ln"/>`;}
+function plot(o,content){
+  const ml=o.ml||46,mr=o.mr||24,mt=30,mb=o.mb||44;
+  const W=ml+(o.x1-o.x0)*o.sx+mr,H=mt+(o.y1-o.y0)*o.sy+mb;
+  const X=x=>+(ml+(x-o.x0)*o.sx).toFixed(1),Y=y=>+(mt+(o.y1-y)*o.sy).toFixed(1);
+  let s=`<rect x="${X(o.x0)}" y="${Y(o.y1)}" width="${(o.x1-o.x0)*o.sx}" height="${(o.y1-o.y0)*o.sy}" class="bg"/>`;
+  for(let i=Math.ceil(o.x0/o.gx-1e-9);i*o.gx<=o.x1+1e-9;i++){const x=i*o.gx;s+=`<line x1="${X(x)}" y1="${Y(o.y0)}" x2="${X(x)}" y2="${Y(o.y1)}" class="gd"/>`;}
+  for(let i=Math.ceil(o.y0/o.gy-1e-9);i*o.gy<=o.y1+1e-9;i++){const y=i*o.gy;s+=`<line x1="${X(o.x0)}" y1="${Y(y)}" x2="${X(o.x1)}" y2="${Y(y)}" class="gd"/>`;}
+  const ax=(o.x0<=0&&o.x1>=0)?0:o.x0,ay=(o.y0<=0&&o.y1>=0)?0:o.y0;
+  s+=`<line x1="${X(o.x0)}" y1="${Y(ay)}" x2="${X(o.x1)+12}" y2="${Y(ay)}" class="ax"/><path d="M${X(o.x1)+16} ${Y(ay)} l-9 -4.5 v9 z" class="axh"/>`;
+  s+=`<line x1="${X(ax)}" y1="${Y(o.y0)}" x2="${X(ax)}" y2="${Y(o.y1)-12}" class="ax"/><path d="M${X(ax)} ${Y(o.y1)-16} l-4.5 9 h9 z" class="axh"/>`;
+  for(let i=Math.ceil(o.x0/o.lx-1e-9);i*o.lx<=o.x1+1e-9;i++){const x=+(i*o.lx).toFixed(6);if(x===0&&o.x0<0)continue;s+=`<line x1="${X(x)}" y1="${Y(ay)-4}" x2="${X(x)}" y2="${Y(ay)+4}" class="ax"/>`+tx(X(x),Y(ay)+19,num(x),'tk','middle');}
+  for(let i=Math.ceil(o.y0/o.ly-1e-9);i*o.ly<=o.y1+1e-9;i++){const y=+(i*o.ly).toFixed(6);if(y===0)continue;s+=`<line x1="${X(ax)-4}" y1="${Y(y)}" x2="${X(ax)+4}" y2="${Y(y)}" class="ax"/>`+tx(X(ax)-9,Y(y)+4.5,num(y),'tk','end');}
+  if(o.x0<0&&o.y0<0)s+=tx(X(0)-7,Y(0)+17,'0','tk','end');
+  s+=tx(X(o.x1)+14,Y(ay)+36,o.xlab||'x','sm','end')+tx(X(ax)+12,16,o.ylab||'y','sm');
+  s+=content?content(X,Y):'';
+  return svg(Math.round(W),Math.round(H),s,o.label);
+}
+
+/* ---------- Abbildungen ---------- */
+const FIG={
+  b1:()=>svg(430,152,fr(32,25,1,3)+bar(80,10,330,30,3,[[0,1,'fa']])+fr(32,75,1,4)+bar(80,60,330,30,4,[[0,1,'fb']])+fr(32,125,2,7)+bar(80,110,330,30,7,[[0,2,'fc']]),'Streifen: ein Drittel, ein Viertel und zwei Siebtel'),
+  split:n=>{const x=80,w=330;let s=fr(32,25,1,3)+bar(x,10,w,30,3,[[0,1,'fa']])+fr(32,75,1,4)+bar(x,60,w,30,4,[[0,1,'fb']]);if(n>1)for(let k=1;k<n;k++){const xx=+(x+k*w/n).toFixed(2);s+=`<line x1="${xx}" y1="5" x2="${xx}" y2="95" class="cut"/>`;}return svg(430,100,s,'Streifen mit Einteilung in '+n+' Teile');},
+  b4q:()=>svg(430,100,fr(32,25,1,2)+bar(80,10,330,30,2,[[0,1,'fa']])+fr(32,75,1,3)+bar(80,60,330,30,3,[[0,1,'fb']]),'Streifen: ein Halb und ein Drittel'),
+  b4:k=>{if(k===2)return svg(320,84,bar(10,7,150,30,2,[[0,1,'fa']])+bar(10,47,300,30,3,[[0,1,'fb']]),'Zwei unterschiedlich lange Streifen');const m={0:[6,[[0,3,'fa'],[3,5,'fb']]],1:[5,[[0,1,'fa'],[1,2,'fb']]],3:[6,[[0,1,'fa'],[1,2,'fb']]]}[k];return svg(320,44,bar(10,7,300,30,m[0],m[1]),'Streifen');},
+  g1:()=>svg(270,90,circ(45,45,36,4,'fb')+circ(135,45,36,4,'fb')+circ(225,45,36,3,'fb'),'Zwei volle Kreise und ein Dreiviertelkreis'),
+  d6:()=>{let s=`<line x1="30" y1="44" x2="390" y2="44" class="ln"/>`;for(let k=0;k<=10;k++){const x=30+36*k,h=(k===0||k===10)?12:(k===5?9:6);s+=`<line x1="${x}" y1="${44-h}" x2="${x}" y2="${44+h}" class="ln"/>`;}s+=tx(30,74,'2,3','ft','middle')+tx(390,74,'2,4','ft','middle')+`<path d="M282 30 l-7 -12 h14 z" class="mk"/>`+tx(282,12,'?','ft','middle');return svg(420,82,s,'Zahlenstrahl von 2,3 bis 2,4 mit Markierung');},
+  r5:()=>{let s=`<line x1="20" y1="44" x2="400" y2="44" class="ln"/>`;for(let k=0;k<=12;k++){const x=30+30*k,h=(k%4===0)?12:6;s+=`<line x1="${x}" y1="${44-h}" x2="${x}" y2="${44+h}" class="ln"/>`;}['−2','−1','0','1'].forEach((t,i)=>{s+=tx(30+120*i,74,t,'ft','middle');});s+=`<circle cx="120" cy="44" r="6" class="mk"/>`+tx(120,22,'?','ft','middle');return svg(420,82,s,'Zahlengerade von −2 bis 1 mit Markierung');},
+  rg1:()=>{const u=18,x=44,y=30;return svg(320,150,cells(x,y,10,6,u,'fa')+cells(x+10*u,y,4,6,u,'fb')+tx(x-12,y+3*u+5,'6','ft','middle')+tx(x+5*u,y-10,'10','ft','middle')+tx(x+12*u,y-10,'4','ft','middle'),'Rechteck aus zwei Teilen: 6 mal 10 und 6 mal 4 Kästchen');},
+  rg2:k=>{const u=16,x=34,y=28;let s;
+    if(k===0)s=cells(x,y,4,3,u,'fa')+cells(x+4*u,y,2,3,u,'fb')+tx(x-12,y+1.5*u+5,'3','ft','middle')+tx(x+2*u,y-8,'4','ft','middle')+tx(x+5*u,y-8,'2','ft','middle');
+    else if(k===1)s=cells(x,y,4,3,u,'fa')+cells(x+4*u+10,y+2*u,2,1,u,'fb')+tx(x-12,y+1.5*u+5,'3','ft','middle')+tx(x+2*u,y-8,'4','ft','middle')+tx(x+5*u+10,y+2*u-8,'2','ft','middle')+tx(x+6*u+20,y+2.5*u+5,'1','ft','middle');
+    else s=cells(x,y,3,4,u,'fa')+cells(x+3*u,y,2,4,u,'fb')+tx(x-12,y+2*u+5,'4','ft','middle')+tx(x+1.5*u,y-8,'3','ft','middle')+tx(x+4*u,y-8,'2','ft','middle');
+    return svg(180,100,s,'Rechteckmodell');},
+  rg3:()=>{let s='';for(let r=0;r<4;r++)for(let c=0;c<6;c++)s+=`<circle cx="${24+18*c}" cy="${30+18*r}" r="5.5" class="fa"/>`;for(let r=0;r<6;r++)for(let c=0;c<4;c++)s+=`<circle cx="${268+18*c}" cy="${12+18*r}" r="5.5" class="fb"/>`;s+=`<path d="M150 58 Q200 30 246 58" class="ln"/><path d="M248 60 l-11 -2 l6 -8 z" class="axh"/>`+tx(198,90,'um 90° gedreht','sm','middle');return svg(350,120,s,'Punktmuster 4 mal 6 und gedreht 6 mal 4');},
+  rg5:()=>{const u=16,x=44,y=30;return svg(260,104,`<rect x="${x}" y="${y}" width="130" height="${4*u}" class="fa"/><rect x="${x}" y="${y}" width="130" height="${4*u}" class="ln"/>`+cells(x+130,y,3,4,u,'fb')+tx(x-12,y+2*u+5,'4','ft','middle')+tx(x+65,y-9,'x','ft it','middle')+tx(x+130+1.5*u,y-9,'3','ft','middle'),'Rechteck mit Höhe 4 und Breite x plus 3');},
+  gr1:()=>plot({x0:-1,x1:5,y0:-3,y1:3,sx:44,sy:44,gx:1,gy:1,lx:1,ly:1,xlab:'x',ylab:'y',label:'Gerade im Koordinatensystem'},(X,Y)=>`<line x1="${X(-1)}" y1="${Y(-8/3)}" x2="${X(5)}" y2="${Y(4/3)}" class="gr"/><circle cx="${X(0)}" cy="${Y(-2)}" r="5" class="dot"/><circle cx="${X(3)}" cy="${Y(0)}" r="5" class="dot"/>`),
+  walk:()=>plot({x0:0,x1:40,y0:0,y1:1600,sx:9,sy:.12,gx:5,gy:200,lx:10,ly:400,ml:52,xlab:'Zeit in min',ylab:'Entfernung von zu Hause in m',label:'Weg-Zeit-Graph eines Spaziergangs'},(X,Y)=>`<polyline points="${X(0)},${Y(0)} ${X(10)},${Y(600)} ${X(20)},${Y(600)} ${X(25)},${Y(1400)} ${X(40)},${Y(0)}" class="gr"/>`+bdg(X(5)-14,Y(300)-12,'A')+bdg(X(15),Y(600)-18,'B')+bdg(X(22.5)-18,Y(1000)-2,'C')+bdg(X(32.5)+18,Y(700)-4,'D')),
+  tank:()=>plot({x0:0,x1:8,y0:0,y1:300,sx:40,sy:.8,gx:1,gy:25,lx:2,ly:100,ml:48,xlab:'Zeit in min',ylab:'Wasser im Tank in L',label:'Graph der Wassermenge im Tank'},(X,Y)=>`<line x1="${X(0)}" y1="${Y(50)}" x2="${X(8)}" y2="${Y(250)}" class="gr"/><circle cx="${X(3)}" cy="${Y(125)}" r="5.5" class="dot"/>`),
+  badaxis:()=>{const o=50,b=190,st=36;let s=`<rect x="${o}" y="${b-4*st-14}" width="300" height="${4*st+14}" class="bg"/>`;for(let k=1;k<=4;k++)s+=`<line x1="${o}" y1="${b-k*st}" x2="${o+290}" y2="${b-k*st}" class="gd"/>`;['0','10','20','50','100'].forEach((t,k)=>{s+=tx(o-8,b-k*st+5,t,'tk','end');});['Mo','Di','Mi','Do'].forEach((d,i)=>{const x=o+30+i*64;s+=`<rect x="${x}" y="${b-(i+1)*st}" width="36" height="${(i+1)*st}" class="fb"/><rect x="${x}" y="${b-(i+1)*st}" width="36" height="${(i+1)*st}" class="ln"/>`+tx(x+18,b+20,d,'tk','middle');});s+=`<line x1="${o}" y1="${b}" x2="${o+300}" y2="${b}" class="ax"/><line x1="${o}" y1="${b}" x2="${o}" y2="${b-4*st-16}" class="ax"/>`+tx(o+6,16,'Besucher pro Tag','sm');return svg(370,220,s,'Säulendiagramm mit Achse 0, 10, 20, 50, 100');},
+  ladder:(k)=>{const gy=118,wx=112;const lean=k===3;const top=lean?[124.7,22]:[wx,22];const L=[['5,0 m','1,4 m','?'],['?','1,4 m','5,0 m'],['1,4 m','5,0 m','?'],['5,0 m','1,4 m','?']][k];
+    let s=`<line x1="10" y1="${gy}" x2="150" y2="${gy}" class="ln"/>`+(lean?`<line x1="${wx}" y1="${gy}" x2="126" y2="10" class="ln" style="stroke-width:3"/>`:`<line x1="${wx}" y1="${gy}" x2="${wx}" y2="10" class="ln" style="stroke-width:3"/><path d="M${wx-11} ${gy} v-11 h11" class="ln"/>`);
+    s+=`<line x1="58" y1="${gy}" x2="${top[0]}" y2="${top[1]}" class="lad"/>`;
+    s+=tx(70,66,L[0],'ft','end')+tx(85,gy+18,L[1],'ft','middle')+tx(lean?132:120,72,L[2],'ft');
+    return svg(170,142,s,'Skizze Leiter an Wand');},
+  ramp:()=>{let s=`<polygon points="20,120 320,120 320,40" class="fb" style="opacity:.35"/><polygon points="20,120 320,120 320,40" class="ln"/><path d="M308 120 v-12 h12" class="ln"/>`+bdg(170,138,'1')+bdg(338,82,'2')+bdg(160,66,'3');return svg(360,154,s,'Skizze einer Rampe mit drei nummerierten Seiten');},
+  rst:()=>{let s=`<polygon points="150,150 60,30 270,60" class="fa" style="opacity:.35"/><polygon points="150,150 60,30 270,60" class="ln"/><polyline points="141.6,138.8 152.8,130.4 161.2,141.6" class="ln"/>`;
+    s+=tx(150,172,'R','ft it','middle')+tx(48,26,'S','ft it','middle')+tx(286,60,'T','ft it','middle')+tx(168,36,'r','ft it','middle')+tx(220,118,'s','ft it','middle')+tx(92,100,'t','ft it','middle');return svg(310,182,s,'Rechtwinkliges Dreieck RST mit rechtem Winkel bei R');},
+  abc:()=>{let s=`<polygon points="20,170 320,170 128,26" class="fa" style="opacity:.3"/><polygon points="20,170 320,170 128,26" class="ln"/><line x1="128" y1="26" x2="128" y2="170" class="dash"/><polyline points="120.8,35.6 130.4,42.8 137.6,33.2" class="ln"/><polyline points="128,158 140,158 140,170" class="ln"/>`;
+    s+=tx(10,180,'A','ft it','middle')+tx(332,180,'B','ft it','middle')+tx(124,18,'C','ft it','middle')+tx(232,92,'a','ft it','middle')+tx(64,92,'b','ft it','middle')+tx(118,108,'h','ft it','middle')+tx(74,188,'q','ft it','middle')+tx(224,188,'p','ft it','middle');
+    s+=`<line x1="20" y1="202" x2="320" y2="202" class="thin"/><line x1="20" y1="196" x2="20" y2="208" class="thin"/><line x1="320" y1="196" x2="320" y2="208" class="thin"/><line x1="128" y1="176" x2="128" y2="194" class="thin"/>`+tx(170,222,'c','ft it','middle');return svg(345,230,s,'Rechtwinkliges Dreieck ABC mit Höhe h und Hypotenusenabschnitten p und q');}
+};
+
+/* ---------- Bereiche ---------- */
+const AREAS=[
+ {id:'bruch',n:'Brüche addieren & subtrahieren',k:'Brüche',plan:[T`Zeichne zu jeder Aufgabe zwei Streifen: Wie fein muss das Ganze geteilt werden, damit beide Anteile genau passen?`,T`Finde den Hauptnenner über die Vielfachen des größeren Nenners (bei 6 und 8: 8, 16, 24).`,T`Überschlage immer: Ist die Summe größer als jeder einzelne Summand?`]},
+ {id:'gem',n:'Gemischte Zahlen',k:'Gemischte Zahlen',plan:[T`Lies \(2\tfrac34\) immer als \(2+\tfrac34\) – nie als Produkt.`,T`Umwandeln: Ganze mal Nenner plus Zähler, z. B. \(2\tfrac34=\tfrac{2\cdot4+3}{4}=\tfrac{11}4\).`,T`Beim Subtrahieren: Reicht der Bruchteil nicht, tausche ein Ganzes in Bruchteile um.`]},
+ {id:'dez',n:'Dezimalzahlen',k:'Dezimalzahlen',plan:[T`Mache Dezimalzahlen vor dem Vergleichen gleich lang (Nullen anhängen).`,T`Überschlage jedes Produkt und jeden Quotienten, bevor du das Komma setzt.`,T`Übe mit der Stellenwerttafel: Zehntel, Hundertstel, Tausendstel.`]},
+ {id:'rat',n:'Rationale Zahlen',k:'Rationale Zahlen',plan:[T`Zeichne zu jeder Aufgabe eine Zahlengerade oder ein Thermometer.`,T`Merke: Eine negative Zahl subtrahieren heißt ihre Gegenzahl addieren.`,T`Bestimme zuerst das Vorzeichen, dann rechne mit den Beträgen.`]},
+ {id:'rg',n:'Rechengesetze',k:'Rechengesetze',plan:[T`Zeichne zu jedem Klammerterm ein Rechteck (Flächenmodell): gemeinsame Seite mal Summe der Teilseiten.`,T`Prüfe bei jedem Umformen: Gilt das Gesetz für diese Rechenart? Vertauschen nur bei + und ·.`,T`Sprich die Reihenfolge laut mit: Klammer – Punkt – Strich – von links nach rechts.`]},
+ {id:'zu',n:'Zuordnungen & lineare Funktionen',k:'Zuordnungen',plan:[T`Proportional prüfen: Ist \(\tfrac yx\) immer gleich? Antiproportional: Ist \(x\cdot y\) immer gleich?`,T`Achte in Wertetabellen auf die Schrittweite in der x-Zeile.`,T`Übersetze Texte in \(f(x)=m\cdot x+b\): Startwert ist \(b\), Änderung pro Einheit ist \(m\).`]},
+ {id:'gr',n:'Graphen lesen & skalieren',k:'Graphen',plan:[T`Bestimme vor dem Ablesen, wie viel ein Kästchen auf jeder Achse bedeutet.`,T`Frage bei jedem Graphen: Was steht auf den Achsen? Steil heißt schnelle Änderung, waagerecht heißt keine Änderung.`,T`Steigungsdreieck: erst nach rechts, dann nach oben oder unten: \(m=\tfrac{\Delta y}{\Delta x}\).`]},
+ {id:'sach',n:'Sachaufgaben & Modellieren',k:'Sachaufgaben',plan:[T`Schreibe zuerst auf: Gegeben – Gesucht. Prüfe, ob die Angaben zur Frage passen.`,T`Fertige eine Skizze an und trage alle Angaben mit Einheit ein. Rechne vorher in gleiche Einheiten um.`,T`Prüfe am Ende: Beantwortet mein Ergebnis die Frage? Schreibe einen Antwortsatz.`]},
+ {id:'py',n:'Pythagoras, Höhen- & Kathetensatz',k:'Pythagoras',plan:[T`Markiere zuerst den rechten Winkel – gegenüber liegt die Hypotenuse.`,T`Entscheide: Hypotenuse gesucht → Quadrate addieren; Kathete gesucht → Quadrate subtrahieren.`,T`Lerne die Figur: \(h^2=p\cdot q\), \(a^2=c\cdot p\), \(b^2=c\cdot q\) – zu jeder Kathete gehört der anliegende Abschnitt.`]}
+];
+const AREA={};AREAS.forEach(a=>AREA[a.id]=a);
+
+/* ---------- Fehlerbilder ---------- */
+const ERR={
+ NA:{t:'Zähler plus Zähler, Nenner plus Nenner',d:T`Du hast Zähler und Nenner jeweils addiert oder subtrahiert, etwa \(\frac13+\frac14=\frac27\).`,r:T`Der Nenner gibt an, in wie viele gleich große Teile das Ganze zerlegt ist. Beim Addieren ändert sich die Teilgröße nicht – man zählt nur gleich große Teile zusammen: \(\frac13+\frac14=\frac4{12}+\frac3{12}=\frac7{12}\).`,u:T`Überschlag: \(\frac27\) ist kleiner als \(\frac13\) – eine Summe kann nicht kleiner sein als ein Summand.`},
+ ERWN:{t:'Nur den Nenner erweitert',d:T`Beim Erweitern hast du den Nenner verändert, den Zähler aber nicht, etwa \(\frac13=\frac1{12}\).`,r:T`Zähler und Nenner werden mit derselben Zahl multipliziert. Im Bild: Jedes Drittel wird in 4 kleine Teile zerlegt – aus 1 Teil werden 4 Teile: \(\frac13=\frac{1\cdot4}{3\cdot4}=\frac4{12}\).`,u:T`Zeichne den Streifen: Wenn die Teile kleiner werden, brauchst du mehr davon.`},
+ BEZUG:{t:'Unterschiedliche Ganze verwendet',d:T`Du hast Anteile von verschieden großen Ganzen zusammengelegt oder das Ganze falsch festgelegt.`,r:T`Anteile kann man nur addieren oder vergleichen, wenn sie sich auf dasselbe Ganze beziehen. Erst klären: Was ist hier „ein Ganzes“?`,u:T`Zeichne alle Streifen gleich lang und frage dich zuerst, was das Ganze ist.`},
+ GNV:{t:'Gemeinsamer Nenner ist kein Vielfaches beider Nenner',d:T`Deine Einteilung passt nicht zu beiden Brüchen.`,r:T`Ein gemeinsamer Nenner muss durch beide Nenner teilbar sein. Bei 3 und 4: 12, 24, 36, … – der kleinste ist 12.`,u:T`Gehe die Vielfachen des größeren Nenners durch und prüfe jeweils, ob der kleinere Nenner hineinpasst.`},
+ GNP:{t:'Unnötig großen gemeinsamen Nenner gewählt',d:T`Du hast einen gemeinsamen Nenner gewählt, der funktioniert, aber größer ist als nötig (oft das Produkt der Nenner).`,r:T`Das Produkt der Nenner klappt immer, macht die Rechnung aber oft groß. Der kleinste gemeinsame Nenner (Hauptnenner) spart Rechnen und Kürzen: bei 6 und 8 ist es 24, nicht 48.`,u:T`Suche zuerst den Hauptnenner und nimm das Produkt nur, wenn die Nenner keinen gemeinsamen Teiler haben.`},
+ GZMAL:{t:'Gemischte Zahl als Produkt gelesen',d:T`Du hast \(3\frac25\) wie \(3\cdot\frac25\) behandelt.`,r:T`Eine gemischte Zahl ist eine Summe: \(3\frac25=3+\frac25=\frac{15}5+\frac25=\frac{17}5\).`,u:T`Schreibe gemischte Zahlen am Anfang immer mit Pluszeichen aus.`},
+ GZZIF:{t:'Ziffern aneinandergehängt',d:T`Du hast die Ganzen und den Zähler hintereinander geschrieben, etwa \(3\frac25=\frac{32}5\).`,r:T`Jedes Ganze besteht aus so vielen Teilen, wie der Nenner angibt: \(3\frac25=\frac{3\cdot5+2}5=\frac{17}5\).`,u:T`Zeichne die Ganzen als Kreise und zähle die Fünftel.`},
+ GZADD:{t:'Ganze und Zähler einfach addiert',d:T`Du hast \(3\frac25=\frac{3+2}5\) gerechnet.`,r:T`Die 3 steht für 3 Ganze, das sind \(3\cdot5=15\) Fünftel – nicht 3 Fünftel. \(3\frac25=\frac{17}5\).`,u:T`Frage dich: Wie viele Fünftel sind ein Ganzes?`},
+ GZUEB:{t:'Übertrag bei gemischten Zahlen vergessen',d:T`Der Bruchteil war größer als 1, und du hast das zusätzliche Ganze weggelassen.`,r:T`\(\frac{13}{12}=1\frac1{12}\). Das Ganze muss zu den anderen Ganzen dazu: \(3+1\frac1{12}=4\frac1{12}\).`,u:T`Prüfe am Ende: Ist der Zähler im Bruchteil kleiner als der Nenner?`},
+ GZUMD:{t:'„Kleiner von größer“ subtrahiert',d:T`Bei \(3\frac14-1\frac34\) hast du \(\frac34-\frac14\) gerechnet, weil \(\frac14-\frac34\) nicht „ging“.`,r:T`Man darf die Reihenfolge nicht tauschen. Stattdessen ein Ganzes entbündeln: \(3\frac14=2\frac54\), dann \(2\frac54-1\frac34=1\frac24=1\frac12\).`,u:T`Rechne zur Kontrolle mit unechten Brüchen: \(\frac{13}4-\frac74=\frac64\).`},
+ DZLANG:{t:'„Mehr Nachkommastellen = größere Zahl“',d:T`Du hast die Zahl mit den meisten Ziffern nach dem Komma für die größte gehalten.`,r:T`Entscheidend sind die Stellenwerte: \(0{,}5=0{,}500\) hat 5 Zehntel, \(0{,}125\) nur 1 Zehntel. Also \(0{,}5>0{,}125\).`,u:T`Hänge Nullen an, bis alle Zahlen gleich viele Nachkommastellen haben, und vergleiche dann.`},
+ DZBRUCH:{t:'Dezimalzahl und Bruch falsch umgewandelt',d:T`Du hast Ziffern direkt übertragen, etwa \(0{,}3=\frac13\) oder \(\frac35=3{,}5\).`,r:T`\(0{,}3\) heißt 3 Zehntel: \(\frac3{10}\). Ein Bruch ist eine Division: \(\frac35=3:5=0{,}6\). \(0{,}25\) sind 25 Hundertstel: \(\frac{25}{100}=\frac14\).`,u:T`Lies Dezimalzahlen laut mit Stellenwert: „null Komma drei“ = „drei Zehntel“.`},
+ DZKOMMA:{t:'Komma beim Multiplizieren falsch gesetzt',d:T`Du hast \(0{,}3\cdot0{,}2=0{,}6\) gerechnet, als wäre es eine Addition.`,r:T`Erst ohne Komma: \(3\cdot2=6\). Dann so viele Nachkommastellen wie beide Faktoren zusammen: \(1+1=2\), also \(0{,}06\).`,u:T`Überschlag: \(0{,}3\) ist weniger als die Hälfte, also ist das Ergebnis kleiner als die Hälfte von \(0{,}2\).`},
+ DZOP:{t:'„Mal macht größer, geteilt macht kleiner“',d:T`Du gehst davon aus, dass Multiplizieren immer vergrößert und Dividieren immer verkleinert.`,r:T`Das gilt nur bei Zahlen größer als 1. Mal \(0{,}9\) verkleinert, geteilt durch \(0{,}5\) verdoppelt: \(6:0{,}5\) fragt „Wie oft passt \(0{,}5\) in 6?“ → 12-mal.`,u:T`Stelle Divisionen als Frage: „Wie oft passt … in …?“`},
+ SKALA:{t:'Skaleneinteilung nicht bestimmt',d:T`Du hast Teilstriche oder Kästchen gezählt, ohne vorher zu klären, wie viel ein Abschnitt bedeutet – oder ungleiche Schritte gleich weit gezeichnet.`,r:T`Abstand zweier beschrifteter Werte durch die Anzahl der Abschnitte teilen. Beispiel: Von 0 bis 100 in 4 Abschnitten → ein Abschnitt \(\widehat{=}\ 25\). Gleiche Abstände auf einer Achse müssen gleich große Schritte bedeuten.`,u:T`Schreibe vor jedem Ablesen an die Achse: „1 Kästchen ≙ …“.`},
+ RZORD:{t:'Negative Zahlen nach dem Betrag geordnet',d:T`Du hast \(-7\) für größer als \(-3\) gehalten, weil 7 größer als 3 ist – oder die Richtung auf der Zahlengeraden verwechselt.`,r:T`Je weiter links auf der Zahlengeraden, desto kleiner: \(-7<-3\). Wie beim Thermometer: \(-7\,^\circ\mathrm C\) ist kälter.`,u:T`Zeichne bei jedem Vergleich eine kleine Zahlengerade.`},
+ RZADD:{t:'Vorzeichen beim Addieren falsch',d:T`Bei Zahlen mit verschiedenen Vorzeichen hast du die Beträge addiert oder das Vorzeichen vergessen.`,r:T`\(-8+5\): Von \(-8\) aus 5 Schritte nach rechts → \(-3\). Unterschiedliche Vorzeichen: Beträge subtrahieren, Vorzeichen der Zahl mit dem größeren Betrag.`,u:T`Stell dir einen Kontostand vor: 8 € Schulden, 5 € eingezahlt.`},
+ RZMM:{t:'„Minus minus“ falsch verrechnet',d:T`Beim Subtrahieren einer negativen Zahl hat das Vorzeichen nicht gestimmt.`,r:T`Eine negative Zahl subtrahieren heißt ihre Gegenzahl addieren: \(-3-(-5)=-3+5=2\).`,u:T`Ersetze jedes „\(-(-\ldots)\)“ zuerst durch „\(+\)“ und rechne erst dann.`},
+ RZMUL:{t:'Vorzeichenregel beim Multiplizieren',d:T`Du hast beim Produkt zweier negativer Zahlen ein negatives Ergebnis angegeben.`,r:T`Minus mal minus ergibt plus: \((-4)\cdot(-2{,}5)=10\). Minus mal plus ergibt minus.`,u:T`Zähle die Minuszeichen: gerade Anzahl → plus, ungerade → minus.`},
+ RGDH:{t:'Distributivgesetz nur halb angewandt',d:T`Du hast nur den ersten Summanden in der Klammer multipliziert, etwa \(4\cdot(x+3)=4x+3\).`,r:T`Der Faktor wirkt auf jeden Summanden: \(4\cdot(x+3)=4\cdot x+4\cdot3=4x+12\). Im Flächenmodell haben beide Teilrechtecke dieselbe Höhe.`,u:T`Zeichne bei jeder Klammer das Rechteck und beschrifte beide Teilflächen.`},
+ RGBILD:{t:'Bild und Term passen nicht zusammen',d:T`Du hast Seitenlängen aus dem Bild falsch in den Term übersetzt.`,r:T`Im Flächenmodell gilt: gemeinsame Seite mal (Teilseite 1 + Teilseite 2). Lies zuerst die gemeinsame Seite ab.`,u:T`Beschrifte im Bild: Welche Seite gehört zu beiden Rechtecken?`},
+ RGNAME:{t:'Rechengesetze verwechselt',d:T`Du hast die Namen der Rechengesetze vertauscht.`,r:T`Kommutativgesetz: vertauschen, \(a\cdot b=b\cdot a\). Assoziativgesetz: anders klammern, \((a\cdot b)\cdot c=a\cdot(b\cdot c)\). Distributivgesetz: ausmultiplizieren, \(a\cdot(b+c)=a\cdot b+a\cdot c\).`,u:T`Merkhilfe: kommutieren = pendeln (die Zahlen pendeln hin und her), assoziieren = sich verbinden (neu zusammenschließen).`},
+ RGKOMM:{t:'Vertauschen bei Minus oder Geteilt',d:T`Du hast angenommen, dass man auch bei Subtraktion oder Division die Zahlen vertauschen darf.`,r:T`Das Kommutativgesetz gilt nur für Addition und Multiplikation. \(12-5=7\), aber \(5-12=-7\).`,u:T`Teste ein Gesetz immer mit einem kleinen Zahlenbeispiel.`},
+ RGDM:{t:'Distributivgesetz bei einem reinen Produkt',d:T`Du hast bei einem Produkt ohne Summe wie beim Ausmultiplizieren gerechnet oder aus „mal“ ein „plus“ gemacht.`,r:T`Das Distributivgesetz braucht eine Summe in der Klammer. In reinen Produkten darf man nur vertauschen und neu klammern: \(25\cdot17\cdot4=(25\cdot4)\cdot17=1700\).`,u:T`Frage vor dem Umformen: Steht in der Klammer ein Plus oder Minus?`},
+ TERM:{t:'Ungleichartige Terme zusammengefasst',d:T`Du hast Zahlen und Variablenterme zusammengezogen, etwa \(4x+12=16x\).`,r:T`Nur gleichartige Terme lassen sich zusammenfassen. \(4x+12\) bleibt stehen, weil man \(x\) nicht kennt. Ebenso: \(0{,}05x+10\ne10{,}05x\).`,u:T`Setze zur Probe eine Zahl für \(x\) ein, z. B. \(x=1\), und vergleiche beide Seiten.`},
+ RGPS:{t:'Rechenreihenfolge nicht beachtet',d:T`Du hast Punkt-vor-Strich missachtet oder bei gleichrangigen Rechenarten nicht von links nach rechts gerechnet.`,r:T`Klammer vor Punkt vor Strich, dann von links nach rechts: \(18-3\cdot4+2=18-12+2=8\).`,u:T`Unterstreiche zuerst alle Punktrechnungen und rechne sie aus.`},
+ ZUPROP:{t:'„Je mehr, desto mehr“ für proportional gehalten',d:T`Du hast eine Zuordnung proportional genannt, nur weil beide Größen wachsen oder der Graph eine Gerade ist.`,r:T`Proportional heißt: zum Doppelten gehört das Doppelte, \(\frac yx\) ist konstant, der Graph ist eine Gerade durch den Ursprung. Mit Grundgebühr ist die Zuordnung linear, aber nicht proportional.`,u:T`Prüfe immer den Quotienten \(\frac yx\) an zwei Wertepaaren.`},
+ ZUANTI:{t:'Antiproportional wie proportional gerechnet',d:T`Du hast gerechnet „mehr Pumpen → mehr Zeit“.`,r:T`Mehr Pumpen schaffen die Arbeit schneller: Das Produkt bleibt gleich. \(4\cdot9\,\mathrm h=36\,\mathrm h\), also braucht man mit 6 Pumpen \(36\,\mathrm h:6=6\,\mathrm h\).`,u:T`Überlege vor dem Rechnen: Wird die gesuchte Größe größer oder kleiner?`},
+ WTSPRUNG:{t:'Sprünge in der Wertetabelle übersehen',d:T`Du hast in der Tabelle Spalte für Spalte weitergezählt, obwohl die x-Werte nicht in Einerschritten wachsen.`,r:T`Die Steigung gibt die Änderung von \(y\) pro 1 Schritt in \(x\) an. Wächst \(x\) um 2, wächst \(y\) um \(2\cdot m\).`,u:T`Schreibe über die Tabelle die Schrittweite der x-Werte (+1, +2, …).`},
+ FKMB:{t:'Steigung und Achsenabschnitt verwechselt',d:T`In \(f(x)=m\cdot x+b\) hast du \(m\) und \(b\) vertauscht oder den Startwert weggelassen.`,r:T`\(b\) ist der Startwert (\(f(0)\), Schnittpunkt mit der y-Achse), \(m\) ist die Änderung pro Einheit. Tarif: Grundgebühr \(=b\), Preis pro Stück \(=m\).`,u:T`Frage dich: Was kostet es bei 0 Stück? Das ist \(b\).`},
+ FKSTEIG:{t:'Steigung falsch bestimmt',d:T`Du hast \(\frac{\Delta x}{\Delta y}\) statt \(\frac{\Delta y}{\Delta x}\) gerechnet oder das Vorzeichen übersehen.`,r:T`\(m=\frac{\Delta y}{\Delta x}\): „hoch durch rechts“. Fällt der Graph, ist \(m\) negativ.`,u:T`Zeichne das Steigungsdreieck immer: erst nach rechts, dann nach oben oder unten.`},
+ FKBILD:{t:'Graph als Bild der Situation gelesen',d:T`Du hast den Graphen wie eine Landschaft gelesen (bergab, eben).`,r:T`Ein Weg-Zeit-Graph zeigt keine Landschaft, sondern wie sich die Entfernung mit der Zeit ändert. Waagerecht heißt: Die Entfernung ändert sich nicht – man steht still.`,u:T`Lies vor jeder Deutung die Achsenbeschriftung laut vor.`},
+ FKHOEHE:{t:'Wert und Änderung verwechselt',d:T`Du hast den höchsten Punkt oder einen gleichbleibenden Wert mit der größten oder gleichbleibenden Geschwindigkeit verwechselt.`,r:T`Die Geschwindigkeit steckt in der Steigung, nicht in der Höhe des Graphen. Am schnellsten ist man dort, wo der Graph am steilsten ist.`,u:T`Frage: Wie viel Meter pro Minute kommen in diesem Abschnitt dazu?`},
+ SAZAHL:{t:'Zahlen ohne Sinn verknüpft',d:T`Du hast die Zahlen aus dem Text miteinander verrechnet, ohne zu prüfen, ob sie zur Frage passen.`,r:T`Erst verstehen, dann rechnen: Welche Größe ist gesucht, welche Angaben gehören dazu? Manche Aufgaben sind mit den Angaben gar nicht lösbar.`,u:T`Formuliere vor dem Rechnen in einem Satz: „Ich suche …, dafür brauche ich …“.`},
+ SAGES:{t:'Gesuchte Größe nicht erkannt',d:T`Du hast eine andere Größe berechnet oder ausgewählt, als die Frage verlangt.`,r:T`Die Frage steht meist am Ende. Markiere sie und schreibe auf: „Gesucht ist …“. Beim Beet ist der Flächeninhalt gefragt, nicht der Umfang; bei der Pizza der Rest, nicht der gegessene Teil.`,u:T`Unterstreiche die Frage und kreise die gesuchte Größe ein.`},
+ SAANS:{t:'Ansatz passt nicht zur Situation',d:T`Dein Term oder deine Gleichung bildet die Situation nicht richtig ab.`,r:T`Übersetze Schritt für Schritt: „8 € Grundgebühr und 3 € pro Stunde“ wird zu \(8+3\cdot x\). Grundgebühr wird einmal addiert, der Stundenpreis mit der Anzahl der Stunden multipliziert.`,u:T`Teste deinen Term mit einer einfachen Zahl, z. B. 1 Stunde.`},
+ SAERG:{t:'Ergebnis nicht auf die Frage zurückbezogen',d:T`Deine Rechnung stimmt, aber deine Antwort passt nicht genau zur Frage.`,r:T`Bei \(x=4\) kosten beide Verleihe gleich viel. „Günstiger“ heißt „weniger als“ – das gilt erst ab 5 Stunden. Ergebnis immer in der Situation deuten.`,u:T`Schreibe immer einen Antwortsatz und mache die Probe mit Zahlen.`},
+ SASKIZ:{t:'Skizze passt nicht zur Situation',d:T`Du hast Längen den falschen Seiten zugeordnet oder den rechten Winkel nicht beachtet.`,r:T`Prüfe in der Skizze: Was ist waagerecht, was senkrecht? Wo ist der rechte Winkel? Die schräge Seite gegenüber dem rechten Winkel ist die Hypotenuse.`,u:T`Zeichne zu jeder Geometrie-Sachaufgabe eine Skizze und markiere den rechten Winkel mit einem Bogen.`},
+ SAEINH:{t:'Einheiten nicht umgerechnet',d:T`Du hast Meter und Zentimeter gemischt verrechnet.`,r:T`Vor dem Rechnen alles in dieselbe Einheit umwandeln: \(80\,\mathrm{cm}=0{,}8\,\mathrm m\), dann \(3{,}5\,\mathrm m\cdot0{,}8\,\mathrm m=2{,}8\,\mathrm m^2\).`,u:T`Schreibe in jeder Rechnung die Einheiten mit – so fällt ein Mix sofort auf.`},
+ PYHYP:{t:'Hypotenuse falsch erkannt',d:T`Du hast eine Kathete für die Hypotenuse gehalten, z. B. weil sie unten liegt oder weil die Hypotenuse sonst „c“ heißt.`,r:T`Die Hypotenuse liegt dem rechten Winkel gegenüber und ist die längste Seite. Sie heißt nicht immer \(c\). In \(\triangle RST\) mit rechtem Winkel bei \(R\) ist \(r\) die Hypotenuse: \(s^2+t^2=r^2\).`,u:T`Markiere den rechten Winkel und ziehe einen Pfeil zur gegenüberliegenden Seite.`},
+ PYSUB:{t:'Kathete gesucht, trotzdem addiert',d:T`Du hast die Quadrate addiert, obwohl eine Kathete gesucht war.`,r:T`Gesucht ist eine Kathete → von der Hypotenuse abziehen: \(b^2=c^2-a^2\). Das Ergebnis muss kürzer als die Hypotenuse sein.`,u:T`Plausibilität: Die Hypotenuse ist immer die längste Seite.`},
+ PYWURZ:{t:'Quadrate oder Wurzel vergessen',d:T`Du hast mit den Längen statt mit ihren Quadraten gerechnet oder am Ende die Wurzel nicht gezogen.`,r:T`\(\sqrt{a^2+b^2}\ne a+b\). Erst quadrieren, dann addieren oder subtrahieren, zum Schluss die Wurzel ziehen. \(36\,\mathrm{cm}^2\) ist ein Flächeninhalt – die Länge ist \(6\,\mathrm{cm}\).`,u:T`Achte auf die Einheit: Steht am Ende cm², fehlt noch die Wurzel.`},
+ PYRW:{t:'Pythagoras ohne rechten Winkel',d:T`Du nimmst an, dass der Satz des Pythagoras in jedem Dreieck gilt.`,r:T`Der Satz gilt nur in rechtwinkligen Dreiecken. Umgekehrt: Nur wenn \(a^2+b^2=c^2\) für die längste Seite \(c\) gilt, ist das Dreieck rechtwinklig.`,u:T`Prüfe vor jeder Anwendung: Wo ist der rechte Winkel?`},
+ KSABS:{t:'Falschen Hypotenusenabschnitt gewählt',d:T`Im Kathetensatz hast du den Abschnitt genommen, der nicht an der Kathete liegt.`,r:T`Zu jeder Kathete gehört der Abschnitt direkt darunter: \(a^2=c\cdot p\) (p liegt an a), \(b^2=c\cdot q\) (q liegt an b).`,u:T`Färbe in der Figur jede Kathete und ihren Abschnitt in derselben Farbe.`},
+ HKVERW:{t:'Höhensatz und Kathetensatz verwechselt',d:T`Du hast die Gleichungen von Höhen- und Kathetensatz vermischt.`,r:T`Höhensatz: \(h^2=p\cdot q\) (beide Abschnitte). Kathetensatz: \(a^2=c\cdot p\) (ganze Hypotenuse mal anliegender Abschnitt).`,u:T`Merke: Bei der Höhe kommt \(c\) nicht vor, beim Kathetensatz immer.`},
+ HSSUM:{t:'Höhensatz mit Summe statt Produkt',d:T`Du hast \(h^2=p+q\) gerechnet.`,r:T`Der Höhensatz ist ein Flächensatz: Das Quadrat über \(h\) ist so groß wie das Rechteck aus \(p\) und \(q\): \(h^2=p\cdot q\).`,u:T`Denk an die Einheit: \(\mathrm{cm}\cdot\mathrm{cm}=\mathrm{cm}^2\) – eine Fläche.`}
+};
+
+/* ---------- Aufgaben ---------- */
+const ITEMS=[
+/* Brüche */
+{id:'b1',a:'bruch',type:'mc',skill:'Ergebnis am Bild prüfen',fig:FIG.b1,
+ q:T`Lena rechnet \(\frac13+\frac14=\frac27\). Die Streifen zeigen \(\frac13\), \(\frac14\) und Lenas Ergebnis \(\frac27\). Was stimmt?`,
+ opts:[{h:T`Lena hat sich verrechnet: \(\frac27\) ist sogar kleiner als \(\frac13\) allein.`,ok:1},
+  {h:T`Lena hat recht: \(1+1=2\) Teile und \(3+4=7\) Teile.`,e:'NA'},
+  {h:T`Lena hat recht, denn \(\frac27\) liegt zwischen \(\frac14\) und \(\frac13\).`,e:'NA',w:T`Eine Summe zweier positiver Zahlen ist größer als jeder Summand – sie kann nicht zwischen ihnen liegen.`},
+  {h:T`Lena hat sich verrechnet: Richtig ist \(\frac2{12}\).`,e:'ERWN'}],
+ sol:T`Eine Summe ist größer als jeder Summand, also muss \(\frac13+\frac14\) größer als \(\frac13\) sein. Lenas \(\frac27\approx0{,}29\) ist aber kleiner als \(\frac13\approx0{,}33\). Richtig: \(\frac13+\frac14=\frac4{12}+\frac3{12}=\frac7{12}\).`},
+{id:'b2',a:'bruch',type:'split',skill:'Gemeinsamen Nenner am Bild finden (Aufteilung des Ganzen)',
+ q:T`Um \(\frac13\) und \(\frac14\) zu addieren, brauchst du gleich große Teile. Stelle mit dem Regler ein, in wie viele gleich große Teile das Ganze zerlegt wird (rote Linien). Ziel: Beide gefärbten Anteile bestehen genau aus ganzen Teilen – mit möglichst wenigen Teilen.`,
+ key:T`12 Teile`,
+ sol:T`Die roten Linien müssen sowohl die Grenze des Drittels als auch die Grenze des Viertels treffen. Das klappt bei 12, 24, 36, … Teilen – den gemeinsamen Vielfachen von 3 und 4. Die kleinste Einteilung ist 12: Ein Drittel sind 4 Zwölftel, ein Viertel sind 3 Zwölftel. Also \(\frac13+\frac14=\frac4{12}+\frac3{12}=\frac7{12}\).`},
+{id:'b3',a:'bruch',type:'frac',skill:'Ungleichnamige Brüche addieren',
+ q:T`Berechne. Gib das Ergebnis als Bruch an. \[\frac13+\frac14\]`,ans:[7,12],key:T`\(\frac7{12}\)`,
+ errs:[{v:[2,7],e:'NA'},{v:[2,12],e:'ERWN',w:T`Du hast die Nenner auf 12 gebracht, die Zähler aber nicht mit erweitert.`},{v:[1,12],w:T`\(\frac1{12}\) ist das Produkt \(\frac13\cdot\frac14\) – gefragt ist die Summe.`}],
+ sol:T`\(\frac13+\frac14=\frac{1\cdot4}{3\cdot4}+\frac{1\cdot3}{4\cdot3}=\frac4{12}+\frac3{12}=\frac7{12}\)`},
+{id:'b4',a:'bruch',type:'mc',figs:1,skill:'Addition im Bild darstellen',fig:FIG.b4q,
+ q:T`Welches Bild zeigt richtig, wie man \(\frac12+\frac13\) zusammenfasst?`,
+ opts:[{h:FIG.b4(0)+`<span class="cap">Zusammen 5 von 6 gleich großen Teilen</span>`,ok:1},
+  {h:FIG.b4(1)+`<span class="cap">Zusammen 2 von 5 Teilen</span>`,e:'NA'},
+  {h:FIG.b4(2)+`<span class="cap">Die Hälfte vom kurzen und ein Drittel vom langen Streifen</span>`,e:'BEZUG',w:T`Die beiden Streifen sind verschieden lang – die Anteile beziehen sich auf verschiedene Ganze.`},
+  {h:FIG.b4(3)+`<span class="cap">Zusammen 2 von 6 Teilen</span>`,e:'ERWN'}],
+ sol:T`Halbe und Drittel passen beide in Sechstel: \(\frac12=\frac36\) und \(\frac13=\frac26\). Zusammen \(\frac36+\frac26=\frac56\). Beide Anteile müssen sich auf ein gleich großes Ganzes beziehen.`},
+{id:'b5',a:'bruch',type:'mc',skill:'Hauptnenner wählen',
+ q:T`Welchen gemeinsamen Nenner wählst du für \(\frac56+\frac78\) am geschicktesten?`,
+ opts:[{h:'24',ok:1},{h:'48',e:'GNP',w:T`48 funktioniert, ist aber doppelt so groß wie nötig.`},{h:'14',e:'NA',w:T`\(6+8=14\) – 14 ist weder durch 6 noch durch 8 teilbar.`},{h:'8',e:'GNV',w:T`8 ist nicht durch 6 teilbar.`}],
+ sol:T`Vielfache von 8: 8, 16, 24 – die 24 ist auch durch 6 teilbar. \(\frac56+\frac78=\frac{20}{24}+\frac{21}{24}=\frac{41}{24}=1\frac{17}{24}\)`},
+{id:'b6',a:'bruch',type:'frac',skill:'Ungleichnamige Brüche subtrahieren',
+ q:T`Berechne. \[\frac56-\frac34\]`,ans:[1,12],key:T`\(\frac1{12}\)`,
+ errs:[{v:[2,2],e:'NA',w:T`\(5-3=2\) und \(6-4=2\): Du hast Zähler und Nenner einzeln subtrahiert.`},{v:[2,12],e:'ERWN'},{v:[2,10],e:'NA'}],
+ sol:T`\(\frac56-\frac34=\frac{10}{12}-\frac9{12}=\frac1{12}\)`},
+{id:'b7',a:'bruch',type:'frac',skill:'Brüche im Sachzusammenhang',
+ q:T`Tom isst \(\frac14\) einer Pizza, Mia \(\frac38\) derselben Pizza. Welcher Anteil der Pizza bleibt übrig?`,ans:[3,8],key:T`\(\frac38\)`,
+ errs:[{v:[5,8],e:'SAGES',w:T`\(\frac58\) ist der Anteil, der gegessen wurde – gefragt ist der Rest.`},{v:[4,12],e:'NA'},{v:[2,3],e:'NA',w:T`Du hast \(\frac14+\frac38=\frac4{12}\) gerechnet und dann vom Ganzen abgezogen.`}],
+ sol:T`Gegessen: \(\frac14+\frac38=\frac28+\frac38=\frac58\). Übrig: \(1-\frac58=\frac88-\frac58=\frac38\).`},
+/* Gemischte Zahlen */
+{id:'g1',a:'gem',type:'mc',skill:'Gemischte Zahl am Bild ablesen',fig:FIG.g1,
+ q:T`Jeder Kreis ist ein Ganzes. Welche beiden Zahlen beschreiben die gefärbte Fläche?`,
+ opts:[{h:T`\(2\frac34\) und \(\frac{11}4\)`,ok:1},{h:T`\(2\frac34\) und \(\frac64\)`,e:'GZMAL'},{h:T`\(2\frac34\) und \(\frac{23}4\)`,e:'GZZIF'},{h:T`\(\frac{11}{12}\)`,e:'BEZUG',w:T`Du hast alle drei Kreise zusammen als ein Ganzes gesehen.`}],
+ sol:T`Zwei ganze Kreise und \(\frac34\) Kreis: \(2\frac34\). Jeder Kreis hat 4 Viertel: \(2\cdot4+3=11\) Viertel, also \(\frac{11}4\).`},
+{id:'g2',a:'gem',type:'frac',skill:'Gemischte Zahl → unechter Bruch',
+ q:T`Schreibe als unechten Bruch. \[3\tfrac25\]`,ans:[17,5],key:T`\(\frac{17}5\)`,
+ errs:[{v:[6,5],e:'GZMAL',w:T`\(3\cdot\frac25=\frac65\) – aber \(3\frac25\) heißt \(3+\frac25\).`},{v:[32,5],e:'GZZIF'},{v:[5,5],e:'GZADD'},{v:[15,5],w:T`Du hast die 3 Ganzen richtig umgewandelt, aber die \(\frac25\) vergessen.`}],
+ sol:T`\(3\frac25=3+\frac25=\frac{15}5+\frac25=\frac{17}5\)`},
+{id:'g3',a:'gem',type:'frac',mixed:1,skill:'Gemischte Zahlen addieren',
+ q:T`Berechne. Gib das Ergebnis als gemischte Zahl oder als Bruch an. \[2\tfrac13+1\tfrac34\]`,ans:[49,12],key:T`\(4\frac1{12}=\frac{49}{12}\)`,
+ errs:[{v:[25,7],e:'NA'},{v:[37,12],e:'GZUEB'},{v:[3,1],w:T`Du hast nur die Ganzen addiert.`}],
+ sol:T`\(\begin{aligned}2\tfrac13+1\tfrac34&=3+\tfrac4{12}+\tfrac9{12}\\&=3+\tfrac{13}{12}=4\tfrac1{12}\end{aligned}\)`},
+{id:'g4',a:'gem',type:'frac',mixed:1,skill:'Gemischte Zahlen subtrahieren (Entbündeln)',
+ q:T`Berechne. \[3\tfrac14-1\tfrac34\]`,ans:[3,2],key:T`\(1\frac12\)`,
+ errs:[{v:[5,2],e:'GZUMD'},{v:[2,1],w:T`Du hast nur die Ganzen subtrahiert.`}],
+ sol:T`Ein Ganzes entbündeln: \(3\frac14=2\frac54\). Dann \(2\frac54-1\frac34=1\frac24=1\frac12\). Oder mit unechten Brüchen: \(\frac{13}4-\frac74=\frac64=\frac32\).`},
+/* Dezimalzahlen */
+{id:'d1',a:'dez',type:'mc',skill:'Dezimalzahlen vergleichen',
+ q:T`Welche Zahl ist am größten?`,
+ opts:[{h:T`\(0{,}5\)`,ok:1},{h:T`\(0{,}125\)`,e:'DZLANG'},{h:T`\(0{,}45\)`,e:'DZLANG'},{h:T`\(0{,}0999\)`,e:'DZLANG'}],
+ sol:T`Gleich lang machen: \(0{,}5000\), \(0{,}1250\), \(0{,}4500\), \(0{,}0999\). Am größten ist \(0{,}5\): 5 Zehntel sind mehr als 4 Zehntel.`},
+{id:'d2',a:'dez',type:'mc',skill:'Dezimalzahl ↔ Bruch',
+ q:T`Welche Gleichung ist richtig?`,
+ opts:[{h:T`\(0{,}75=\frac34\)`,ok:1},{h:T`\(0{,}3=\frac13\)`,e:'DZBRUCH'},{h:T`\(0{,}25=\frac{25}{10}\)`,e:'DZBRUCH'},{h:T`\(\frac35=3{,}5\)`,e:'DZBRUCH'}],
+ sol:T`\(0{,}75=\frac{75}{100}=\frac34\). Die anderen: \(0{,}3=\frac3{10}\); \(0{,}25=\frac{25}{100}\); \(\frac35=3:5=0{,}6\).`},
+{id:'d3',a:'dez',type:'num',skill:'Dezimalzahlen multiplizieren',
+ q:T`Berechne. \[0{,}3\cdot0{,}2\]`,ans:0.06,key:T`\(0{,}06\)`,
+ errs:[{v:0.6,e:'DZKOMMA'},{v:6,e:'DZKOMMA'},{v:0.006,e:'DZKOMMA'},{v:0.5,w:T`Du hast addiert statt multipliziert.`}],
+ sol:T`\(3\cdot2=6\). Die Faktoren haben zusammen \(1+1=2\) Nachkommastellen: \(0{,}3\cdot0{,}2=0{,}06\).`},
+{id:'d4',a:'dez',type:'num',skill:'Durch Dezimalzahlen dividieren',
+ q:T`Berechne. \[6:0{,}5\]`,ans:12,key:T`\(12\)`,
+ errs:[{v:3,e:'DZOP'},{v:0.3,e:'DZOP'},{v:1.2,e:'DZKOMMA',w:T`\(6:5=1{,}2\) – das Komma im Divisor wurde einfach weggelassen.`}],
+ sol:T`Frage: Wie oft passt \(0{,}5\) in \(6\)? Zweimal pro Ganzes, also 12-mal. Rechnung: beide Zahlen mal 10, \(60:5=12\).`},
+{id:'d5',a:'dez',type:'mc',skill:'Wirkung von Mal und Geteilt abschätzen',
+ q:T`Ohne zu rechnen: Welches Ergebnis ist größer als 8?`,
+ opts:[{h:T`\(8:0{,}9\)`,ok:1},{h:T`\(8\cdot0{,}9\)`,e:'DZOP'},{h:T`\(8\cdot0{,}99\)`,e:'DZOP'},{h:T`\(8:1{,}5\)`,w:T`Geteilt durch eine Zahl größer als 1 macht kleiner.`}],
+ sol:T`Mal eine Zahl kleiner als 1 verkleinert: \(8\cdot0{,}9=7{,}2\). Geteilt durch eine Zahl kleiner als 1 vergrößert: \(8:0{,}9\approx8{,}9\).`},
+{id:'d6',a:'dez',type:'mc',skill:'Zahlenstrahl ablesen',fig:FIG.d6,
+ q:T`Welche Zahl gehört an die markierte Stelle?`,
+ opts:[{h:T`\(2{,}37\)`,ok:1},{h:T`\(2{,}7\)`,e:'SKALA',w:T`Ein kleiner Abschnitt ist hier \(0{,}01\), nicht \(0{,}1\).`},{h:T`\(2{,}307\)`,e:'SKALA'},{h:T`\(2{,}47\)`,e:'SKALA',w:T`Du hast vom falschen Startwert aus gezählt.`}],
+ sol:T`Zwischen \(2{,}3\) und \(2{,}4\) liegt \(0{,}1\), aufgeteilt in 10 Abschnitte: Ein Abschnitt ist \(0{,}01\). Die Marke liegt 7 Abschnitte rechts von \(2{,}3\): \(2{,}3+7\cdot0{,}01=2{,}37\).`},
+/* Rationale Zahlen */
+{id:'r1',a:'rat',type:'mc',skill:'Rationale Zahlen ordnen',
+ q:T`Welche Aussage ist richtig?`,
+ opts:[{h:T`\(-7<-3\)`,ok:1},{h:T`\(-7>-3\)`,e:'RZORD'},{h:T`\(-0{,}5<-2\)`,e:'RZORD'},{h:T`\(-\frac12<-\frac34\)`,e:'RZORD'}],
+ sol:T`Auf der Zahlengeraden liegt \(-7\) links von \(-3\), also \(-7<-3\). Ebenso \(-2<-0{,}5\) und \(-\frac34<-\frac12\).`},
+{id:'r2',a:'rat',type:'num',neg:1,skill:'Addieren mit Vorzeichen',
+ q:T`Berechne. \[-8+5\]`,ans:-3,key:T`\(-3\)`,
+ errs:[{v:-13,e:'RZADD',w:T`Du hast die Beträge addiert.`},{v:3,e:'RZADD',w:T`Der Betrag stimmt, das Vorzeichen fehlt. (Vorzeichen-Taste ±)`},{v:13,e:'RZADD'}],
+ sol:T`Start bei \(-8\), dann 5 Schritte nach rechts: \(-8+5=-3\).`},
+{id:'r3',a:'rat',type:'num',neg:1,skill:'Negative Zahl subtrahieren',
+ q:T`Berechne. \[-3-(-5)\]`,ans:2,key:T`\(2\)`,
+ errs:[{v:-8,e:'RZMM'},{v:8,e:'RZMM'},{v:-2,e:'RZMM'}],
+ sol:T`Eine negative Zahl subtrahieren heißt ihre Gegenzahl addieren: \(-3-(-5)=-3+5=2\).`},
+{id:'r4',a:'rat',type:'num',neg:1,skill:'Multiplizieren mit Vorzeichen',
+ q:T`Berechne. \[(-4)\cdot(-2{,}5)\]`,ans:10,key:T`\(10\)`,
+ errs:[{v:-10,e:'RZMUL'},{v:-6.5,w:T`Du hast addiert statt multipliziert.`},{v:6.5,w:T`Du hast addiert statt multipliziert.`}],
+ sol:T`Minus mal minus ergibt plus: \((-4)\cdot(-2{,}5)=4\cdot2{,}5=10\).`},
+{id:'r5',a:'rat',type:'mc',skill:'Zahlengerade mit negativen Zahlen',fig:FIG.r5,
+ q:T`Welche Zahl ist markiert?`,
+ opts:[{h:T`\(-1{,}25\)`,ok:1},{h:T`\(-0{,}75\)`,e:'RZORD',w:T`Die Marke liegt links von \(-1\), nicht rechts davon.`},{h:T`\(-1{,}2\)`,e:'SKALA',w:T`Ein kleiner Abschnitt ist \(0{,}25\), nicht \(0{,}1\).`},{h:T`\(-1{,}5\)`,e:'SKALA'}],
+ sol:T`Zwischen zwei ganzen Zahlen liegen 4 Abschnitte, einer ist \(0{,}25\). Die Marke liegt einen Abschnitt links von \(-1\): \(-1-0{,}25=-1{,}25\).`},
+{id:'r6',a:'rat',type:'num',neg:1,unit:'°C',skill:'Temperaturunterschied',
+ q:T`Morgens zeigt das Thermometer \(-6\,^\circ\mathrm C\), mittags \(4\,^\circ\mathrm C\). Um wie viel Grad ist es wärmer geworden?`,ans:10,key:T`\(10\,^\circ\mathrm C\)`,
+ errs:[{v:2,e:'RZADD',w:T`\(6-4\) oder \(4-6\) gerechnet – du musst von \(-6\) bis \(4\) zählen.`},{v:-2,e:'RZADD'},{v:-10,e:'RZMM',w:T`Um wie viel wärmer = neuer Wert minus alter Wert, das Ergebnis ist positiv.`}],
+ sol:T`\(4\,^\circ\mathrm C-(-6\,^\circ\mathrm C)=4\,^\circ\mathrm C+6\,^\circ\mathrm C=10\,^\circ\mathrm C\). Am Thermometer: 6 Grad bis 0, dann noch 4 Grad. (In Physik gibt man Temperaturunterschiede in Kelvin an: 10 K.)`},
+/* Rechengesetze */
+{id:'rg1',a:'rg',type:'mc',skill:'Vom Bild zum Rechengesetz',fig:FIG.rg1,
+ q:T`Welcher Term beschreibt die Anzahl aller Kästchen im Rechteck?`,
+ opts:[{h:T`\(6\cdot(10+4)=6\cdot10+6\cdot4\)`,ok:1},{h:T`\(6\cdot10+4\)`,e:'RGDH',w:T`Das rechte Teilrechteck hat \(6\cdot4\) Kästchen, nicht 4.`},{h:T`\(6+10\cdot4\)`,e:'RGBILD'},{h:T`\((6+10)\cdot4\)`,e:'RGBILD'}],
+ sol:T`Die gemeinsame Seite ist 6 Kästchen hoch, die Breite ist \(10+4\). Ganz: \(6\cdot(10+4)=6\cdot14=84\). In Teilen: \(6\cdot10+6\cdot4=60+24=84\). Das ist das Distributivgesetz.`},
+{id:'rg2',a:'rg',type:'mc',figs:1,skill:'Vom Rechengesetz zum Bild',
+ q:T`Welches Bild passt zur Gleichung \(3\cdot(4+2)=3\cdot4+3\cdot2\)?`,
+ opts:[{h:FIG.rg2(0),ok:1},{h:FIG.rg2(1),e:'RGDH',w:T`Dieses Bild zeigt \(3\cdot4+2\cdot1\) – der zweite Summand wird nicht mit 3 multipliziert.`},{h:FIG.rg2(2),e:'RGBILD',w:T`Dieses Bild zeigt \(4\cdot(3+2)\).`}],
+ sol:T`Der Faktor 3 vor der Klammer ist die gemeinsame Höhe. Die Klammer \(4+2\) ist die Breite, aufgeteilt in zwei Teile. Beide Teilrechtecke haben die Höhe 3.`},
+{id:'rg3',a:'rg',type:'mc',skill:'Rechengesetz im Bild erkennen',fig:FIG.rg3,
+ q:T`Das linke Punktmuster wird um 90° gedreht. Welches Rechengesetz zeigt das Bild?`,
+ opts:[{h:T`Kommutativgesetz: \(4\cdot6=6\cdot4\)`,ok:1},{h:T`Assoziativgesetz: \((4\cdot6)\cdot1=4\cdot(6\cdot1)\)`,e:'RGNAME'},{h:T`Distributivgesetz: \(4\cdot6=4\cdot3+4\cdot3\)`,e:'RGNAME'},{h:T`Es zeigt: \(6-4=4-6\)`,e:'RGKOMM'}],
+ sol:T`Links 4 Reihen mit je 6 Punkten, rechts 6 Reihen mit je 4 Punkten. Die Anzahl bleibt 24: \(4\cdot6=6\cdot4\). Vertauschen der Faktoren ist das Kommutativgesetz. Für Minus gilt es nicht: \(6-4=2\), aber \(4-6=-2\).`},
+{id:'rg4',a:'rg',type:'mc',skill:'Rechenvorteile nutzen',
+ q:T`Welcher Rechenweg für \(25\cdot17\cdot4\) ist richtig und geschickt?`,
+ opts:[{h:T`\(25\cdot4\cdot17=100\cdot17=1700\)`,ok:1},{h:T`\((25\cdot17)\cdot(25\cdot4)\)`,e:'RGDM'},{h:T`\(25\cdot17+25\cdot4=525\)`,e:'RGDM'},{h:T`\((25+4)\cdot17=493\)`,e:'RGDM'}],
+ sol:T`In einem reinen Produkt darf man Faktoren vertauschen (Kommutativgesetz) und neu klammern (Assoziativgesetz): \(25\cdot17\cdot4=(25\cdot4)\cdot17=100\cdot17=1700\). Das Distributivgesetz braucht eine Summe in der Klammer.`},
+{id:'rg5',a:'rg',type:'mc',skill:'Klammer auflösen (mit Variable)',fig:FIG.rg5,
+ q:T`Löse die Klammer auf. Das Bild hilft dir. \[4\cdot(x+3)\]`,
+ opts:[{h:T`\(4x+12\)`,ok:1},{h:T`\(4x+3\)`,e:'RGDH'},{h:T`\(16x\)`,e:'TERM'},{h:T`\(7x\)`,e:'TERM'}],
+ sol:T`Beide Teilrechtecke haben die Höhe 4: \(4\cdot(x+3)=4\cdot x+4\cdot3=4x+12\). \(4x\) und \(12\) kann man nicht zusammenfassen.`},
+{id:'rg6',a:'rg',type:'num',skill:'Rechenreihenfolge',
+ q:T`Berechne. \[18-3\cdot4+2\]`,ans:8,key:T`\(8\)`,
+ errs:[{v:62,e:'RGPS',w:T`Du hast von links nach rechts gerechnet und Punkt-vor-Strich übersehen.`},{v:4,e:'RGPS',w:T`Du hast \(12+2\) zuerst gerechnet. Bei Strichrechnungen rechnet man von links nach rechts.`}],
+ sol:T`Punkt vor Strich: \(3\cdot4=12\). Dann von links nach rechts: \(18-12+2=6+2=8\).`},
+/* Zuordnungen */
+{id:'z1',a:'zu',type:'mc',skill:'Proportionalität prüfen',
+ q:T`Ein Taxi kostet 4 € Grundgebühr und 2 € pro Kilometer. Ist die Zuordnung Strecke → Preis proportional?`,
+ opts:[{h:T`Nein. Doppelt so weit kostet nicht doppelt so viel: 1 km kostet 6 €, 2 km kosten 8 €.`,ok:1},{h:T`Ja. Je weiter man fährt, desto mehr kostet es.`,e:'ZUPROP'},{h:T`Ja. Der Graph ist eine Gerade.`,e:'ZUPROP',w:T`Eine Gerade reicht nicht – sie muss durch den Ursprung gehen.`}],
+ sol:T`Proportional heißt: Zum Doppelten gehört das Doppelte, der Quotient ist konstant, der Graph ist eine Ursprungsgerade. Hier: \(\frac{6\,\text{€}}{1\,\mathrm{km}}\ne\frac{8\,\text{€}}{2\,\mathrm{km}}\). Die Zuordnung ist linear: \(f(x)=2x+4\).`},
+{id:'z2',a:'zu',type:'num',unit:'h',skill:'Antiproportionale Zuordnung',
+ q:T`4 gleiche Pumpen leeren ein Becken in 9 Stunden. Wie lange brauchen 6 dieser Pumpen?`,ans:6,key:T`\(6\,\mathrm h\)`,
+ errs:[{v:13.5,e:'ZUANTI'},{v:11,e:'SAZAHL',w:T`\(9+2\): Du hast den Unterschied der Pumpen einfach addiert.`},{v:7,e:'SAZAHL'}],
+ sol:T`Mehr Pumpen → weniger Zeit (antiproportional). Gesamtarbeit: \(4\cdot9\,\mathrm h=36\,\mathrm h\). Mit 6 Pumpen: \(36\,\mathrm h:6=6\,\mathrm h\).`},
+{id:'z3',a:'zu',type:'multi',skill:'Wertetabelle einer linearen Funktion ergänzen',
+ q:T`Die Wertetabelle gehört zu einer linearen Funktion. Ergänze die beiden Lücken.`,
+ tbl:{x:['0','1','2','4','#1'],y:['−1','1','3','#0','13']},
+ f:[{lab:'y bei x = 4',ans:7,errs:[{v:5,e:'WTSPRUNG',w:T`Du hast nur eine Spalte weitergezählt (+2). Von \(x=2\) bis \(x=4\) sind es aber 2 Schritte.`}]},
+    {lab:'x bei y = 13',ans:7,errs:[{v:8,e:'WTSPRUNG',w:T`Die x-Zeile hat kein eigenes Muster – entscheidend ist, wie \(y\) von \(x\) abhängt.`},{v:6,e:'WTSPRUNG'},{v:5,e:'WTSPRUNG'}]}],
+ key:T`\(f(4)=7\) und \(x=7\)`,
+ sol:T`Wenn \(x\) um 1 wächst, wächst \(y\) um 2: \(f(x)=2x-1\). \(f(4)=2\cdot4-1=7\). Aus \(2x-1=13\) folgt \(2x=14\), also \(x=7\).`},
+{id:'z4',a:'zu',type:'mc',skill:'Funktionsterm aus der Wertetabelle',
+ q:T`Welcher Funktionsterm passt zur Wertetabelle?<div class="tblwrap" style="margin-top:8px"><table class="tbl"><tr><th>\(x\)</th><td>0</td><td>1</td><td>2</td><td>3</td></tr><tr><th>\(f(x)\)</th><td>5</td><td>3,5</td><td>2</td><td>0,5</td></tr></table></div>`,
+ opts:[{h:T`\(f(x)=-1{,}5x+5\)`,ok:1},{h:T`\(f(x)=5x-1{,}5\)`,e:'FKMB'},{h:T`\(f(x)=1{,}5x+5\)`,e:'FKSTEIG',w:T`Die Werte werden kleiner – die Steigung ist negativ.`},{h:T`\(f(x)=-1{,}5x\)`,e:'FKMB',w:T`Der Startwert \(f(0)=5\) fehlt.`}],
+ sol:T`Startwert \(f(0)=5\), also \(b=5\). Pro Schritt nach rechts nimmt \(f(x)\) um \(1{,}5\) ab, also \(m=-1{,}5\): \(f(x)=-1{,}5x+5\).`},
+{id:'z5',a:'zu',type:'mc',skill:'Funktionaler Zusammenhang aus einem Text',
+ q:T`Ein Handytarif kostet 10 € im Monat und zusätzlich 0,05 € pro SMS. Welche Funktion beschreibt die Monatskosten \(f(x)\) in € bei \(x\) SMS?`,
+ opts:[{h:T`\(f(x)=0{,}05x+10\)`,ok:1},{h:T`\(f(x)=10x+0{,}05\)`,e:'FKMB'},{h:T`\(f(x)=10{,}05x\)`,e:'TERM'},{h:T`\(f(x)=0{,}05x\)`,e:'ZUPROP',w:T`Die feste Monatsgebühr fehlt.`}],
+ sol:T`Fester Betrag pro Monat = Startwert \(b=10\). Kosten pro SMS = Steigung \(m=0{,}05\). Also \(f(x)=0{,}05x+10\).`},
+/* Graphen */
+{id:'gr1',a:'gr',type:'mc',skill:'Funktionsgleichung am Graphen ablesen',fig:FIG.gr1,
+ q:T`Welche Funktionsgleichung gehört zum Graphen?`,
+ opts:[{h:T`\(f(x)=\frac23x-2\)`,ok:1},{h:T`\(f(x)=\frac32x-2\)`,e:'FKSTEIG'},{h:T`\(f(x)=\frac23x+3\)`,e:'FKMB',w:T`3 ist die Nullstelle, nicht der y-Achsenabschnitt.`},{h:T`\(f(x)=-2x+\frac23\)`,e:'FKMB'}],
+ sol:T`Der Graph schneidet die y-Achse bei \(-2\), also \(b=-2\). Steigungsdreieck von \((0|-2)\) nach \((3|0)\): 3 nach rechts, 2 nach oben, \(m=\frac{2}{3}\). Also \(f(x)=\frac23x-2\).`},
+{id:'gr2',a:'gr',type:'mc',skill:'Graphen interpretieren: Steigung deuten',fig:FIG.walk,
+ q:T`Der Graph zeigt Leas Entfernung von zu Hause während eines Spaziergangs. In welchem Abschnitt geht Lea am schnellsten?`,
+ opts:[{h:T`Im Abschnitt C`,ok:1},{h:T`Im Abschnitt D, denn dort geht es bergab.`,e:'FKBILD'},{h:T`Bei Minute 25, denn dort ist der Graph am höchsten.`,e:'FKHOEHE'},{h:T`Im Abschnitt B, denn dort ist der Weg eben.`,e:'FKBILD'}],
+ sol:T`Schnell heißt: viel Strecke in wenig Zeit – der Graph ist steil. In C legt Lea \(800\,\mathrm m\) in \(5\,\mathrm{min}\) zurück (\(160\,\tfrac{\mathrm m}{\mathrm{min}}\)), in A \(600\,\mathrm m\) in \(10\,\mathrm{min}\) (\(60\,\tfrac{\mathrm m}{\mathrm{min}}\)), in D \(1400\,\mathrm m\) in \(15\,\mathrm{min}\) (etwa \(93\,\tfrac{\mathrm m}{\mathrm{min}}\)).`},
+{id:'gr3',a:'gr',type:'mc',skill:'Graphen interpretieren: waagerechter Abschnitt',fig:FIG.walk,
+ q:T`Derselbe Spaziergang: Was passiert im Abschnitt B?`,
+ opts:[{h:T`Lea bleibt 10 Minuten lang an derselben Stelle.`,ok:1},{h:T`Lea geht auf einer ebenen Straße weiter.`,e:'FKBILD'},{h:T`Lea geht mit gleichbleibender Geschwindigkeit weiter.`,e:'FKHOEHE'}],
+ sol:T`Von Minute 10 bis 20 bleibt die Entfernung bei \(600\,\mathrm m\). Sie ändert sich nicht, also steht Lea (z. B. Pause). Ein Weg-Zeit-Graph ist kein Bild der Landschaft.`},
+{id:'gr4',a:'gr',type:'num',unit:'L',skill:'Werte mit Skalierung ablesen',fig:FIG.tank,
+ q:T`Der Graph zeigt, wie viel Wasser in einem Tank ist. Wie viel Liter sind nach 3 Minuten im Tank? Achte auf die Einteilung der Achsen.`,ans:125,tol:1,key:T`\(125\,\mathrm L\)`,
+ errs:[{v:5,e:'SKALA',w:T`Du hast Kästchen gezählt statt den Wert abzulesen.`},{v:110,e:'SKALA',w:T`Ein Kästchen ist hier \(25\,\mathrm L\), nicht \(10\,\mathrm L\).`},{v:150,e:'SKALA'},{v:130,e:'SKALA'}],
+ sol:T`Zwischen 0 und 100 liegen vier Kästchen: Ein Kästchen \(\widehat{=}\ 25\,\mathrm L\). Bei \(3\,\mathrm{min}\) liegt der Punkt ein Kästchen über 100: \(100\,\mathrm L+25\,\mathrm L=125\,\mathrm L\).`},
+{id:'gr5',a:'gr',type:'mc',skill:'Achsen sinnvoll skalieren',
+ q:T`Messwerte sollen in ein Diagramm: Zeit von 0 h bis 8 h, Höhe von 0 m bis 450 m. Für die Höhen-Achse hast du 10 Kästchen Platz. Welche Einteilung ist sinnvoll?`,
+ opts:[{h:T`1 Kästchen ≙ 50 m`,ok:1},{h:T`1 Kästchen ≙ 10 m`,e:'SKALA',w:T`Dann brauchst du 45 Kästchen – das passt nicht aufs Blatt.`},{h:T`Die Messwerte 0 m, 120 m, 200 m und 450 m in gleichen Abständen an die Achse schreiben`,e:'SKALA',w:T`Gleiche Abstände müssen gleich große Schritte bedeuten.`}],
+ sol:T`\(450\,\mathrm m:10=45\,\mathrm m\) pro Kästchen wäre das Minimum. Eine runde Schrittweite darüber ist \(50\,\mathrm m\): \(450\,\mathrm m\) entspricht dann 9 Kästchen. Gleiche Abstände auf einer Achse stehen immer für gleich große Schritte.`},
+{id:'gr6',a:'gr',type:'mc',skill:'Fehlerhafte Skalierung erkennen',fig:FIG.badaxis,
+ q:T`Tim hat dieses Diagramm gezeichnet. Was ist daran falsch?`,
+ opts:[{h:T`Gleiche Abstände auf der y-Achse stehen für unterschiedlich große Schritte.`,ok:1},{h:T`Die y-Achse müsste bei 1 beginnen.`,e:'SKALA'},{h:T`Nichts, alle Werte sind richtig eingetragen.`,e:'SKALA'},{h:T`Die Säulen müssten breiter sein.`,e:'SKALA'}],
+ sol:T`Auf der y-Achse folgen 0, 10, 20, 50, 100 im gleichen Abstand – die Schritte sind aber 10, 10, 30, 50. Dadurch sieht es aus, als stiegen die Besucherzahlen gleichmäßig. In Wirklichkeit verdoppeln sie sich von Mittwoch auf Donnerstag.`},
+/* Sachaufgaben */
+{id:'s1',a:'sach',type:'mc',skill:'Problem beschreiben: Ist die Aufgabe lösbar?',
+ q:T`Ein Bus fährt mit 38 Fahrgästen los. An der ersten Haltestelle steigen 12 Personen aus und 7 Personen ein. Wie alt ist die Busfahrerin?`,
+ opts:[{h:T`33 Jahre`,e:'SAZAHL',w:T`\(38-12+7=33\) ist die Anzahl der Fahrgäste, nicht das Alter.`},{h:T`57 Jahre`,e:'SAZAHL'},{h:T`Das kann man mit diesen Angaben nicht berechnen.`,ok:1},{h:T`45 Jahre`,e:'SAZAHL'}],
+ sol:T`Die Angaben handeln nur von Fahrgästen. Über das Alter der Fahrerin steht nichts im Text. Vor dem Rechnen prüfen: Passen die Angaben überhaupt zur Frage?`},
+{id:'s2',a:'sach',type:'mc',skill:'Problem beschreiben: Was ist gesucht?',ctx:'bike',
+ q:T`<b>Schritt 1 – Problem beschreiben.</b> Was ist gesucht?`,
+ opts:[{h:T`Die Anzahl der Stunden, ab der A weniger kostet als B`,ok:1},{h:T`Der Preis bei Verleih A`,e:'SAGES'},{h:T`Wie viel teurer B pro Stunde ist`,e:'SAGES'},{h:T`Die Summe aller Preise`,e:'SAZAHL'}],
+ sol:T`Die Frage lautet „Ab welcher Ausleihdauer …“. Gesucht ist eine Zeit in Stunden, ab der gilt: Kosten A < Kosten B.`},
+{id:'s3',a:'sach',type:'mc',skill:'Ansatz wählen (Mathematisieren)',ctx:'bike',
+ q:T`<b>Schritt 2 – Ansatz wählen.</b> \(x\) ist die Anzahl der Stunden. Welcher Ansatz passt?`,
+ opts:[{h:T`\(8+3x<5x\)`,ok:1},{h:T`\(8\cdot3x<5x\)`,e:'SAANS'},{h:T`\(8+3+5=16\)`,e:'SAZAHL'},{h:T`\(3+8x<5x\)`,e:'FKMB'}],
+ sol:T`Kosten A: \(8\,\text{€}+3\,\text{€}\cdot x\). Kosten B: \(5\,\text{€}\cdot x\). A ist günstiger, wenn \(8\,\text{€}+3\,\text{€}\cdot x<5\,\text{€}\cdot x\).`},
+{id:'s4',a:'sach',type:'num',unit:'h',skill:'Lösen und Ergebnis deuten',ctx:'bike',
+ q:T`<b>Schritt 3 – Lösen und deuten.</b> Ab wie vielen ganzen Stunden ist Verleih A günstiger als Verleih B?`,ans:5,key:T`ab \(5\,\mathrm h\)`,
+ errs:[{v:4,e:'SAERG',w:T`Bei 4 h kosten beide gleich viel (20 €). Günstiger ist A erst danach.`},{v:16,e:'SAZAHL'},{v:3,e:'SAANS'}],
+ sol:T`\(\begin{aligned}8+3x&<5x\quad\mid-3x\\8&<2x\quad\mid:2\\4&<x\end{aligned}\) Probe: Bei \(4\,\mathrm h\) kosten beide \(20\,\text{€}\). Bei \(5\,\mathrm h\): A \(8\,\text{€}+3\,\text{€}\cdot5=23\,\text{€}\), B \(5\,\text{€}\cdot5=25\,\text{€}\). Antwort: Ab 5 Stunden ist Verleih A günstiger.`},
+{id:'s5',a:'sach',type:'mc',figs:1,skill:'Skizze zur Situation wählen',ctx:'ladder',
+ q:T`<b>Schritt 1 – Skizze.</b> Welche Skizze passt zur Situation?`,
+ opts:[{h:FIG.ladder(0),ok:1},{h:FIG.ladder(1),e:'SASKIZ',w:T`Hier ist die Wand 5,0 m hoch – 5,0 m ist aber die Länge der Leiter.`},{h:FIG.ladder(2),e:'SASKIZ',w:T`Die Längen von Leiter und Bodenabstand sind vertauscht.`},{h:FIG.ladder(3),e:'SASKIZ',w:T`Die Hauswand steht senkrecht. In dieser Skizze fehlt der rechte Winkel.`}],
+ sol:T`Wand und Boden bilden einen rechten Winkel. Die Leiter ist die schräge Seite gegenüber dem rechten Winkel (Hypotenuse, \(5{,}0\,\mathrm m\)). Der Abstand am Boden (\(1{,}4\,\mathrm m\)) und die gesuchte Höhe sind die Katheten.`},
+{id:'s6',a:'sach',type:'num',unit:'m',skill:'Modell durchrechnen (Pythagoras im Kontext)',ctx:'ladder',
+ q:T`<b>Schritt 2 – Rechnen.</b> Wie hoch reicht die Leiter an der Wand?`,ans:4.8,tol:0.03,key:T`\(4{,}8\,\mathrm m\)`,
+ errs:[{v:5.19,tol:0.03,e:'PYSUB'},{v:3.6,e:'PYWURZ',w:T`\(5{,}0-1{,}4\): Du hast die Längen subtrahiert statt ihre Quadrate.`},{v:23.04,e:'PYWURZ'},{v:6.4,e:'PYWURZ'},{v:26.96,e:'PYSUB'}],
+ sol:T`\(\begin{aligned}h&=\sqrt{(5{,}0\,\mathrm m)^2-(1{,}4\,\mathrm m)^2}\\&=\sqrt{25\,\mathrm m^2-1{,}96\,\mathrm m^2}\\&=\sqrt{23{,}04\,\mathrm m^2}=4{,}8\,\mathrm m\end{aligned}\)`},
+{id:'s7',a:'sach',type:'select',skill:'Skizze beschriften',fig:FIG.ramp,
+ q:T`Eine Rampe soll auf \(2{,}4\,\mathrm m\) waagerechter Strecke eine Höhe von \(0{,}7\,\mathrm m\) überwinden. Gesucht ist die Länge der schrägen Rampe. Ordne die Angaben den Seiten der Skizze zu.`,
+ ch:['2,4 m','0,7 m','gesucht'],f:[{lab:'Seite 1 (waagerecht)',ans:0},{lab:'Seite 2 (senkrecht)',ans:1},{lab:'Seite 3 (schräg)',ans:2}],e:'SASKIZ',
+ key:T`1: 2,4 m · 2: 0,7 m · 3: gesucht`,
+ sol:T`Waagerecht \(2{,}4\,\mathrm m\), senkrecht \(0{,}7\,\mathrm m\), die schräge Rampe ist die Hypotenuse: \(\begin{aligned}l&=\sqrt{(2{,}4\,\mathrm m)^2+(0{,}7\,\mathrm m)^2}\\&=\sqrt{5{,}76\,\mathrm m^2+0{,}49\,\mathrm m^2}=\sqrt{6{,}25\,\mathrm m^2}=2{,}5\,\mathrm m\end{aligned}\)`},
+{id:'s8',a:'sach',type:'num',unit:'m²',skill:'Einheiten beachten',
+ q:T`Ein Beet ist \(3{,}5\,\mathrm m\) lang und \(80\,\mathrm{cm}\) breit. Wie groß ist sein Flächeninhalt?`,ans:2.8,tol:0.001,key:T`\(2{,}8\,\mathrm m^2\)`,
+ errs:[{v:280,e:'SAEINH',w:T`\(3{,}5\cdot80=280\): Meter und Zentimeter gemischt.`},{v:8.6,e:'SAGES',w:T`Das ist der Umfang, nicht der Flächeninhalt.`},{v:4.3,e:'SAGES'},{v:167,e:'SAEINH'},{v:28,e:'SAEINH'}],
+ sol:T`Erst gleiche Einheiten: \(80\,\mathrm{cm}=0{,}8\,\mathrm m\). \(A=3{,}5\,\mathrm m\cdot0{,}8\,\mathrm m=2{,}8\,\mathrm m^2\).`},
+/* Pythagoras */
+{id:'p1',a:'py',type:'mc',skill:'Hypotenuse erkennen',fig:FIG.rst,
+ q:T`Im Dreieck \(RST\) ist der Winkel bei \(R\) ein rechter Winkel. Welche Gleichung gilt?`,
+ opts:[{h:T`\(s^2+t^2=r^2\)`,ok:1},{h:T`\(r^2+s^2=t^2\)`,e:'PYHYP'},{h:T`\(r^2+t^2=s^2\)`,e:'PYHYP'},{h:T`\(s+t=r\)`,e:'PYWURZ'}],
+ sol:T`Die Hypotenuse liegt dem rechten Winkel gegenüber. Gegenüber von \(R\) liegt \(r\). Also \(s^2+t^2=r^2\). Die Hypotenuse heißt nicht immer \(c\) und liegt nicht immer unten.`},
+{id:'p2',a:'py',type:'num',unit:'cm',skill:'Kathete berechnen',
+ q:T`In einem rechtwinkligen Dreieck ist die Hypotenuse \(10\,\mathrm{cm}\) lang, eine Kathete \(6\,\mathrm{cm}\). Wie lang ist die andere Kathete?`,ans:8,tol:0.02,key:T`\(8\,\mathrm{cm}\)`,
+ errs:[{v:11.66,tol:0.03,e:'PYSUB'},{v:4,e:'PYWURZ'},{v:64,e:'PYWURZ'},{v:136,e:'PYSUB'},{v:16,e:'PYWURZ'}],
+ sol:T`\(\begin{aligned}b&=\sqrt{(10\,\mathrm{cm})^2-(6\,\mathrm{cm})^2}\\&=\sqrt{100\,\mathrm{cm}^2-36\,\mathrm{cm}^2}\\&=\sqrt{64\,\mathrm{cm}^2}=8\,\mathrm{cm}\end{aligned}\)`},
+{id:'p3',a:'py',type:'mc',skill:'Rechtwinkligkeit prüfen (Umkehrung)',
+ q:T`Ein Dreieck hat die Seiten \(6\,\mathrm{cm}\), \(7\,\mathrm{cm}\) und \(9\,\mathrm{cm}\). Ist es rechtwinklig?`,
+ opts:[{h:T`Nein, denn \((6\,\mathrm{cm})^2+(7\,\mathrm{cm})^2=85\,\mathrm{cm}^2\) und \((9\,\mathrm{cm})^2=81\,\mathrm{cm}^2\).`,ok:1},{h:T`Ja, denn der Satz des Pythagoras gilt in jedem Dreieck.`,e:'PYRW'},{h:T`Ja, denn \(6\,\mathrm{cm}+7\,\mathrm{cm}>9\,\mathrm{cm}\).`,e:'PYRW'},{h:T`Nein, denn \((6\,\mathrm{cm})^2+(9\,\mathrm{cm})^2\ne(7\,\mathrm{cm})^2\).`,e:'PYHYP',w:T`Die Antwort „Nein“ stimmt, aber die Begründung nicht: Die längste Seite ist \(9\,\mathrm{cm}\).`}],
+ sol:T`Umkehrung des Satzes des Pythagoras: Nur wenn die Quadrate der beiden kürzeren Seiten zusammen das Quadrat der längsten Seite ergeben, ist das Dreieck rechtwinklig. \(36\,\mathrm{cm}^2+49\,\mathrm{cm}^2=85\,\mathrm{cm}^2\ne81\,\mathrm{cm}^2\) – nicht rechtwinklig.`},
+{id:'p4',a:'py',type:'mc',skill:'Höhen- und Kathetensatz zuordnen',fig:FIG.abc,
+ q:T`Im Dreieck \(ABC\) (rechter Winkel bei \(C\)) teilt die Höhe \(h\) die Hypotenuse \(c\) in die Abschnitte \(p\) und \(q\). Welche Gleichung ist richtig?`,
+ opts:[{h:T`\(a^2=c\cdot p\)`,ok:1},{h:T`\(a^2=c\cdot q\)`,e:'KSABS'},{h:T`\(a^2=p\cdot q\)`,e:'HKVERW'},{h:T`\(h^2=c\cdot p\)`,e:'HKVERW'}],
+ sol:T`Kathetensatz: Das Quadrat über einer Kathete ist so groß wie das Rechteck aus der Hypotenuse und dem anliegenden Abschnitt: \(a^2=c\cdot p\), \(b^2=c\cdot q\). Höhensatz: \(h^2=p\cdot q\).`},
+{id:'p5',a:'py',type:'num',unit:'cm',skill:'Höhensatz anwenden',fig:FIG.abc,
+ q:T`Gegeben: \(p=9\,\mathrm{cm}\), \(q=4\,\mathrm{cm}\). Berechne die Höhe \(h\).`,ans:6,tol:0.02,key:T`\(6\,\mathrm{cm}\)`,
+ errs:[{v:36,e:'PYWURZ'},{v:13,e:'HSSUM'},{v:3.61,tol:0.02,e:'HSSUM'},{v:9.85,tol:0.02,e:'HKVERW',w:T`Pythagoras mit \(p\) und \(q\) – die beiden liegen aber auf einer Linie, nicht im rechten Winkel.`}],
+ sol:T`\(\begin{aligned}h^2&=p\cdot q=9\,\mathrm{cm}\cdot4\,\mathrm{cm}=36\,\mathrm{cm}^2\\h&=\sqrt{36\,\mathrm{cm}^2}=6\,\mathrm{cm}\end{aligned}\)`},
+{id:'p6',a:'py',type:'num',unit:'cm',skill:'Kathetensatz anwenden',fig:FIG.abc,
+ q:T`Gegeben: \(c=10\,\mathrm{cm}\), \(q=3{,}6\,\mathrm{cm}\). Berechne die Kathete \(b\).`,ans:6,tol:0.02,key:T`\(6\,\mathrm{cm}\)`,
+ errs:[{v:8,e:'KSABS',w:T`Du hast \(p=6{,}4\,\mathrm{cm}\) verwendet – zu \(b\) gehört aber \(q\).`},{v:36,e:'PYWURZ'},{v:6.4,e:'KSABS'},{v:1.9,tol:0.02,e:'HKVERW'}],
+ sol:T`\(\begin{aligned}b^2&=c\cdot q=10\,\mathrm{cm}\cdot3{,}6\,\mathrm{cm}=36\,\mathrm{cm}^2\\b&=\sqrt{36\,\mathrm{cm}^2}=6\,\mathrm{cm}\end{aligned}\)`}
+];
+const CTX={
+ bike:T`<b>Fahrradverleih.</b> Verleih A: 8 € Grundgebühr und 3 € pro Stunde. Verleih B: 5 € pro Stunde, keine Grundgebühr. Ab welcher Ausleihdauer ist Verleih A günstiger?`,
+ ladder:T`<b>Leiter.</b> Eine \(5{,}0\,\mathrm m\) lange Leiter lehnt an einer senkrechten Hauswand. Ihr Fuß steht \(1{,}4\,\mathrm m\) von der Wand entfernt. Wie hoch reicht die Leiter an der Wand?`
+};
+const ITEM={};ITEMS.forEach((it,k)=>{it.k=k;ITEM[it.id]=it;});
+document.getElementById('k-items').textContent=ITEMS.length;
+document.getElementById('k-areas').textContent=AREAS.length;
+
+/* ---------- Zustand ---------- */
+function fresh(){return {v:1,phase:'start',name:'',kl:'',areas:AREAS.map(a=>a.id),order:[],idx:0,ans:{},perm:{},t1:0};}
+function load(){try{const s=JSON.parse(localStorage.getItem(KEY)||'null');if(s&&s.v===1&&Array.isArray(s.order))return s;}catch(e){}return null;}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}}
+let S=load()||fresh();
+const ui={home:false,confirmReset:false,err:'',tdata:null,tsel:AREAS.map(a=>a.id),copied:''};
+
+function perm(it){if(!S.perm[it.id]){const p=it.opts.map((_,i)=>i);for(let i=p.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[p[i],p[j]]=[p[j],p[i]];}S.perm[it.id]=p;save();}return S.perm[it.id];}
+function dflt(it){switch(it.type){case 'frac':return {s:1,w:'',n:'',d:''};case 'num':return {s:1,x:''};case 'multi':return {x:it.f.map(()=> '')};case 'select':return it.f.map(()=> '');default:return null;}}
+function curVal(it){const a=S.ans[it.id];return a&&a.val!=null?a.val:dflt(it);}
+const isInt=s=>/^\d+$/.test(String(s).trim());
+function complete(it,v){if(v==null)return false;switch(it.type){
+  case 'mc':case 'split':return typeof v==='number';
+  case 'frac':if(it.mixed&&isInt(v.w)&&v.n===''&&v.d==='')return true;return isInt(v.n)&&isInt(v.d)&&+v.d!==0&&(v.w===''||isInt(v.w));
+  case 'num':return !isNaN(pnum(v.x));
+  case 'multi':return v.x.every(s=>!isNaN(pnum(s)));
+  case 'select':return v.every(s=>s!=='');}return false;}
+
+/* ---------- Auswertung einer Aufgabe ---------- */
+function toFrac(v){const w=v.w===''?0:parseInt(v.w,10),n=v.n===''?0:parseInt(v.n,10),d=v.d===''?1:parseInt(v.d,10);return [v.s*(w*d+n),d];}
+const eqF=(a,b)=>a[0]*b[1]===b[0]*a[1];
+function evSplit(n){
+  if(n===12)return {ok:true};
+  if(n%12===0)return {ok:true,hints:['GNP'],note:`Richtig – bei ${n} Teilen passen beide Anteile. 12 Teile hätten aber schon gereicht.`};
+  if(n===7)return {ok:false,errs:['NA'],why:T`\(7=3+4\): Du hast die Nenner addiert. Bei 7 Teilen passt weder das Drittel noch das Viertel genau.`};
+  if(n%3===0||n%4===0)return {ok:false,errs:['GNV'],why:`Bei ${n} Teilen passt nur ${n%3===0?'das Drittel':'das Viertel'} genau, der andere Anteil nicht.`};
+  return {ok:false,errs:['GNV'],why:`Bei ${n} Teilen passt keiner der beiden Anteile genau.`};}
+function evaluate(it,v){
+  const R={ok:false,errs:[],hints:[],why:'',note:''};
+  const add=e=>{if(!e)return;if(e.e&&!R.errs.includes(e.e))R.errs.push(e.e);if(e.w)R.why+=(R.why?' ':'')+e.w;};
+  if(it.type==='mc'){const o=it.opts[v];R.ok=!!o.ok;add(o);return R;}
+  if(it.type==='split')return Object.assign(R,evSplit(v));
+  if(it.type==='frac'){const f=toFrac(v);R.ok=eqF(f,it.ans);
+    if(R.ok){const n=+v.n||0,d=+v.d||1;if(v.n!==''&&gcd(n,d)>1)R.note='Richtig! Du kannst das Ergebnis noch kürzen.';else if(it.mixed&&v.n!==''&&n>=d&&v.w!=='')R.note='Richtig! Der Bruchteil ist noch größer als 1 – schöner wäre eine gemischte Zahl mit echtem Bruch.';}
+    else add((it.errs||[]).find(e=>eqF(f,e.v)));return R;}
+  if(it.type==='num'){const x=(v.s||1)*pnum(v.x),tol=it.tol!=null?it.tol:1e-9;R.ok=Math.abs(x-it.ans)<=tol+1e-12;if(!R.ok)add((it.errs||[]).find(e=>Math.abs(x-e.v)<=(e.tol!=null?e.tol:Math.max(tol,1e-9))+1e-12));return R;}
+  if(it.type==='multi'){R.ok=true;it.f.forEach((f,i)=>{const x=pnum(v.x[i]);if(Math.abs(x-f.ans)>1e-9){R.ok=false;add((f.errs||[]).find(e=>Math.abs(x-e.v)<1e-9));}});return R;}
+  if(it.type==='select'){R.ok=it.f.every((f,i)=>+v[i]===f.ans);if(!R.ok)R.errs.push(it.e);return R;}
+  return R;}
+function fmtVal(it,v){if(v==null)return '–';switch(it.type){
+  case 'mc':return `<span class="oc">${it.opts[v].h}</span>`;
+  case 'split':return `${v} gleich große Teile`;
+  case 'frac':{const sg=v.s<0?'-':'';if(v.n===''&&v.d==='')return `\\(${sg}${esc(v.w)}\\)`;return `\\(${sg}${v.w!==''?esc(v.w):''}\\tfrac{${esc(v.n)}}{${esc(v.d)}}\\)`;}
+  case 'num':return `${v.s<0?'−':''}${esc(v.x)}${it.unit?' '+it.unit:''}`;
+  case 'multi':return it.f.map((f,i)=>`${f.lab}: ${esc(v.x[i])}`).join(' · ');
+  case 'select':return it.f.map((f,i)=>`${f.lab.split(' (')[0]}: ${v[i]===''?'–':it.ch[+v[i]]}`).join(' · ');}return '';}
+function keyOf(it){if(it.type==='mc'){const o=it.opts.find(o=>o.ok);return `<span class="oc">${o.h}</span>`;}return it.key||'';}
+
+/* ---------- Analyse ---------- */
+const W8={s:3,u:2,g:1};
+function status(pct){return pct>=80?'stark':pct>=50?'mittel':'schwach';}
+const STL={stark:'Stärke',mittel:'Teilweise sicher',schwach:'Förderbedarf',leer:'nicht bearbeitet'};
+function istat(a){if(!a||!a.done)return 'offen';if(a.ok)return a.conf==='s'?'fest':'wack';return a.conf==='s'?'fv':'lue';}
+const ISTL={fest:['Sicher gekonnt','st-stark'],wack:['Richtig, aber unsicher','st-mittel'],fv:['Fehler trotz Sicherheit','st-schwach'],lue:['Lücke erkannt','st-mittel'],offen:['Nicht bearbeitet','st-leer']};
+function analyse(){
+  const areas=[],errs={},hints={};const cm={fest:0,wack:0,fv:0,lue:0,offen:0};let tot=0,okc=0;
+  S.areas.forEach(aid=>{const its=S.order.map(id=>ITEM[id]).filter(it=>it.a===aid);if(!its.length)return;
+    const r={id:aid,n:its.length,ok:0,fest:0,wack:0,fv:0,lue:0,offen:0};
+    its.forEach(it=>{const a=S.ans[it.id];const st=istat(a);r[st]++;cm[st]++;if(a&&a.done&&a.ok)r.ok++;
+      if(a&&a.done&&!a.ok)(a.errs||[]).forEach(c=>{const e=errs[c]||(errs[c]={c,n:0,w:0,sure:0,items:[]});e.n++;e.w+=W8[a.conf]||1;if(a.conf==='s')e.sure++;e.items.push(it.id);});
+      if(a&&a.done&&a.ok)(a.hints||[]).forEach(c=>{(hints[c]||(hints[c]=[])).push(it.id);});});
+    r.pct=Math.round(100*r.ok/r.n);r.st=status(r.pct);tot+=r.n;okc+=r.ok;areas.push(r);});
+  const el=Object.values(errs).sort((a,b)=>b.w-a.w||b.n-a.n);
+  return {areas,errs:el,hints,cm,tot,okc};}
+
+/* ---------- Ergebniscode ---------- */
+function makeCode(){
+  const r=ITEMS.map(it=>{if(!S.order.includes(it.id))return '.';const a=S.ans[it.id];if(!a||!a.done)return '-';return 'ABCDEF'[(a.ok?0:3)+({s:0,u:1,g:2}[a.conf]||0)];}).join('');
+  const e=[];S.order.forEach(id=>{const a=S.ans[id];if(a&&a.done&&!a.ok)(a.errs||[]).forEach(c=>e.push(c+(a.conf==='s'?'!':'')));});
+  const o={v:1,c:ITEMS.length,n:S.name,k:S.kl,d:new Date(S.t1||Date.now()).toISOString().slice(0,10),r,e:e.join(',')};
+  return 'BTZD1:'+btoa(unescape(encodeURIComponent(JSON.stringify(o))));}
+function readCode(c){try{const o=JSON.parse(decodeURIComponent(escape(atob(c.slice(6)))));if(o&&o.v===1&&typeof o.r==='string'&&o.r.length===ITEMS.length)return o;}catch(e){}return null;}
+
+/* ---------- Ansichten ---------- */
+function startHTML(){
+  const cnt={};ITEMS.forEach(it=>cnt[it.a]=(cnt[it.a]||0)+1);
+  const nSel=ITEMS.filter(it=>S.areas.includes(it.a)).length;
+  const resume=S.order.length&&S.phase!=='start';
+  const doneN=S.order.filter(id=>S.ans[id]&&S.ans[id].done).length;
+  return `
+  ${resume?`<section class="card stack" style="border-color:var(--tq-strong)">
+    <h2>Willkommen zurück${S.name?', '+esc(S.name):''}!</h2>
+    <p>Du hast ${doneN} von ${S.order.length} Aufgaben bearbeitet${S.phase==='result'?' und deine Auswertung schon gesehen':''}.</p>
+    <div class="row"><button class="btn tq" data-act="resume">${S.phase==='result'?'Zur Auswertung':'Weitermachen'}</button>
+    ${ui.confirmReset?`<span class="warnbox row" style="padding:8px 12px"><span>Alles löschen und neu anfangen?</span><button class="btn alt" data-act="reset-yes">Ja, neu beginnen</button><button class="link" data-act="reset-no">Abbrechen</button></span>`:`<button class="link" data-act="reset">Neu beginnen</button>`}</div>
+  </section>`:''}
+  <section class="card stack">
+    <h2>So funktioniert der Mathe-Check</h2>
+    <ol class="steps">
+      <li><b>1 · Aufgaben lösen</b>Du bekommst Aufgaben aus bis zu 9 Bereichen. Während des Tests gibt es noch keine Rückmeldung.</li>
+      <li><b>2 · Sicherheit angeben</b>Nach jeder Aufgabe tippst du an, wie sicher du dir bist. Damit schickst du die Antwort ab.</li>
+      <li><b>3 · Profil erhalten</b>Am Ende siehst du deine Stärken, deine Baustellen, deine typischen Fehler und einen Übungsplan.</li>
+    </ol>
+    <p class="note small"><b>Warum fragen wir nach deiner Sicherheit?</b> Ein Fehler, bei dem du dir sicher warst, zeigt eine feste Fehlvorstellung – die musst du gezielt umlernen. Ein richtiges, aber geratenes Ergebnis ist noch nicht gefestigt. Sei also ehrlich, das hilft dir selbst. Es gibt keine Noten.</p>
+  </section>
+  ${resume?'':`<section class="card stack">
+    <h2>Los geht’s</h2>
+    <div class="row" style="align-items:flex-start">
+      <label class="fld" for="in-name">Vorname oder Kürzel<input class="txt" id="in-name" autocomplete="off" value="${esc(S.name)}" placeholder="z. B. Mia K."></label>
+      <label class="fld" for="in-kl">Klasse (freiwillig)<input class="txt" id="in-kl" autocomplete="off" value="${esc(S.kl)}" placeholder="z. B. 9b"></label>
+    </div>
+    <div class="stack" style="gap:8px">
+      <p><b>Welche Bereiche?</b> <span class="muted small">Deine Lehrkraft sagt dir, ob du alle oder nur einige bearbeitest.</span></p>
+      <div class="chips">${AREAS.map(a=>`<label class="chip" for="ar-${a.id}"><input type="checkbox" id="ar-${a.id}" data-area="${a.id}" ${S.areas.includes(a.id)?'checked':''}>${a.n}<span>${cnt[a.id]}</span></label>`).join('')}</div>
+      <div class="row"><button class="link" data-act="all-on">Alle auswählen</button><button class="link" data-act="all-off">Keine</button></div>
+    </div>
+    <p class="muted small" id="sel-info">${nSel} Aufgaben · etwa ${Math.max(5,Math.round(nSel*1.1/5)*5)} Minuten. Dein Fortschritt wird auf diesem Gerät gespeichert – du kannst auch in Etappen arbeiten.</p>
+    ${ui.err?`<p class="err-msg" role="alert">${ui.err}</p>`:''}
+    <div><button class="btn" data-act="start">Diagnose starten</button></div>
+  </section>`}`;}
+
+function progHTML(){return `<div class="prog" aria-hidden="true">${S.order.map((id,i)=>{const a=S.ans[id];return `<i class="${a&&a.done?'d':(a&&a.skipped?'s':'')}${i===S.idx?' c':''}"></i>`;}).join('')}</div>`;}
+function widgetHTML(it,v){
+  switch(it.type){
+  case 'mc':{const p=perm(it);return `<div class="opts${it.figs?' figs':''}" role="group" aria-label="Antworten">${p.map((oi,pos)=>`<button class="opt" data-act="pick" data-i="${oi}" aria-pressed="${v===oi}"><span class="lt">${'ABCD'[pos]}</span><span class="oc">${it.opts[oi].h}</span></button>`).join('')}</div>`;}
+  case 'frac':return `<div class="fin">${it.neg?sgnBtn(v.s):''}${it.mixed?`<input class="fw" id="f-w" inputmode="numeric" pattern="[0-9]*" aria-label="Ganze" value="${esc(v.w)}">`:''}<span class="fr"><input id="f-n" inputmode="numeric" pattern="[0-9]*" aria-label="Zähler" value="${esc(v.n)}"><span class="fbar"></span><input id="f-d" inputmode="numeric" pattern="[0-9]*" aria-label="Nenner" value="${esc(v.d)}"></span></div>${it.mixed?'<p class="muted small">Für eine gemischte Zahl trage links die Ganzen ein. Für einen Bruch lass das linke Feld leer.</p>':''}`;
+  case 'num':return `<div class="nin">${it.neg?sgnBtn(v.s):''}<input id="n-x" inputmode="decimal" aria-label="Ergebnis" value="${esc(v.x)}" autocomplete="off">${it.unit?`<span class="unit">${it.unit}</span>`:''}</div>${it.neg?'<p class="muted small">Mit der Taste ± stellst du das Vorzeichen ein.</p>':''}`;
+  case 'multi':{const cell=c=>c.startsWith('#')?`<td><input id="m-${c.slice(1)}" data-m="${c.slice(1)}" inputmode="decimal" aria-label="${it.f[+c.slice(1)].lab}" value="${esc(v.x[+c.slice(1)])}"></td>`:`<td>${c}</td>`;
+    return `<div class="tblwrap"><table class="tbl"><tr><th>\\(x\\)</th>${it.tbl.x.map(cell).join('')}</tr><tr><th>\\(f(x)\\)</th>${it.tbl.y.map(cell).join('')}</tr></table></div>`;}
+  case 'split':{const n=typeof v==='number'?v:2;return `<div class="figbox" id="split-fig">${FIG.split(n)}</div><div class="split-ctl"><button class="sgn" data-act="sp-" aria-label="Weniger Teile">−</button><input type="range" id="sp" min="2" max="24" step="1" value="${n}" aria-label="Anzahl gleich großer Teile"><button class="sgn" data-act="sp+" aria-label="Mehr Teile">+</button></div><p class="split-out" id="sp-out">${typeof v==='number'?`Das Ganze ist in ${n} gleich große Teile zerlegt.`:'Bewege den Regler.'}</p>`;}
+  case 'select':return `<div class="selrow">${it.f.map((f,i)=>`<label for="s-${i}"><b>${f.lab}</b></label><select id="s-${i}" data-s="${i}"><option value="">– wählen –</option>${it.ch.map((c,j)=>`<option value="${j}" ${v[i]!==''&&+v[i]===j?'selected':''}>${c}</option>`).join('')}</select>`).join('')}</div>`;}
+  return '';}
+function sgnBtn(s){return `<button class="sgn" data-act="sgn" aria-label="Vorzeichen wechseln, aktuell ${s<0?'minus':'plus'}">${s<0?'−':'+'}<small>±</small></button>`;}
+function testHTML(){
+  const id=S.order[S.idx],it=ITEM[id],a=S.ans[id]||{},v=curVal(it);
+  const ok=complete(it,v);
+  return `<section class="topbar">
+    <div class="row"><span><b>Aufgabe ${S.idx+1}</b> <span class="muted">von ${S.order.length}</span></span><button class="link" data-act="pause">Pause</button></div>
+    ${progHTML()}
+  </section>
+  <section class="card stack" id="qcard">
+    <div class="row"><span class="tag">${AREA[it.a].k}</span><span class="skill">${it.skill}</span></div>
+    ${it.ctx?`<div class="ctx">${CTX[it.ctx]}</div>`:''}
+    <div class="q">${it.q}</div>
+    ${it.fig?`<div class="figbox">${it.fig()}</div>`:''}
+    ${widgetHTML(it,v)}
+    <div class="confbox">
+      <p>Wie sicher bist du dir? <span class="muted small" style="font-weight:400">Tippen schickt die Antwort ab.</span></p>
+      <div class="conf">
+        <button class="cbtn s${a.done&&a.conf==='s'?' on':''}" data-act="conf" data-c="s" ${ok?'':'disabled'}>Ich bin sicher</button>
+        <button class="cbtn u${a.done&&a.conf==='u'?' on':''}" data-act="conf" data-c="u" ${ok?'':'disabled'}>Eher unsicher</button>
+        <button class="cbtn g${a.done&&a.conf==='g'?' on':''}" data-act="conf" data-c="g" ${ok?'':'disabled'}>Geraten</button>
+      </div>
+      ${a.done?'<p class="done-hint">Diese Aufgabe hast du schon abgeschickt. Du kannst die Antwort ändern und neu abschicken.</p>':''}
+    </div>
+    <div class="nav"><button class="link" data-act="prev" ${S.idx?'':'disabled'}>← Zurück</button><button class="link" data-act="skip">${a.done?'Weiter →':'Überspringen →'}</button></div>
+  </section>`;}
+function endHTML(){
+  const open=S.order.map((id,i)=>({id,i})).filter(o=>!(S.ans[o.id]&&S.ans[o.id].done));
+  return `<section class="card stack">
+    <h2>Geschafft${S.name?', '+esc(S.name):''}!</h2>
+    <p>Du hast ${S.order.length-open.length} von ${S.order.length} Aufgaben abgeschickt.</p>
+    ${open.length?`<div class="warnbox stack" style="gap:8px"><p><b>${open.length} Aufgabe${open.length>1?'n sind':' ist'} noch offen.</b> Offene Aufgaben zählen in der Auswertung als nicht gekonnt.</p><div class="row">${open.map(o=>`<button class="btn alt" data-act="jump" data-i="${o.i}">Nr. ${o.i+1}</button>`).join('')}</div></div>`:''}
+    <div class="row"><button class="btn tq" data-act="finish">Auswertung anzeigen</button><button class="link" data-act="jump" data-i="${S.order.length-1}">Zur letzten Aufgabe</button></div>
+  </section>`;}
+
+function resultHTML(){
+  const R=analyse();const pct=R.tot?Math.round(100*R.okc/R.tot):0;
+  const strong=R.areas.filter(a=>a.st==='stark'),weak=R.areas.filter(a=>a.st!=='stark').sort((a,b)=>a.pct-b.pct);
+  const fvAreas=R.areas.filter(a=>a.fv>0&&a.st==='stark');
+  const date=new Date(S.t1||Date.now()).toLocaleDateString('de-DE');
+  const code=makeCode();
+  const hintList=Object.keys(R.hints);
+  return `<section class="card">
+    <div class="score"><div><p class="muted small">Auswertung für ${esc(S.name)}${S.kl?' · '+esc(S.kl):''} · ${date}</p><h2>Dein Stärken-Schwächen-Profil</h2></div>
+    <div><span class="big">${R.okc}</span><span class="muted"> von ${R.tot} richtig (${pct} %)</span></div></div>
+  </section>
+  <section class="sumgrid">
+    <div class="sum plus"><h3>Das kannst du schon gut</h3>${strong.length?`<ul>${strong.map(a=>`<li><b>${AREA[a.id].n}</b> (${a.pct} %)${a.wack?` – bei ${a.wack} Aufgabe${a.wack>1?'n':''} warst du noch unsicher`:''}</li>`).join('')}</ul>`:`<p>Noch kein Bereich mit mindestens 80 %. ${R.areas.length?`Am besten lief es bei <b>${AREA[[...R.areas].sort((a,b)=>b.pct-a.pct)[0].id].n}</b>.`:''}</p>`}</div>
+    <div class="sum minus"><h3>Daran solltest du arbeiten</h3>${weak.length||fvAreas.length?`<ul>${weak.map(a=>`<li><b>${AREA[a.id].n}</b> (${a.pct} %)${a.fv?` – ${a.fv} Fehler trotz Sicherheit`:''}</li>`).join('')}${fvAreas.map(a=>`<li><b>${AREA[a.id].n}</b>: insgesamt stark, aber ${a.fv} Fehler trotz Sicherheit</li>`).join('')}</ul>`:'<p>Keine großen Baustellen – super! Schau dir trotzdem die Aufgaben an, bei denen du unsicher warst.</p>'}</div>
+  </section>
+  <section class="card stack">
+    <h2>Dein Profil nach Bereichen</h2>
+    <div class="legend"><span><i style="background:var(--tq-strong)"></i>richtig und sicher</span><span><i style="background:var(--tq);opacity:.55"></i>richtig, aber unsicher</span><span><i style="background:var(--bad)"></i>falsch trotz Sicherheit</span><span><i style="background:var(--surface-2);border:1px solid var(--line)"></i>falsch, unsicher oder offen</span></div>
+    <div class="prof">${R.areas.map(a=>`<div class="prow"><b>${AREA[a.id].n}</b><div class="pbar" role="img" aria-label="${a.pct} Prozent richtig"><i class="f1" style="width:${100*a.fest/a.n}%"></i><i class="f2" style="width:${100*a.wack/a.n}%"></i><i class="f3" style="width:${100*a.fv/a.n}%"></i></div><span class="pill st-${a.st}">${a.pct} % · ${STL[a.st]}</span><span class="meta">${a.ok} von ${a.n} richtig${a.wack?` · ${a.wack}× unsicher richtig`:''}${a.fv?` · ${a.fv}× falsch trotz Sicherheit`:''}${a.offen?` · ${a.offen} offen`:''}</span></div>`).join('')}</div>
+  </section>
+  <section class="card stack">
+    <h2>Wie sicher warst du?</h2>
+    <div class="matrix">
+      <div class="mx m1"><b>${R.cm.fest}</b>richtig und sicher<br><span class="small muted">Das sitzt.</span></div>
+      <div class="mx m2"><b>${R.cm.wack}</b>richtig, aber unsicher oder geraten<br><span class="small muted">Noch wackelig – wiederholen.</span></div>
+      <div class="mx m3"><b>${R.cm.fv}</b>falsch, obwohl du sicher warst<br><span class="small muted">Feste Fehlvorstellung – zuerst angehen!</span></div>
+      <div class="mx m4"><b>${R.cm.lue+R.cm.offen}</b>falsch und unsicher oder offen<br><span class="small muted">Lücke, die du schon bemerkt hast.</span></div>
+    </div>
+  </section>
+  <section class="stack">
+    <h2>Deine typischen Fehler</h2>
+    ${R.errs.length?R.errs.map(e=>{const E=ERR[e.c];const nrs=e.items.map(id=>S.order.indexOf(id)+1).join(', ');return `<article class="fv${e.sure?' sure':''}">
+      <h3>${E.t}${e.sure?'<span class="pill st-schwach">sicher geglaubt</span>':''}<span class="pill st-leer">${e.n}× · Nr. ${nrs}</span></h3>
+      <dl><dt>Was vermutlich passiert ist</dt><dd>${E.d}</dd><dt>So ist es richtig</dt><dd>${E.r}</dd><dt>So übst du</dt><dd>${E.u}</dd></dl></article>`;}).join(''):'<p class="card plain">Bei dir ist kein typisches Fehlermuster aufgetreten.</p>'}
+    ${hintList.length?`<div class="note"><b>Kleiner Hinweis:</b> ${hintList.map(c=>ERR[c].r).join(' ')}</div>`:''}
+  </section>
+  ${weak.length?`<section class="card stack"><h2>Dein Übungsplan</h2><p class="muted small">Fang mit dem Bereich oben an. Er hat die niedrigste Trefferquote.</p>${weak.map(a=>`<div><h3>${AREA[a.id].n}</h3><ol class="plan">${AREA[a.id].plan.map(p=>`<li>${p}</li>`).join('')}</ol></div>`).join('')}</section>`:''}
+  <section class="stack">
+    <h2>Alle Aufgaben im Detail</h2>
+    ${R.areas.map(ar=>`<details class="area"><summary><span>${AREA[ar.id].n}</span><span class="pill st-${ar.st}">${ar.ok}/${ar.n}</span></summary>
+      ${S.order.map((id,i)=>({it:ITEM[id],i})).filter(o=>o.it.a===ar.id).map(o=>reviewHTML(o.it,o.i)).join('')}</details>`).join('')}
+  </section>
+  <section class="card stack">
+    <h2>Code für deine Lehrkraft</h2>
+    <p>Kopiere diesen Code und schicke ihn deiner Lehrkraft (z. B. per Nachricht). Er enthält nur deinen Namen, deine Ergebnisse und deine Fehlerbilder.</p>
+    <textarea class="codebox" id="codebox" readonly aria-label="Ergebniscode">${code}</textarea>
+    <div class="row"><button class="btn" data-act="copy">Code kopieren</button><span class="small" id="copy-msg" role="status">${ui.copied}</span></div>
+  </section>
+  <section class="row"><button class="btn alt" data-act="tostart">Zur Startseite</button></section>`;}
+function reviewHTML(it,i){
+  const a=S.ans[it.id];const st=istat(a);const [lab,cls]=ISTL[st];
+  let diag='';
+  if(a&&a.done){if(a.ok)diag=a.note||'Richtig.';else diag=a.why||(a.errs&&a.errs.length?ERR[a.errs[0]].t+'.':'Diese Antwort passt zu keinem typischen Fehlermuster. Vergleiche deinen Weg mit der Musterlösung.');
+    if(!a.ok&&a.errs&&a.errs.length&&a.why)diag+=` <span class="muted">(Fehlerbild: ${ERR[a.errs[0]].t})</span>`;}
+  return `<div class="rv"><div class="row"><b>Nr. ${i+1}</b><span class="pill ${cls}">${lab}</span><span class="skill">${it.skill}</span></div>
+    <div class="rvq">${it.ctx?`<p class="small muted">${CTX[it.ctx]}</p>`:''}${it.q}</div>
+    ${it.fig?`<div class="figbox">${it.fig()}</div>`:''}
+    <div class="kv"><span>Deine Antwort</span><span>${a&&a.val!=null&&a.done?fmtVal(it,a.val):'–'}</span><span>Richtig</span><span>${keyOf(it)}</span>${diag?`<span>Diagnose</span><span>${diag}</span>`:''}</div>
+    <details><summary>Lösungsweg anzeigen</summary><div class="sol">${it.sol}</div></details></div>`;}
+
+/* ---------- Lehrkraft ---------- */
+function teacherHTML(){
+  const suffix=ui.tsel.length===AREAS.length||!ui.tsel.length?'':'#nur-'+ui.tsel.join('-');
+  return `<section class="card stack">
+    <div class="row" style="justify-content:space-between"><h2>Klassenauswertung</h2><button class="link" data-act="tback">← Zur Diagnose</button></div>
+    <p>Füge hier die Ergebniscodes deiner Schülerinnen und Schüler ein. Du kannst ganze Nachrichtenverläufe einfügen – die Codes (beginnen mit <code>BTZD1:</code>) werden automatisch herausgesucht.</p>
+    <textarea class="tin" id="t-in" placeholder="BTZD1:eyJ2Ijox…" aria-label="Ergebniscodes">${esc(ui.tin||'')}</textarea>
+    <div class="row"><button class="btn" data-act="t-eval">Auswerten</button><button class="btn alt" data-act="t-demo">Beispieldaten laden</button>${ui.tdata&&ui.tdata.list.length?'<button class="btn alt" data-act="t-copy">Tabelle kopieren (für Excel)</button>':''}<span class="small" id="t-msg" role="status">${ui.copied}</span></div>
+    <p class="muted small">Die Auswertung läuft nur in diesem Browserfenster. Nichts wird gespeichert oder übertragen.</p>
+  </section>
+  <div id="t-out" class="stack">${ui.tdata?tOutHTML(ui.tdata):''}</div>
+  <section class="card stack">
+    <h2>Bereiche vorauswählen</h2>
+    <p class="small">Hänge die Endung an den Link der Plattform an. Beim Öffnen sind dann nur diese Bereiche ausgewählt.</p>
+    <div class="chips">${AREAS.map(a=>`<label class="chip" for="ts-${a.id}"><input type="checkbox" id="ts-${a.id}" data-tsel="${a.id}" ${ui.tsel.includes(a.id)?'checked':''}>${a.k}</label>`).join('')}</div>
+    <p><b>Endung:</b> <code id="t-suffix">${suffix||'(alle Bereiche – keine Endung nötig)'}</code></p>
+  </section>
+  <section class="card plain stack">
+    <h2>Aufbau der Diagnose</h2>
+    <p class="small">${ITEMS.length} Aufgaben in ${AREAS.length} Bereichen. Jede falsche Antwortmöglichkeit und jeder typische Falschwert ist einem von ${Object.keys(ERR).length} Fehlerbildern zugeordnet. Die Sicherheitsangabe trennt feste Fehlvorstellungen (falsch und sicher) von erkannten Lücken. „Fehlerbilder“ zählt, bei wie vielen Lernenden ein Muster mindestens einmal auftrat; „davon sicher“ heißt: mindestens einmal mit „Ich bin sicher“ abgeschickt.</p>
+    <div class="ttwrap"><table class="tt"><tr><th>Bereich</th><th>Aufgaben</th><th>Inhalte</th></tr>${AREAS.map(a=>{const its=ITEMS.filter(it=>it.a===a.id);return `<tr><td>${a.n}</td><td>${its.length}</td><td style="text-align:left;white-space:normal">${its.map(it=>it.skill).join(' · ')}</td></tr>`;}).join('')}</table></div>
+  </section>`;}
+function tParse(text){
+  const codes=(text.match(/BTZD1:[A-Za-z0-9+/=]+/g)||[]);const map=new Map();let bad=0;
+  codes.forEach(c=>{const o=readCode(c);if(!o){bad++;return;}const key=(o.n||'?')+'|'+(o.k||'');map.set(key,o);});
+  return {list:[...map.values()].sort((a,b)=>(a.n||'').localeCompare(b.n||'','de')),bad,dup:codes.length-bad-map.size};}
+function tAreaPct(o,aid){let n=0,ok=0;ITEMS.forEach((it,k)=>{if(it.a!==aid)return;const c=o.r[k];if(c==='.')return;n++;if('ABC'.includes(c))ok++;});return n?Math.round(100*ok/n):null;}
+function tOutHTML(D){
+  if(!D.list.length)return `<section class="card plain"><p>Keine gültigen Codes gefunden.${D.bad?` ${D.bad} Code(s) waren beschädigt oder unvollständig.`:''}</p></section>`;
+  const rows=D.list.map(o=>{const ps=AREAS.map(a=>tAreaPct(o,a.id));let n=0,ok=0;o.r.split('').forEach(c=>{if(c!=='.'){n++;if('ABC'.includes(c))ok++;}});return {o,ps,tot:n?Math.round(100*ok/n):null,fv:(o.r.match(/D/g)||[]).length};});
+  const avg=AREAS.map((a,i)=>{const v=rows.map(r=>r.ps[i]).filter(x=>x!=null);return v.length?Math.round(v.reduce((s,x)=>s+x,0)/v.length):null;});
+  const cell=p=>p==null?'<td class="muted">–</td>':`<td><span class="pill st-${status(p)}">${p} %</span></td>`;
+  const ec={};D.list.forEach(o=>{const seen={};(o.e?o.e.split(','):[]).forEach(x=>{const c=x.replace('!','');if(!ERR[c])return;const s=seen[c]||(seen[c]={sure:false});if(x.endsWith('!'))s.sure=true;});Object.keys(seen).forEach(c=>{const e=ec[c]||(ec[c]={n:0,sure:0});e.n++;if(seen[c].sure)e.sure++;});});
+  const el=Object.entries(ec).sort((a,b)=>b[1].n-a[1].n||b[1].sure-a[1].sure);
+  const ia=ITEMS.map((it,k)=>{let n=0,ok=0,fv=0;D.list.forEach(o=>{const c=o.r[k];if(c==='.')return;n++;if('ABC'.includes(c))ok++;if(c==='D')fv++;});return {it,k,n,pct:n?Math.round(100*ok/n):null,fv};}).filter(x=>x.n).sort((a,b)=>a.pct-b.pct||b.fv-a.fv);
+  const iaRow=x=>`<tr><td>${AREA[x.it.a].k}</td><td style="text-align:left;white-space:normal">${x.it.skill}</td><td>${x.pct} %</td><td>${x.fv}</td></tr>`;
+  return `<section class="card stack">
+    <h2>Klassenprofil</h2>
+    <p class="small muted">${D.list.length} Ergebnis${D.list.length>1?'se':''} eingelesen${D.dup>0?` · ${D.dup} doppelte Codes übersprungen (jeweils der zuletzt eingefügte zählt)`:''}${D.bad?` · ${D.bad} beschädigte Codes ignoriert`:''}${D.demo?' · <b>Beispieldaten, keine echten Schüler</b>':''}</p>
+    <div class="ttwrap"><table class="tt"><tr><th>Name</th>${AREAS.map(a=>`<th>${a.k}</th>`).join('')}<th>Gesamt</th><th title="falsch trotz Sicherheit">sicher falsch</th></tr>
+    ${rows.map(r=>`<tr><td><b>${esc(r.o.n)}</b>${r.o.k?` <span class="muted small">${esc(r.o.k)}</span>`:''}<br><span class="muted small">${esc(r.o.d)}</span></td>${r.ps.map(cell).join('')}${cell(r.tot)}<td>${r.fv}</td></tr>`).join('')}
+    <tr class="sum"><td>Klassenmittel</td>${avg.map(cell).join('')}<td></td><td></td></tr></table></div>
+  </section>
+  <section class="card stack">
+    <h2>Häufigste Fehlerbilder</h2>
+    ${el.length?`<div class="stack" style="gap:8px">${el.map(([c,e])=>`<div class="hb"><span><b>${ERR[c].t}</b></span><span class="bar"><i style="width:${100*e.n/D.list.length}%"></i></span><span class="small">${e.n} von ${D.list.length}${e.sure?` · davon ${e.sure} sicher`:''}</span></div>`).join('')}</div>`:'<p>Keine Fehlerbilder aufgetreten.</p>'}
+  </section>
+  <section class="card stack">
+    <h2>Schwierigste Aufgaben</h2>
+    <div class="ttwrap"><table class="tt"><tr><th>Bereich</th><th>Aufgabe</th><th>richtig</th><th>sicher falsch</th></tr>${ia.slice(0,10).map(iaRow).join('')}</table></div>
+    ${ia.length>10?`<details><summary class="link" style="display:inline-block">Alle ${ia.length} Aufgaben anzeigen</summary><div class="ttwrap" style="margin-top:8px"><table class="tt"><tr><th>Bereich</th><th>Aufgabe</th><th>richtig</th><th>sicher falsch</th></tr>${ia.slice(10).map(iaRow).join('')}</table></div></details>`:''}
+  </section>`;}
+function tTSV(D){const head=['Name','Klasse','Datum',...AREAS.map(a=>a.k),'Fehlerbilder'];return [head.join('\t'),...D.list.map(o=>[o.n,o.k,o.d,...AREAS.map(a=>{const p=tAreaPct(o,a.id);return p==null?'':p;}),[...new Set((o.e||'').split(',').filter(Boolean).map(x=>ERR[x.replace('!','')]?ERR[x.replace('!','')].t:x))].join('; ')].join('\t'))].join('\n');}
+function tDemo(){
+  let seed=7;const rnd=()=>{seed=(seed*16807)%2147483647;return seed/2147483647;};
+  const prof=[{n:'Beispiel A',lv:{bruch:.9,gem:.85,dez:.9,rat:.4,rg:.8,zu:.75,gr:.6,sach:.7,py:.9}},{n:'Beispiel B',lv:{bruch:.35,gem:.3,dez:.6,rat:.7,rg:.55,zu:.6,gr:.5,sach:.5,py:.7}},{n:'Beispiel C',lv:{bruch:.7,gem:.6,dez:.45,rat:.6,rg:.4,zu:.45,gr:.35,sach:.4,py:.5}},{n:'Beispiel D',lv:{bruch:.95,gem:.9,dez:.95,rat:.9,rg:.9,zu:.85,gr:.8,sach:.85,py:.75}}];
+  const firstErr=it=>{if(it.type==='mc'){const o=it.opts.find(o=>o.e);return o&&o.e;}if(it.type==='split')return 'NA';if(it.type==='select')return it.e;if(it.type==='multi')return it.f[0].errs[0].e;const e=(it.errs||[]).find(e=>e.e);return e&&e.e;};
+  return prof.map(p=>{let r='';const e=[];ITEMS.forEach(it=>{const ok=rnd()<p.lv[it.a];const c=rnd();const cf=c<.6?0:c<.85?1:2;r+='ABCDEF'[(ok?0:3)+cf];if(!ok){const x=firstErr(it);if(x)e.push(x+(cf===0?'!':''));}});
+    const o={v:1,c:ITEMS.length,n:p.n,k:'Beispiel',d:new Date().toISOString().slice(0,10),r,e:e.join(',')};return 'BTZD1:'+btoa(unescape(encodeURIComponent(JSON.stringify(o))));}).join('\n');}
+
+/* ---------- Rendern ---------- */
+function view(){const h=location.hash.replace('#','');if(h==='lehrkraft')return 'teacher';if(ui.home||S.phase==='start')return 'start';return S.phase;}
+function render(scroll){
+  mjClear(app);const v=view();
+  app.innerHTML=v==='teacher'?teacherHTML():v==='test'?testHTML():v==='end'?endHTML():v==='result'?resultHTML():startHTML();
+  typeset(app);if(scroll)window.scrollTo(0,0);}
+function applyHashSel(){const h=location.hash.replace('#','');if(h.startsWith('nur-')&&S.phase==='start'){const ids=h.slice(4).split('-').filter(x=>AREA[x]);if(ids.length){S.areas=AREAS.map(a=>a.id).filter(x=>ids.includes(x));save();}}}
+function goNext(){S.idx++;if(S.idx>=S.order.length){S.idx=S.order.length-1;S.phase='end';}save();render(true);}
+function setVal(it,v){const a=S.ans[it.id]||{};a.val=v;a.done=false;a.skipped=false;S.ans[it.id]=a;save();refreshConf(it);}
+function refreshConf(it){const ok=complete(it,curVal(it));app.querySelectorAll('.cbtn').forEach(b=>{b.disabled=!ok;b.classList.remove('on');});const h=app.querySelector('.done-hint');if(h)h.remove();}
+
+app.addEventListener('click',e=>{
+  const b=e.target.closest('[data-act]');if(!b||b.disabled)return;const act=b.dataset.act;
+  const it=S.phase==='test'&&view()==='test'?ITEM[S.order[S.idx]]:null;
+  switch(act){
+  case 'all-on':S.areas=AREAS.map(a=>a.id);save();render();break;
+  case 'all-off':S.areas=[];save();render();break;
+  case 'start':{const name=(document.getElementById('in-name')||{}).value||'';S.name=name.trim();S.kl=((document.getElementById('in-kl')||{}).value||'').trim();
+    if(!S.name){ui.err='Bitte gib deinen Vornamen oder ein Kürzel ein, damit deine Lehrkraft dein Ergebnis zuordnen kann.';render();document.getElementById('in-name').focus();return;}
+    if(!S.areas.length){ui.err='Bitte wähle mindestens einen Bereich aus.';render();return;}
+    ui.err='';S.order=ITEMS.filter(it=>S.areas.includes(it.a)).map(it=>it.id);S.idx=0;S.ans={};S.perm={};S.phase='test';ui.home=false;save();render(true);break;}
+  case 'resume':ui.home=false;render(true);break;
+  case 'reset':ui.confirmReset=true;render();break;
+  case 'reset-no':ui.confirmReset=false;render();break;
+  case 'reset-yes':{const keep={name:S.name,kl:S.kl,areas:S.areas};S=fresh();Object.assign(S,keep);ui.confirmReset=false;ui.home=false;ui.copied='';save();render(true);break;}
+  case 'pause':ui.home=true;render(true);break;
+  case 'tostart':ui.home=true;render(true);break;
+  case 'pick':{const i=+b.dataset.i;app.querySelectorAll('.opt').forEach(o=>o.setAttribute('aria-pressed',String(o===b)));setVal(it,i);break;}
+  case 'sgn':{const v=curVal(it);v.s=v.s<0?1:-1;b.innerHTML=`${v.s<0?'−':'+'}<small>±</small>`;b.setAttribute('aria-label','Vorzeichen wechseln, aktuell '+(v.s<0?'minus':'plus'));setVal(it,v);break;}
+  case 'sp-':case 'sp+':{const r=document.getElementById('sp');let n=+r.value+(act==='sp+'?1:-1);n=Math.max(2,Math.min(24,n));r.value=n;splitUpd(it,n);break;}
+  case 'conf':{const v=curVal(it);if(!complete(it,v))return;const R=evaluate(it,v);S.ans[it.id]={val:v,conf:b.dataset.c,done:true,ok:R.ok,errs:R.errs,hints:R.hints,why:R.why,note:R.note};goNext();break;}
+  case 'skip':{const a=S.ans[it.id]||{};if(!a.done){a.skipped=true;S.ans[it.id]=a;}goNext();break;}
+  case 'prev':if(S.idx>0){S.idx--;save();render(true);}break;
+  case 'jump':S.idx=+b.dataset.i;S.phase='test';save();render(true);break;
+  case 'finish':S.phase='result';S.t1=Date.now();save();render(true);break;
+  case 'copy':{const t=document.getElementById('codebox');const done=()=>{ui.copied='Kopiert.';const m=document.getElementById('copy-msg');if(m)m.textContent='Kopiert.';};
+    try{navigator.clipboard.writeText(t.value).then(done).catch(()=>{t.focus();t.select();const m=document.getElementById('copy-msg');if(m)m.textContent='Code markiert – jetzt kopieren.';});}catch(err){t.focus();t.select();}break;}
+  case 'tback':location.hash='start';break;
+  case 't-eval':ui.copied='';ui.tin=document.getElementById('t-in').value;ui.tdata=tParse(ui.tin);render();break;
+  case 't-demo':{ui.tin=tDemo();ui.copied='';ui.tdata=tParse(ui.tin);ui.tdata.demo=true;render();break;}
+  case 't-copy':{const s=tTSV(ui.tdata);const m=document.getElementById('t-msg');try{navigator.clipboard.writeText(s).then(()=>{if(m)m.textContent='Tabelle kopiert – in Excel einfügen.';}).catch(()=>{if(m)m.textContent='Kopieren nicht möglich.';});}catch(err){}break;}
+  }
+});
+function splitUpd(it,n){document.getElementById('split-fig').innerHTML=FIG.split(n);document.getElementById('sp-out').textContent=`Das Ganze ist in ${n} gleich große Teile zerlegt.`;setVal(it,n);}
+app.addEventListener('input',e=>{
+  const t=e.target;
+  if(t.dataset.area){const id=t.dataset.area;S.areas=AREAS.map(a=>a.id).filter(x=>x===id?t.checked:S.areas.includes(x));save();const n=ITEMS.filter(it=>S.areas.includes(it.a)).length;const si=document.getElementById('sel-info');if(si)si.textContent=`${n} Aufgaben · etwa ${Math.max(5,Math.round(n*1.1/5)*5)} Minuten. Dein Fortschritt wird auf diesem Gerät gespeichert – du kannst auch in Etappen arbeiten.`;return;}
+  if(t.dataset.tsel){const id=t.dataset.tsel;ui.tsel=AREAS.map(a=>a.id).filter(x=>x===id?t.checked:ui.tsel.includes(x));const s=ui.tsel.length===AREAS.length||!ui.tsel.length?'(alle Bereiche – keine Endung nötig)':'#nur-'+ui.tsel.join('-');document.getElementById('t-suffix').textContent=s;return;}
+  if(t.id==='in-name'){S.name=t.value;save();return;}
+  if(t.id==='in-kl'){S.kl=t.value;save();return;}
+  if(view()!=='test')return;const it=ITEM[S.order[S.idx]];
+  if(t.id==='sp'){splitUpd(it,+t.value);return;}
+  const v=curVal(it);
+  if(t.id==='f-w')v.w=t.value.trim();else if(t.id==='f-n')v.n=t.value.trim();else if(t.id==='f-d')v.d=t.value.trim();
+  else if(t.id==='n-x'){let x=t.value;if(/^\s*[-−]/.test(x)&&it.neg){v.s=-1;x=x.replace(/^\s*[-−]/,'');t.value=x;const sb=app.querySelector('[data-act="sgn"]');if(sb)sb.innerHTML='−<small>±</small>';}v.x=x.trim();}
+  else if(t.dataset.m!=null)v.x[+t.dataset.m]=t.value.trim();
+  else if(t.dataset.s!=null)v[+t.dataset.s]=t.value;
+  else return;
+  setVal(it,v);
+});
+app.addEventListener('change',e=>{const t=e.target;if(t.dataset.s!=null&&view()==='test'){const it=ITEM[S.order[S.idx]];const v=curVal(it);v[+t.dataset.s]=t.value;setVal(it,v);}});
+window.addEventListener('hashchange',()=>{applyHashSel();render(true);});
+applyHashSel();render();
+})();
+</script>

@@ -1,0 +1,953 @@
+<title>Wurzel-Werkstatt</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Work+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap');
+
+  :root{
+    --bg:#EEF1F6;
+    --surface:#FFFFFF;
+    --surface-2:#F5F6FA;
+    --ink:#1B2333;
+    --ink-soft:#4B5468;
+    --ink-faint:#7B8299;
+    --accent:#4C4CBF;
+    --accent-ink:#312F8C;
+    --accent-soft:#E4E2FA;
+    --accent-2:#1F8A70;
+    --accent-2-soft:#DCF1EA;
+    --warn:#A6540A;
+    --warn-soft:#FBE9D8;
+    --warn-ink:#7A3E06;
+    --border:#D7DCE6;
+    --shadow: 0 1px 2px rgba(27,35,51,.04), 0 8px 24px rgba(27,35,51,.06);
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#10131C;
+      --surface:#1A1F2E;
+      --surface-2:#212739;
+      --ink:#E9EBF3;
+      --ink-soft:#B1B7CC;
+      --ink-faint:#8991AB;
+      --accent:#9494F2;
+      --accent-ink:#D6D5FB;
+      --accent-soft:#2B2A54;
+      --accent-2:#4FC3A1;
+      --accent-2-soft:#193B32;
+      --warn:#E8A15A;
+      --warn-soft:#3B2A18;
+      --warn-ink:#F3C08A;
+      --border:#2D3345;
+      --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.35);
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#10131C;
+    --surface:#1A1F2E;
+    --surface-2:#212739;
+    --ink:#E9EBF3;
+    --ink-soft:#B1B7CC;
+    --ink-faint:#8991AB;
+    --accent:#9494F2;
+    --accent-ink:#D6D5FB;
+    --accent-soft:#2B2A54;
+    --accent-2:#4FC3A1;
+    --accent-2-soft:#193B32;
+    --warn:#E8A15A;
+    --warn-soft:#3B2A18;
+    --warn-ink:#F3C08A;
+    --border:#2D3345;
+    --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.35);
+  }
+
+  *{box-sizing:border-box;}
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'Work Sans', system-ui, sans-serif;
+    font-size:16px;
+    line-height:1.55;
+    padding-inline:0;
+  }
+  h1,h2,h3{
+    font-family:'Fraunces', Georgia, serif;
+    color:var(--ink);
+    text-wrap:balance;
+    margin:0;
+  }
+  .num, .formula, code{
+    font-family:'JetBrains Mono', ui-monospace, monospace;
+  }
+  a{color:var(--accent);}
+
+  /* ---------- shell ---------- */
+  .shell{
+    display:grid;
+    grid-template-columns:240px minmax(0,1fr);
+    max-width:1180px;
+    margin-inline:auto;
+    gap:0;
+  }
+  @media (max-width:860px){
+    .shell{grid-template-columns:1fr;}
+  }
+
+  /* ---------- sidebar ---------- */
+  .sidebar{
+    position:sticky;
+    top:env(safe-area-inset-top,0px);
+    align-self:start;
+    height:100dvh;
+    overflow-y:auto;
+    padding:28px 18px 28px 20px;
+    border-right:1px solid var(--border);
+  }
+  @media (max-width:860px){
+    .sidebar{position:static;height:auto;border-right:none;border-bottom:1px solid var(--border);padding-bottom:16px;}
+  }
+  .brand{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-bottom:26px;
+  }
+  .brand-mark{
+    width:34px;height:34px;
+    border-radius:9px;
+    background:var(--accent);
+    color:#fff;
+    display:flex;align-items:center;justify-content:center;
+    font-family:'Fraunces',serif;
+    font-weight:700;
+    font-size:18px;
+    flex:none;
+  }
+  .brand-name{
+    font-family:'Fraunces',serif;
+    font-weight:600;
+    font-size:16.5px;
+    line-height:1.2;
+  }
+  .brand-sub{
+    font-size:11.5px;
+    color:var(--ink-faint);
+    letter-spacing:.02em;
+  }
+  nav.topics{
+    display:flex;
+    flex-direction:column;
+    gap:2px;
+  }
+  .nav-label{
+    font-size:11px;
+    letter-spacing:.09em;
+    text-transform:uppercase;
+    color:var(--ink-faint);
+    margin:14px 0 8px 10px;
+  }
+  .nav-label:first-of-type{margin-top:0;}
+  nav.topics a{
+    display:flex;
+    align-items:baseline;
+    gap:9px;
+    text-decoration:none;
+    color:var(--ink-soft);
+    padding:8px 10px;
+    border-radius:8px;
+    font-size:14.5px;
+    font-weight:500;
+  }
+  nav.topics a:hover{background:var(--surface-2); color:var(--ink);}
+  nav.topics a .n{
+    font-family:'JetBrains Mono',monospace;
+    font-size:12px;
+    color:var(--accent);
+    flex:none;
+    width:1.3em;
+  }
+  .progress-note{
+    margin-top:22px;
+    padding:12px 12px;
+    background:var(--accent-soft);
+    border-radius:10px;
+    font-size:12.5px;
+    color:var(--accent-ink);
+    line-height:1.5;
+  }
+
+  /* ---------- main ---------- */
+  main{padding:40px clamp(18px,4vw,56px) 80px;}
+
+  .hero{
+    padding-bottom:30px;
+    margin-bottom:34px;
+    border-bottom:1px solid var(--border);
+  }
+  .hero .eyebrow{
+    display:inline-block;
+    font-size:12px;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    color:var(--accent);
+    font-weight:600;
+    margin-bottom:10px;
+  }
+  .hero h1{font-size:clamp(28px,4vw,38px); font-weight:600;}
+  .hero p{
+    max-width:60ch;
+    color:var(--ink-soft);
+    margin-top:10px;
+    font-size:15.5px;
+  }
+  .hero-grid{
+    display:grid;
+    grid-template-columns:repeat(5,1fr);
+    gap:10px;
+    margin-top:22px;
+  }
+  @media (max-width:760px){.hero-grid{grid-template-columns:repeat(2,1fr);}}
+  .hero-grid a{
+    text-decoration:none;
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:10px;
+    padding:10px 12px;
+    font-size:12.5px;
+    color:var(--ink-soft);
+    box-shadow:var(--shadow);
+  }
+  .hero-grid a b{display:block; color:var(--ink); font-size:13.5px; font-weight:600; margin-bottom:2px;}
+
+  section.topic{
+    margin-bottom:56px;
+    scroll-margin-top:20px;
+  }
+  section.topic .eyebrow{
+    font-size:12px;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    color:var(--accent);
+    font-weight:600;
+  }
+  section.topic h2{
+    font-size:clamp(22px,3vw,28px);
+    font-weight:600;
+    margin-top:6px;
+    margin-bottom:18px;
+  }
+
+  .card{
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:14px;
+    padding:20px 22px;
+    box-shadow:var(--shadow);
+  }
+  .explain{margin-bottom:16px;}
+  .explain p{margin:0 0 10px;}
+  .explain p:last-child{margin-bottom:0;}
+
+  .rule-box{
+    background:var(--accent-soft);
+    border-radius:12px;
+    padding:14px 18px;
+    margin:16px 0;
+    display:flex;
+    gap:12px;
+    align-items:flex-start;
+  }
+  .rule-box .tag{
+    font-size:11px;
+    letter-spacing:.06em;
+    text-transform:uppercase;
+    font-weight:700;
+    color:var(--accent-ink);
+    background:var(--surface);
+    padding:3px 8px;
+    border-radius:6px;
+    flex:none;
+  }
+  .rule-box .content{font-size:14.5px; color:var(--ink); line-height:1.6;}
+  .rule-box .formula{display:block; margin-top:4px; font-size:15px; color:var(--accent-ink); font-weight:600;}
+
+  h3.sub{
+    font-family:'Work Sans',sans-serif;
+    font-weight:700;
+    font-size:13px;
+    letter-spacing:.06em;
+    text-transform:uppercase;
+    color:var(--ink-faint);
+    margin:26px 0 12px;
+  }
+
+  .exercise-list{display:flex; flex-direction:column; gap:10px;}
+  details.exercise{
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:12px;
+    overflow:hidden;
+  }
+  details.exercise summary{
+    list-style:none;
+    cursor:pointer;
+    padding:14px 18px;
+    display:flex;
+    align-items:center;
+    gap:12px;
+    font-size:14.5px;
+    color:var(--ink);
+  }
+  details.exercise summary::-webkit-details-marker{display:none;}
+  details.exercise summary .idx{
+    font-family:'JetBrains Mono',monospace;
+    font-size:12px;
+    font-weight:600;
+    color:#fff;
+    background:var(--accent);
+    width:22px;height:22px;
+    border-radius:6px;
+    display:flex;align-items:center;justify-content:center;
+    flex:none;
+  }
+  details.exercise summary .task{flex:1;}
+  details.exercise summary .chevron{
+    color:var(--ink-faint);
+    transition:transform .18s ease;
+    flex:none;
+    font-size:12px;
+  }
+  details.exercise[open] summary .chevron{transform:rotate(90deg);}
+  details.exercise[open] summary{border-bottom:1px solid var(--border);}
+  details.exercise.app summary .idx{background:var(--accent-2); width:auto; padding:0 6px; font-size:11px;}
+  details.exercise.riddle summary .idx{background:var(--warn); width:auto; padding:0 6px; font-size:11px;}
+  .afb{
+    font-family:'Work Sans',sans-serif;
+    font-size:10px;
+    font-weight:700;
+    letter-spacing:.03em;
+    padding:3px 8px;
+    border-radius:20px;
+    flex:none;
+    white-space:nowrap;
+  }
+  .afb1{background:var(--accent-soft); color:var(--accent-ink);}
+  .afb2{background:var(--accent-2-soft); color:var(--accent-2);}
+  .afb3{background:var(--warn-soft); color:var(--warn-ink);}
+  .afb-legend{
+    display:flex;
+    flex-wrap:wrap;
+    gap:9px 20px;
+    margin-top:18px;
+  }
+  .afb-item{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    font-size:12.5px;
+    color:var(--ink-soft);
+  }
+  .solution{
+    padding:14px 18px 16px 50px;
+    background:var(--surface-2);
+    font-size:14px;
+    color:var(--ink-soft);
+  }
+  .solution .sol-label{
+    font-size:11px;
+    letter-spacing:.07em;
+    text-transform:uppercase;
+    font-weight:700;
+    color:var(--accent-2);
+    margin-bottom:6px;
+  }
+  .solution .result{
+    color:var(--ink);
+    font-weight:600;
+    font-family:'JetBrains Mono',monospace;
+  }
+  .solution .steps{margin-top:4px;}
+  .solution .steps div{margin-bottom:3px;}
+
+  /* radical / sqrt rendering */
+  .radical{display:inline-flex; align-items:baseline; white-space:nowrap;}
+  .radical .sym{font-size:1.05em; margin-right:-1px;}
+  .radical .val{border-top:1.6px solid currentColor; padding:0 4px 0 3px;}
+
+  /* pythagoras diagram */
+  .triangle-wrap{
+    display:flex;
+    gap:22px;
+    align-items:center;
+    flex-wrap:wrap;
+    margin:16px 0 20px;
+  }
+  .triangle-wrap svg{flex:none;}
+  .triangle-note{font-size:14px; color:var(--ink-soft); max-width:34ch;}
+
+  /* fehlerquellen */
+  .mistake{
+    background:var(--warn-soft);
+    border-radius:12px;
+    padding:16px 18px;
+    margin-bottom:14px;
+  }
+  .mistake .title{
+    font-weight:700;
+    color:var(--warn-ink);
+    font-size:14.5px;
+    margin-bottom:8px;
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .mistake .title .dot{
+    width:8px;height:8px;border-radius:50%;
+    background:var(--warn);
+    flex:none;
+  }
+  .compare{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+    margin-top:6px;
+  }
+  @media (max-width:560px){.compare{grid-template-columns:1fr;}}
+  .compare .box{
+    border-radius:9px;
+    padding:9px 12px;
+    font-size:13.5px;
+    font-family:'JetBrains Mono',monospace;
+  }
+  .compare .wrong{background:rgba(166,84,10,.14); color:var(--warn-ink);}
+  .compare .right{background:var(--accent-2-soft); color:var(--accent-2);}
+  .compare .box .lbl{
+    display:block;
+    font-family:'Work Sans',sans-serif;
+    font-size:10.5px;
+    letter-spacing:.06em;
+    text-transform:uppercase;
+    font-weight:700;
+    margin-bottom:3px;
+    opacity:.8;
+  }
+  .mistake .why{font-size:13.5px; color:var(--ink-soft); margin-top:8px;}
+
+  footer{
+    max-width:1180px;
+    margin:0 auto;
+    padding:0 clamp(18px,4vw,56px) 50px;
+    color:var(--ink-faint);
+    font-size:12.5px;
+    border-top:1px solid var(--border);
+    padding-top:18px;
+  }
+</style>
+
+<div class="shell">
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-mark">√</div>
+      <div>
+        <div class="brand-name">Wurzel&#8209;Werkstatt</div>
+        <div class="brand-sub">Lernplattform Algebra</div>
+      </div>
+    </div>
+    <nav class="topics">
+      <div class="nav-label">Themen</div>
+      <a href="#t1"><span class="n">01</span> Quadratwurzel</a>
+      <a href="#t2"><span class="n">02</span> Rechnen mit Wurzeln</a>
+      <a href="#t3"><span class="n">03</span> Gleichung x&sup2;=a</a>
+      <a href="#t4"><span class="n">04</span> Fehlerquellen</a>
+      <a href="#t5"><span class="n">05</span> Satz des Pythagoras</a>
+    </nav>
+    <div class="progress-note">Jede Aufgabe l&auml;sst sich aufklappen &ndash; die Musterl&ouml;sung erscheint mit Rechenweg.</div>
+  </aside>
+
+  <main>
+    <div class="hero">
+      <span class="eyebrow">Klasse 9 &middot; Algebra &amp; Geometrie</span>
+      <h1>Quadratwurzeln von Grund auf verstehen</h1>
+      <p>F&uuml;nf Themenbl&ouml;cke, jeweils mit Erkl&auml;rung, Merks&auml;tzen und &Uuml;bungsaufgaben samt Musterl&ouml;sung. Am besten der Reihe nach durcharbeiten &ndash; jedes Thema baut auf dem vorherigen auf.</p>
+      <div class="afb-legend">
+        <div class="afb-item"><span class="afb afb1">AFB I</span> Reproduzieren &ndash; Bekanntes anwenden</div>
+        <div class="afb-item"><span class="afb afb2">AFB II</span> Zusammenh&auml;nge herstellen &ndash; &uuml;bertragen &amp; verkn&uuml;pfen</div>
+        <div class="afb-item"><span class="afb afb3">AFB III</span> Reflektieren &ndash; begr&uuml;nden, verallgemeinern, pr&uuml;fen</div>
+      </div>
+      <div class="hero-grid">
+        <a href="#t1"><b>01 Grundlagen</b>Was ist &radic;a?</a>
+        <a href="#t2"><b>02 Rechenregeln</b>Multiplizieren, teilweise Wurzelziehen</a>
+        <a href="#t3"><b>03 Gleichungen</b>x&sup2; = a l&ouml;sen</a>
+        <a href="#t4"><b>04 Stolperfallen</b>H&auml;ufige Fehler</a>
+        <a href="#t5"><b>05 Pythagoras</b>a&sup2;+b&sup2;=c&sup2;</a>
+      </div>
+    </div>
+
+    <!-- ================= TOPIC 1 ================= -->
+    <section class="topic" id="t1">
+      <span class="eyebrow">Thema 01</span>
+      <h2>Quadratwurzel</h2>
+      <div class="card">
+        <div class="explain">
+          <p>Die <b>Quadratwurzel</b> aus einer Zahl <i>a</i> ist diejenige nicht-negative Zahl, die mit sich selbst multipliziert wieder <i>a</i> ergibt. Man schreibt <span class="radical"><span class="sym">&radic;</span><span class="val">a</span></span> und nennt <i>a</i> den <b>Radikanden</b>.</p>
+          <p>Quadratwurzeln sind nur f&uuml;r Zahlen <b>a &ge; 0</b> definiert &ndash; aus einer negativen Zahl kann man (im Reellen) keine Quadratwurzel ziehen, da kein Quadrat einer Zahl negativ werden kann.</p>
+        </div>
+        <div class="rule-box">
+          <span class="tag">Merksatz</span>
+          <div class="content">
+            F&uuml;r a &ge; 0 gilt:
+            <span class="formula"><span class="radical"><span class="sym">&radic;</span><span class="val">a</span></span> = b &nbsp;&hArr;&nbsp; b&sup2; = a &nbsp;und&nbsp; b &ge; 0</span>
+          </div>
+        </div>
+        <div class="explain">
+          <p><b>Beispiele:</b> <span class="num">&radic;25 = 5</span>, weil 5&sup2; = 25. &nbsp; <span class="num">&radic;0 = 0</span>. &nbsp; <span class="num">&radic;1 = 1</span>.</p>
+          <p>Zahlen wie 1, 4, 9, 16, 25, 36 ... , deren Wurzel eine ganze Zahl ist, hei&szlig;en <b>Quadratzahlen</b>. Diese lohnt es sich auswendig zu kennen (bis mindestens 20&sup2; = 400).</p>
+        </div>
+      </div>
+
+      <h3 class="sub">&Uuml;bungsaufgaben</h3>
+      <div class="exercise-list">
+        <details class="exercise">
+          <summary><span class="idx">1</span><span class="task">Berechne &radic;16</span><span class="afb afb1">AFB I</span><span class="chevron">&#9656;</span></summary>
+          <div class="solution"><div class="sol-label">Musterl&ouml;sung</div>4&sup2; = 16, also ist <span class="result">&radic;16 = 4</span>.</div>
+        </details>
+        <details class="exercise">
+          <summary><span class="idx">2</span><span class="task">Berechne &radic;81</span><span class="afb afb1">AFB I</span><span class="chevron">&#9656;</span></summary>
+          <div class="solution"><div class="sol-label">Musterl&ouml;sung</div>9&sup2; = 81, also ist <span class="result">&radic;81 = 9</span>.</div>
+        </details>
+        <details class="exercise">
+          <summary><span class="idx">3</span><span class="task">Berechne &radic;144</span><span class="afb afb1">AFB I</span><span class="chevron">&#9656;</span></summary>
+          <div class="solution"><div class="sol-label">Musterl&ouml;sung</div>12&sup2; = 144, also ist <span class="result">&radic;144 = 12</span>.</div>
+        </details>
+        <details class="exercise">
+          <summary><span class="idx">4</span><span class="task">Berechne &radic;0,25</span><span class="afb afb2">AFB II</span><span class="chevron">&#9656;</span></summary>
+          <div class="solution"><div class="sol-label">Musterl&ouml;sung</div>0,5&sup2; = 0,25, also ist <span class="result">&radic;0,25 = 0,5</span>.</div>
+        </details>
+        <details class="exercise">
+          <summary><span class="idx">5</span><span class="task">Berechne &radic;(1/9)</span><span class="afb afb2">AFB II</span><span class="chevron">&#9656;</span></summary>
+          <div class="solution"><div class="sol-label">Musterl&ouml;sung</div>(1/3)&sup2; = 1/9, also ist <span class="result">&radic;(1/9) = 1/3</span>.</div>
+        </details>
+        <details class="exercise">
+          <summary><span class="idx">6</span><span class="task">Begr&uuml;nde, warum &radic;(&minus;9) im Reellen nicht definiert ist.</span><span class="afb afb3">AFB III</span><span class="chevron">&#9656;</span></summary>
+          <div class="solution"><div class="sol-label">Musterl&ouml;sung</div>Es m&uuml;sste eine Zahl b geben mit b&sup2; = &minus;9. Da das Quadrat jeder reellen Zahl aber immer &ge; 0 ist, gibt es kein solches b. <span class="result">Keine L&ouml;sung im Reellen.</span></div>
+        </details>
+      </div>
+    </section>
+
+    <!-- ================= TOPIC 2 ================= -->
+    <section class="topic" id="t2">
+      <span class="eyebrow">Thema 02</span>
+      <h2>Rechnen mit Quadratwurzeln</h2>
+      <div class="card">
+        <div class="explain">
+          <p>F&uuml;r das Rechnen mit Wurzeln gelten feste Regeln. Sie gelten jeweils nur, wenn die Radikanden nicht negativ sind.</p>
+        </div>
+        <div class="rule-box">
+          <span class="tag">Regel 1</span>
+          <div class="content">Produkt zweier Wurzeln:
+            <span class="formula"><span class="radical"><span class="sym">&radic;</span><span class="val">a</span></span> &middot; <span class="radical"><span class="sym">&radic;</span><span class="val">b</span></span> = <span class="radical"><span class="sym">&radic;</span><span class="val">a&middot;b</span></span></span>
+          </div>
+        </div>
+        <div class="rule-box">
+          <span class="tag">Regel 2</span>
+          <div class="content">Quotient zweier Wurzeln (b &ne; 0):
+            <span class="formula"><span class="radical"><span class="sym">&radic;</span><span class="val">a</span></span> &divide; <span class="radical"><span class="sym">&radic;</span><span class="val">b</span></span> = <span class="radical"><span class="sym">&radic;</span><span class="val">a/b</span></span></span>
+          </div>
+        </div>
+        <div class="rule-box">
+          <span class="tag">Regel 3</span>
+          <div class="content">Teilweises Wurzelziehen &ndash; einen quadratischen Faktor aus dem Radikanden herausziehen:
+            <span class="formula"><span class="radical"><span class="sym">&radic;</span><span class="val">50</span></span> = <span class="radical"><span class="sym">&radic;</span><span class="val">25&middot;2</span></span> = <span class="radical"><span class="sym">&radic;</span><span class="val">25</span></span>&middot;<span class="radical"><span class="sym">&radic;</span><span class="val">2</span></span> = 5<span class="radical"><span class="sym">&radic;</span><span class="val">2</span></span></span>
+          </div>
+        </div>
+        <div class="rule-box">
+          <span class="tag">Regel 4</span>
+          <div class="content">Addieren/Subtrahieren geht nur bei <b>gleichem Radikanden</b> (wie bei Variablen mit gleicher Basis):
+            <span class="formula">3<span class="radical"><span class="sym">&radic;</span><span class="val">2</span></span> + 5<span class="radical"><span class="sym">&radic;</span><span class="val">2</span></span> = 8<span class="radical"><span class="sym">&radic;</span><span class="val">2</span></span></span>
+          </div>
+        </div>
+      </div>
+
+      <h3 class="sub">&Uuml;bungsaufgaben</h3>
+      <div class="exercise-list">
+        <details class="exercise">
+          <summary><span class="idx">1</span><span class="task">Ziehe teilweise die Wurzel: &radic;12</span><span class="afb afb1">AFB I</span><span class="chevron">&#9656;</span></summary>
+          <div class="solution"><div class="sol-label">Musterl&ouml;sung</div>
+            <div class="steps">
+              <div>&radic;12 = &radic;(4&middot;3) = &radic;4 &middot; &radic;3</div>
+            </div>
+            <span class="result">= 2&radic;3</span>
+          </div>
+        </details>
+        <details class="exercise">
+          <summary><span class="idx">2</span><span class="task">Ziehe teilweise die Wurzel: &radic;72</span><span class="afb afb1">AFB I</span><span class="chevron">&#9656;</span></summary>
+          <div class="solution"><div class="sol-label">Musterl&ouml;sung</div>
+            <div class="steps"><div>&radic;72 = &radic;(36&middot;2) = &radic;36 &middot; &radic;2</div></div>
+            <span class="result">= 6&radic;2</span>
+          </div>
+        </details>
+        <details class="exercise">
+          <summary><span class="idx">3</span><span class="task">Berechne: &radic;3 &middot; &radic;12</span><span class="afb afb1">AFB I</span><span class="chevron">&#9656;</span></summary>
+          <div class="solution"><div class="sol-label">Musterl&ouml;sung</div>
+            <div class="steps"><div>&radic;3 &middot; &radic;12 = &radic;(3&middot;12) = &radic;36</div></div>
+            <span class="result">= 6</span>
+          </div>
+        </details>
+        <details class="exercise">
+          <summary><span class="idx">4</span><span class="task">Vereinfache: &radic;50 &minus; &radic;8</span><span class="afb afb2">AFB II</span><span class="chevron">&#9656;</span></summary>
+          <div class="solution"><div class="sol-label">Musterl&ouml;sung</div>
+            <div class="steps">
+              <div>&radic;50 = 5&radic;2 &nbsp;und&nbsp; &radic;8 = 2&radic;2</div>
+              <div>5&radic;2 &minus; 2&radic;2</div>
+            </div>
+            <span class="result">= 3&radic;2</span>
+          </div>
+        </details>
+        <details class="exercise">
+          <summary><span class="idx">5</span><span class="task">Vereinfache: &radic;8 + &radic;18</span><span class="afb afb2">AFB II</span><span class="chevron">&#9656;</span></summary>
+          <div class="solution"><div class="sol-label">Musterl&ouml;sung</div>
+            <div class="steps">
+              <div>&radic;8 = 2&radic;2 &nbsp;und&nbsp; &radic;18 = 3&radic;2</div>
+              <div>2&radic;2 + 3&radic;2</div>
+            </div>
+            <span class="result">= 5&radic;2</span>
+          </div>
+        </details>
+        <details class="exercise">
+          <summary><span class="idx">6</span><span class="task">Berechne: &radic;45 &divide; &radic;5</span><span class="afb afb2">AFB II</span><span class="chevron">&#9656;</span></summary>
+          <div class="solution"><div class="sol-label">Musterl&ouml;sung</div>
+            <div class="steps"><div>&radic;45 &divide; &radic;5 = &radic;(45/5) = &radic;9</div></div>
+            <span class="result">= 3</span>
+          </div>
+        </details>
+        <details class="exercise">
+          <summary><span class="idx">7</span><span class="task">Zeige, dass &radic;8 + &radic;18 = &radic;50 gilt &ndash; ohne beide Seiten als Dezimalzahl auszurechnen.</span><span class="afb afb3">AFB III</span><span class="chevron">&#9656;</span></summary>
+          <div class="solution"><div class="sol-label">Musterl&ouml;sung</div>
+            <div class="steps">
+              <div>&radic;8 = 2&radic;2 &nbsp;und&nbsp; &radic;18 = 3&radic;2 &nbsp;&rArr;&nbsp; &radic;8+&radic;18 = 5&radic;2</div>
+              <div>&radic;50 = &radic;(25&middot;2) = 5&radic;2</div>
+            </div>
+            <span class="result">Beide Seiten sind gleich 5&radic;2, die Gleichung stimmt.</span>
+          </div>
+        </details>
+      </div>
+    </section>
+
+    <!-- ================= TOPIC 3 ================= -->
+    <section class="topic" id="t3">
+      <span class="eyebrow">Thema 03</span>
+      <h2>Quadratische Gleichung der Form x&sup2; = a l&ouml;sen</h2>
+      <div class="card">
+        <div class="explain">
+          <p>Gleichungen der Form <b>x&sup2; = a</b> werden gel&ouml;st, indem man auf beiden Seiten die Wurzel zieht. Dabei muss man beachten, dass es <b>zwei</b> Zahlen geben kann, deren Quadrat a ergibt: +&radic;a und &minus;&radic;a.</p>
+        </div>
+        <div class="rule-box">
+          <span class="tag">Fall a &gt; 0</span>
+          <div class="content">Zwei L&ouml;sungen:
+            <span class="formula">x&sup2; = a &nbsp;&rArr;&nbsp; x&#8321; = +&radic;a &nbsp;und&nbsp; x&#8322; = &minus;&radic;a &nbsp;(kurz: x = &plusmn;&radic;a)</span>
+          </div>
+        </div>
+        <div class="rule-box">
+          <span class="tag">Fall a = 0</span>
+          <div class="content">Genau eine L&ouml;sung: <span class="formula">x&sup2; = 0 &nbsp;&rArr;&nbsp; x = 0</span></div>
+        </div>
+        <div class="rule-box">
+          <span class="tag">Fall a &lt; 0</span>
+          <div class="content">Keine L&ouml;sung im Reellen &ndash; kein Quadrat kann negativ sein.</div>
+        </div>
+        <div class="explain">
+          <p>Steht vor dem x&sup2; ein Faktor oder ist die Gleichung nicht direkt in dieser Form, wird zuerst nach x&sup2; isoliert (umformen), bevor die Wurzel gezogen wird.</p>
+        </div>
+      </div>
+
+      <h3 class="sub">&Uuml;bungsaufgaben</h3>
+      <div class="exercise-list">
+        <details class="exercise">
+          <summary><span class="idx">1</span><span class="task">L&ouml;se: x&sup2; = 36</span><span class="afb afb1">AFB I</span><span class="chevron">&#9656;</span></summary>
+          <div class="solution"><div class="sol-label">Musterl&ouml;sung</div>&radic;36 = 6 &nbsp;&rArr;&nbsp; <span class="result">x = +6 oder x = &minus;6</span></div>
+        </details>
+        <details class="exercise">
+          <summary><span class="idx">2</span><span class="task">L&ouml;se: x&sup2; = 49</span><span class="afb afb1">AFB I</span><span class="chevron">&#9656;</span></summary>
+          <div class="solution"><div class="sol-label">Musterl&ouml;sung</div>&radic;49 = 7 &nbsp;&rArr;&nbsp; <span class="result">x = +7 oder x = &minus;7</span></div>
+        </details>
+        <details class="exercise">
+          <summary><span class="idx">3</span><span class="task">L&ouml;se: x&sup2; = 0</span><span class="afb afb1">AFB I</span><span class="chevron">&#9656;</span></summary>
+          <div class="solution"><div class="sol-label">Musterl&ouml;sung</div><span class="result">x = 0</span> (nur eine L&ouml;sung, da +0 = &minus;0)</div>
+        </details>
+        <details class="exercise">
+          <summary><span class="idx">4</span><span class="task">L&ouml;se: x&sup2; = &minus;9</span><span class="afb afb1">AFB I</span><span class="chevron">&#9656;</span></summary>
+          <div class="solution"><div class="sol-label">Musterl&ouml;sung</div>Es gibt keine reelle Zahl, deren Quadrat negativ ist. <span class="result">Keine L&ouml;sung (L = { })</span></div>
+        </details>
+        <details class="exercise">
+          <summary><span class="idx">5</span><span class="task">L&ouml;se: 2x&sup2; = 32</span><span class="afb afb2">AFB II</span><span class="chevron">&#9656;</span></summary>
+          <div class="solution"><div class="sol-label">Musterl&ouml;sung</div>
+            <div class="steps">
+              <div>2x&sup2; = 32 &nbsp;| &divide; 2</div>
+              <div>x&sup2; = 16</div>
+            </div>
+            <span class="result">x = +4 oder x = &minus;4</span>
+          </div>
+        </details>
+        <details class="exercise">
+          <summary><span class="idx">6</span><span class="task">L&ouml;se: x&sup2; &minus; 5 = 20</span><span class="afb afb2">AFB II</span><span class="chevron">&#9656;</span></summary>
+          <div class="solution"><div class="sol-label">Musterl&ouml;sung</div>
+            <div class="steps">
+              <div>x&sup2; &minus; 5 = 20 &nbsp;| + 5</div>
+              <div>x&sup2; = 25</div>
+            </div>
+            <span class="result">x = +5 oder x = &minus;5</span>
+          </div>
+        </details>
+      </div>
+
+      <h3 class="sub">Anwendungsaufgaben &ndash; eine L&ouml;sung begr&uuml;ndet verwerfen</h3>
+      <div class="card" style="margin-bottom:14px;">
+        <div class="explain">
+          <p>x&sup2; = a liefert rechnerisch meist <b>zwei</b> L&ouml;sungen. In Sachzusammenh&auml;ngen (L&auml;ngen, Zeiten, Fl&auml;chen ...) ist aber oft nur eine davon sinnvoll. Die zweite L&ouml;sung muss dann ausdr&uuml;cklich mit einer Begr&uuml;ndung ausgeschlossen werden &ndash; einfaches Weglassen reicht nicht.</p>
+        </div>
+      </div>
+      <div class="exercise-list">
+        <details class="exercise app">
+          <summary><span class="idx">A1</span><span class="task">Ein quadratisches Grundst&uuml;ck hat eine Fl&auml;che von 196 m&sup2;. Wie lang ist eine Seite?</span><span class="afb afb2">AFB II</span><span class="chevron">&#9656;</span></summary>
+          <div class="solution"><div class="sol-label">Musterl&ouml;sung</div>
+            <div class="steps">
+              <div>Fl&auml;che eines Quadrats: x&sup2; = 196</div>
+              <div>x&sup2; = 196 &nbsp;&rArr;&nbsp; x&#8321; = +14, &nbsp; x&#8322; = &minus;14</div>
+            </div>
+            <div class="why" style="margin-top:8px;">x&#8322; = &minus;14 wird verworfen, da eine Seitenl&auml;nge nicht negativ sein kann.</div>
+            <span class="result">Die Seite ist 14 m lang.</span>
+          </div>
+        </details>
+        <details class="exercise app">
+          <summary><span class="idx">A2</span><span class="task">Freier Fall (vereinfacht): t&sup2; = h &divide; 5, mit h in Metern und t in Sekunden. Ein Apfel f&auml;llt aus 20 m H&ouml;he. Wie lange f&auml;llt er?</span><span class="afb afb2">AFB II</span><span class="chevron">&#9656;</span></summary>
+          <div class="solution"><div class="sol-label">Musterl&ouml;sung</div>
+            <div class="steps">
+              <div>t&sup2; = 20 &divide; 5 = 4</div>
+              <div>t&sup2; = 4 &nbsp;&rArr;&nbsp; t&#8321; = +2, &nbsp; t&#8322; = &minus;2</div>
+            </div>
+            <div class="why" style="margin-top:8px;">t&#8322; = &minus;2 wird verworfen, da der Fall bei t = 0 beginnt und eine Zeit nicht negativ sein kann.</div>
+            <span class="result">Der Apfel f&auml;llt 2 Sekunden lang.</span>
+          </div>
+        </details>
+        <details class="exercise app">
+          <summary><span class="idx">A3</span><span class="task">Eine quadratische Glasscheibe hat eine Fl&auml;che von 12,25 m&sup2;. Wie lang ist eine Kante der Scheibe?</span><span class="afb afb2">AFB II</span><span class="chevron">&#9656;</span></summary>
+          <div class="solution"><div class="sol-label">Musterl&ouml;sung</div>
+            <div class="steps">
+              <div>x&sup2; = 12,25</div>
+              <div>x&sup2; = 12,25 &nbsp;&rArr;&nbsp; x&#8321; = +3,5, &nbsp; x&#8322; = &minus;3,5</div>
+            </div>
+            <div class="why" style="margin-top:8px;">x&#8322; = &minus;3,5 wird verworfen, da eine Kantenl&auml;nge nicht negativ sein kann.</div>
+            <span class="result">Die Kante ist 3,5 m lang.</span>
+          </div>
+        </details>
+      </div>
+
+      <h3 class="sub">R&auml;tselaufgaben</h3>
+      <div class="exercise-list">
+        <details class="exercise riddle">
+          <summary><span class="idx">R1</span><span class="task">Ich denke mir eine Zahl und quadriere sie. Das Ergebnis ist 121. An welche Zahl(en) k&ouml;nnte ich gedacht haben?</span><span class="afb afb2">AFB II</span><span class="chevron">&#9656;</span></summary>
+          <div class="solution"><div class="sol-label">Musterl&ouml;sung</div>
+            <div class="steps"><div>x&sup2; = 121</div></div>
+            <span class="result">x = 11 oder x = &minus;11</span>
+          </div>
+        </details>
+        <details class="exercise riddle">
+          <summary><span class="idx">R2</span><span class="task">Das Quadrat einer Zahl ist um 5 gr&ouml;&szlig;er als 20. Welche Zahl ist gemeint?</span><span class="afb afb2">AFB II</span><span class="chevron">&#9656;</span></summary>
+          <div class="solution"><div class="sol-label">Musterl&ouml;sung</div>
+            <div class="steps">
+              <div>x&sup2; = 20 + 5</div>
+              <div>x&sup2; = 25</div>
+            </div>
+            <span class="result">x = 5 oder x = &minus;5</span>
+          </div>
+        </details>
+        <details class="exercise riddle">
+          <summary><span class="idx">R3</span><span class="task">Addiert man zum Quadrat einer Zahl 7, erh&auml;lt man 43. Wie lautet die Zahl?</span><span class="afb afb2">AFB II</span><span class="chevron">&#9656;</span></summary>
+          <div class="solution"><div class="sol-label">Musterl&ouml;sung</div>
+            <div class="steps">
+              <div>x&sup2; + 7 = 43 &nbsp;| &minus; 7</div>
+              <div>x&sup2; = 36</div>
+            </div>
+            <span class="result">x = 6 oder x = &minus;6</span>
+          </div>
+        </details>
+        <details class="exercise riddle">
+          <summary><span class="idx">R4</span><span class="task">Verdreifacht man das Quadrat einer Zahl, erh&auml;lt man 75. Finde die Zahl &ndash; und &uuml;berlege, ob hier beide L&ouml;sungen sinnvoll sind.</span><span class="afb afb3">AFB III</span><span class="chevron">&#9656;</span></summary>
+          <div class="solution"><div class="sol-label">Musterl&ouml;sung</div>
+            <div class="steps">
+              <div>3x&sup2; = 75 &nbsp;| &divide; 3</div>
+              <div>x&sup2; = 25</div>
+            </div>
+            <div class="why" style="margin-top:8px;">Da hier keine Sachsituation vorliegt (nur eine gedachte Zahl), sind beide L&ouml;sungen g&uuml;ltig.</div>
+            <span class="result">x = 5 oder x = &minus;5</span>
+          </div>
+        </details>
+      </div>
+    </section>
+
+    <!-- ================= TOPIC 4 ================= -->
+    <section class="topic" id="t4">
+      <span class="eyebrow">Thema 04</span>
+      <h2>Fehlerquellen</h2>
+      <div class="card">
+        <div class="explain">
+          <p>Diese Fehler tauchen bei Wurzeln besonders h&auml;ufig auf. Vergleiche jeweils die falsche mit der richtigen Vorgehensweise und erkl&auml;re, warum die linke Seite nicht stimmt. <span class="afb afb3">AFB III</span></p>
+        </div>
+
+        <div class="mistake">
+          <div class="title"><span class="dot"></span>Wurzel einer Summe &ne; Summe der Wurzeln</div>
+          <div class="compare">
+            <div class="box wrong"><span class="lbl">Falsch</span>&radic;(9+16) = &radic;9 + &radic;16 = 3+4 = 7</div>
+            <div class="box right"><span class="lbl">Richtig</span>&radic;(9+16) = &radic;25 = 5</div>
+          </div>
+          <div class="why">Die Wurzel darf <b>nicht</b> einzeln auf Summanden verteilt werden &ndash; erst addieren, dann die Wurzel ziehen.</div>
+        </div>
+
+        <div class="mistake">
+          <div class="title"><span class="dot"></span>Zweite L&ouml;sung bei x&sup2;=a vergessen</div>
+          <div class="compare">
+            <div class="box wrong"><span class="lbl">Falsch</span>x&sup2; = 25 &nbsp;&rArr;&nbsp; x = 5</div>
+            <div class="box right"><span class="lbl">Richtig</span>x&sup2; = 25 &nbsp;&rArr;&nbsp; x = +5 oder x = &minus;5</div>
+          </div>
+          <div class="why">Sowohl 5&sup2; als auch (&minus;5)&sup2; ergeben 25 &ndash; beide L&ouml;sungen geh&ouml;ren zur L&ouml;sungsmenge.</div>
+        </div>
+
+        <div class="mistake">
+          <div class="title"><span class="dot"></span>Wurzeln mit unterschiedlichem Radikanden addieren</div>
+          <div class="compare">
+            <div class="box wrong"><span class="lbl">Falsch</span>&radic;2 + &radic;3 = &radic;5</div>
+            <div class="box right"><span class="lbl">Richtig</span>&radic;2 + &radic;3 bleibt stehen (nicht vereinfachbar)</div>
+          </div>
+          <div class="why">Nur Wurzeln mit <b>gleichem</b> Radikanden lassen sich zusammenfassen, so wie nur gleichartige Variablen addiert werden.</div>
+        </div>
+
+        <div class="mistake">
+          <div class="title"><span class="dot"></span>&radic;(a&sup2;) ist nicht immer a</div>
+          <div class="compare">
+            <div class="box wrong"><span class="lbl">Falsch</span>&radic;((&minus;4)&sup2;) = &minus;4</div>
+            <div class="box right"><span class="lbl">Richtig</span>&radic;((&minus;4)&sup2;) = &radic;16 = 4 = |&minus;4|</div>
+          </div>
+          <div class="why">Die Quadratwurzel ist per Definition nie negativ &ndash; es gilt allgemein &radic;(a&sup2;) = |a|.</div>
+        </div>
+
+        <div class="mistake">
+          <div class="title"><span class="dot"></span>Faktor vor x&sup2; beim Wurzelziehen vergessen</div>
+          <div class="compare">
+            <div class="box wrong"><span class="lbl">Falsch</span>3x&sup2; = 27 &nbsp;&rArr;&nbsp; x = &plusmn;&radic;27</div>
+            <div class="box right"><span class="lbl">Richtig</span>3x&sup2; = 27 &nbsp;| &divide;3&nbsp; &rArr;&nbsp; x&sup2; = 9 &nbsp;&rArr;&nbsp; x = &plusmn;3</div>
+          </div>
+          <div class="why">Vor dem Wurzelziehen muss x&sup2; zuerst vollst&auml;ndig isoliert werden, also durch den Faktor teilen.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= TOPIC 5 ================= -->
+    <section class="topic" id="t5">
+      <span class="eyebrow">Thema 05</span>
+      <h2>Satz des Pythagoras</h2>
+      <div class="card">
+        <div class="explain">
+          <p>In jedem <b>rechtwinkligen Dreieck</b> gilt: Die Summe der Quadrate der beiden Katheten ist gleich dem Quadrat der Hypotenuse. Die Hypotenuse <i>c</i> liegt dabei immer gegen&uuml;ber dem rechten Winkel und ist die l&auml;ngste Seite.</p>
+        </div>
+
+        <div class="triangle-wrap">
+          <svg width="220" height="170" viewBox="0 0 220 170" role="img" aria-label="Rechtwinkliges Dreieck mit Katheten a und b und Hypotenuse c">
+            <polygon points="20,150 20,20 190,150" fill="none" stroke="var(--accent)" stroke-width="3"/>
+            <rect x="20" y="130" width="20" height="20" fill="none" stroke="var(--ink-faint)" stroke-width="2"/>
+            <text x="4" y="90" fill="var(--ink)" font-family="JetBrains Mono, monospace" font-size="15">b</text>
+            <text x="95" y="168" fill="var(--ink)" font-family="JetBrains Mono, monospace" font-size="15">a</text>
+            <text x="95" y="78" fill="var(--ink)" font-family="JetBrains Mono, monospace" font-size="15" transform="rotate(-33 95 78)">c</text>
+          </svg>
+          <div class="triangle-note">a und b sind die Katheten (die beiden Seiten am rechten Winkel), c ist die Hypotenuse.</div>
+        </div>
+
+        <div class="rule-box">
+          <span class="tag">Merksatz</span>
+          <div class="content">Satz des Pythagoras:
+            <span class="formula">a&sup2; + b&sup2; = c&sup2;</span>
+            Nach der gesuchten Seite umgestellt:
+            <span class="formula">c = <span class="radical"><span class="sym">&radic;</span><span class="val">a&sup2;+b&sup2;</span></span> &nbsp;&nbsp; a = <span class="radical"><span class="sym">&radic;</span><span class="val">c&sup2;&minus;b&sup2;</span></span> &nbsp;&nbsp; b = <span class="radical"><span class="sym">&radic;</span><span class="val">c&sup2;&minus;a&sup2;</span></span></span>
+          </div>
+        </div>
+      </div>
+
+      <h3 class="sub">&Uuml;bungsaufgaben</h3>
+      <div class="exercise-list">
+        <details class="exercise">
+          <summary><span class="idx">1</span><span class="task">Katheten a = 3 cm, b = 4 cm. Berechne die Hypotenuse c.</span><span class="afb afb1">AFB I</span><span class="chevron">&#9656;</span></summary>
+          <div class="solution"><div class="sol-label">Musterl&ouml;sung</div>
+            <div class="steps">
+              <div>c&sup2; = a&sup2; + b&sup2; = 3&sup2; + 4&sup2; = 9 + 16 = 25</div>
+              <div>c = &radic;25</div>
+            </div>
+            <span class="result">c = 5 cm</span>
+          </div>
+        </details>
+        <details class="exercise">
+          <summary><span class="idx">2</span><span class="task">Katheten a = 6 cm, b = 8 cm. Berechne die Hypotenuse c.</span><span class="afb afb1">AFB I</span><span class="chevron">&#9656;</span></summary>
+          <div class="solution"><div class="sol-label">Musterl&ouml;sung</div>
+            <div class="steps">
+              <div>c&sup2; = 6&sup2; + 8&sup2; = 36 + 64 = 100</div>
+              <div>c = &radic;100</div>
+            </div>
+            <span class="result">c = 10 cm</span>
+          </div>
+        </details>
+        <details class="exercise">
+          <summary><span class="idx">3</span><span class="task">Hypotenuse c = 13 cm, Kathete a = 5 cm. Berechne die fehlende Kathete b.</span><span class="afb afb2">AFB II</span><span class="chevron">&#9656;</span></summary>
+          <div class="solution"><div class="sol-label">Musterl&ouml;sung</div>
+            <div class="steps">
+              <div>b&sup2; = c&sup2; &minus; a&sup2; = 13&sup2; &minus; 5&sup2; = 169 &minus; 25 = 144</div>
+              <div>b = &radic;144</div>
+            </div>
+            <span class="result">b = 12 cm</span>
+          </div>
+        </details>
+        <details class="exercise">
+          <summary><span class="idx">4</span><span class="task">Hypotenuse c = 10 cm, Kathete a = 6 cm. Berechne die fehlende Kathete b.</span><span class="afb afb2">AFB II</span><span class="chevron">&#9656;</span></summary>
+          <div class="solution"><div class="sol-label">Musterl&ouml;sung</div>
+            <div class="steps">
+              <div>b&sup2; = 10&sup2; &minus; 6&sup2; = 100 &minus; 36 = 64</div>
+              <div>b = &radic;64</div>
+            </div>
+            <span class="result">b = 8 cm</span>
+          </div>
+        </details>
+        <details class="exercise">
+          <summary><span class="idx">5</span><span class="task">Sachaufgabe: Eine Leiter (5 m lang) lehnt an einer Wand. Der Fu&szlig; steht 3 m von der Wand entfernt. Wie hoch reicht die Leiter?</span><span class="afb afb2">AFB II</span><span class="chevron">&#9656;</span></summary>
+          <div class="solution"><div class="sol-label">Musterl&ouml;sung</div>
+            <div class="steps">
+              <div>Leiter = Hypotenuse c = 5 m, Abstand zur Wand = Kathete a = 3 m, gesucht: H&ouml;he b</div>
+              <div>b&sup2; = c&sup2; &minus; a&sup2; = 5&sup2; &minus; 3&sup2; = 25 &minus; 9 = 16</div>
+              <div>b = &radic;16</div>
+            </div>
+            <span class="result">Die Leiter reicht 4 m hoch.</span>
+          </div>
+        </details>
+        <details class="exercise">
+          <summary><span class="idx">6</span><span class="task">Sachaufgabe: Ein Rechteck ist 6 cm breit und 8 cm hoch. Wie lang ist die Diagonale?</span><span class="afb afb2">AFB II</span><span class="chevron">&#9656;</span></summary>
+          <div class="solution"><div class="sol-label">Musterl&ouml;sung</div>
+            <div class="steps">
+              <div>Die Diagonale teilt das Rechteck in zwei rechtwinklige Dreiecke mit Katheten 6 cm und 8 cm.</div>
+              <div>d&sup2; = 6&sup2; + 8&sup2; = 36 + 64 = 100</div>
+              <div>d = &radic;100</div>
+            </div>
+            <span class="result">Die Diagonale ist 10 cm lang.</span>
+          </div>
+        </details>
+        <details class="exercise">
+          <summary><span class="idx">7</span><span class="task">Pr&uuml;fe mit dem Kehrsatz: Ist ein Dreieck mit den Seiten 7 cm, 24 cm und 25 cm rechtwinklig? Begr&uuml;nde.</span><span class="afb afb3">AFB III</span><span class="chevron">&#9656;</span></summary>
+          <div class="solution"><div class="sol-label">Musterl&ouml;sung</div>
+            <div class="steps">
+              <div>Die l&auml;ngste Seite w&auml;re die Hypotenuse: c = 25 cm, a = 7 cm, b = 24 cm.</div>
+              <div>a&sup2; + b&sup2; = 7&sup2; + 24&sup2; = 49 + 576 = 625</div>
+              <div>c&sup2; = 25&sup2; = 625</div>
+            </div>
+            <div class="why" style="margin-top:8px;">Da a&sup2;+b&sup2; = c&sup2; gilt (nach dem Kehrsatz des Pythagoras), ist das Dreieck rechtwinklig.</div>
+            <span class="result">Ja, das Dreieck ist rechtwinklig.</span>
+          </div>
+        </details>
+      </div>
+    </section>
+  </main>
+</div>
+
+<footer>Wurzel-Werkstatt &middot; Lernplattform f&uuml;r Quadratwurzeln, Wurzelgesetze, quadratische Gleichungen der Form x&sup2;=a und den Satz des Pythagoras.</footer>

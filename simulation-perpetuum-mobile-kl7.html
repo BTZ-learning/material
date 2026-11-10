@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Simulation Perpetuum mobile</title>
+<style>
+  :root { --bg:#fff; --ink:#1d2433; --quiet:#5b6577; --line:#c9cfdb; --pot:#2f6fdc; --kin:#2a9d5b; --heat:#e0702a; --accent:#2f6fdc; }
+  * { box-sizing:border-box; }
+  body { margin:0; font-family:system-ui,"Segoe UI",Arial,sans-serif; color:var(--ink); background:var(--bg); }
+  header { padding:14px 24px 0; }
+  h1 { font-size:1.5rem; margin:0 0 4px; }
+  header p { margin:0; color:var(--quiet); }
+  nav { display:flex; gap:8px; padding:12px 24px 0; }
+  nav button { font:inherit; font-size:1.05rem; padding:8px 16px; border:1px solid var(--line); border-bottom:none; border-radius:8px 8px 0 0; background:#f3f5f9; cursor:pointer; }
+  nav button.on { background:#fff; font-weight:600; border-color:var(--accent); color:var(--accent); }
+  section { display:none; padding:16px 24px 24px; border-top:1px solid var(--line); }
+  section.on { display:block; }
+  .controls { display:flex; flex-wrap:wrap; gap:14px 24px; align-items:center; margin-bottom:12px; }
+  button.act { font:inherit; font-size:1.05rem; padding:8px 18px; border-radius:8px; border:1px solid var(--accent); background:var(--accent); color:#fff; cursor:pointer; }
+  button.act.sec { background:#fff; color:var(--accent); }
+  label { font-size:1.05rem; display:flex; align-items:center; gap:10px; }
+  input[type=range] { width:220px; }
+  output { min-width:4.5em; font-variant-numeric:tabular-nums; font-weight:600; }
+  canvas { width:100%; max-width:1000px; height:auto; border:1px solid var(--line); border-radius:8px; display:block; }
+  .note { max-width:1000px; margin-top:10px; color:var(--quiet); font-size:1rem; }
+  .q { max-width:1000px; margin-top:10px; padding:10px 14px; border-left:4px solid var(--accent); background:#f3f6fd; }
+  .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:10px; max-width:1000px; margin:12px 0; }
+  .card { border:1px solid var(--line); border-radius:8px; padding:10px 14px; }
+  .card b { display:block; font-size:1.6rem; }
+  .card span { color:var(--quiet); }
+  .row { display:flex; align-items:center; gap:10px; margin:6px 0; max-width:1000px; }
+  .row .lab { width:140px; }
+  .row .track { flex:1; background:#eef1f6; border-radius:6px; height:28px; overflow:hidden; }
+  .row .fill { height:100%; background:var(--heat); opacity:.85; }
+  .row .val { width:90px; font-variant-numeric:tabular-nums; }
+  .ok { color:var(--kin); font-weight:600; } .bad { color:var(--heat); font-weight:600; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Perpetuum mobile: Energie verschwindet nicht, wird aber unbrauchbar</h1>
+  <p>Klasse 7 Physik, Simulationen zur Gruppenarbeit</p>
+</header>
+<nav>
+  <button id="t1" class="on">1 Kugelbahn (Gruppe A und B)</button>
+  <button id="t2" class="">2 Energiebilanz (Gruppe C)</button>
+</nav>
+
+<section id="s1" class="on">
+  <div class="controls">
+    <button class="act" id="go">Start</button>
+    <button class="act sec" id="reset">Zurück an den Start</button>
+    <label>Reibung <input type="range" id="fr" min="0" max="100" value="0"><output id="frv">0 %</output></label>
+  </div>
+  <canvas id="cv" width="1000" height="470"></canvas>
+  <div class="q"><b>Beobachtungsauftrag:</b> 1. Stelle die Reibung auf 0 %. Steigt die Kugel wieder bis zur Starthöhe? 2. Erhöhe die Reibung. Was passiert mit der Balkenhöhe von Lage- und Bewegungsenergie, was mit dem orangen Balken? 3. Bleibt die Gesamtenergie (gestrichelte Linie) gleich?</div>
+  <p class="note">Hinweis: Die Energien sind als Anteil der Startenergie dargestellt. Bei 0 % Reibung ist dies die ideale Kugelbahn, die es in der Wirklichkeit nicht gibt.</p>
+</section>
+
+<section id="s2">
+  <div class="controls">
+    <label>Reibungsverlust <input type="range" id="lr" min="0" max="50" value="35"><output id="lrv">35 J</output></label>
+    <label>Luftwiderstand <input type="range" id="ll" min="0" max="50" value="15"><output id="llv">15 J</output></label>
+  </div>
+  <p>Pro Umlauf wird der Maschine <b>100 J</b> Energie zugeführt.</p>
+  <div class="grid">
+    <div class="card"><span>Verlust als Wärme</span><b id="vl">50 J</b></div>
+    <div class="card"><span>Nutzenergie</span><b id="nu">50 J</b></div>
+    <div class="card"><span>Wirkungsgrad</span><b id="wg">50 %</b></div>
+  </div>
+  <p>Die Nutzenergie wird wieder in die Maschine gesteckt (Perpetuum-mobile-Idee). Wie viel Energie steht nach jedem Umlauf noch zur Verfügung?</p>
+  <div id="bars"></div>
+  <div class="q" id="verdict"></div>
+  <p class="note">Probiere aus: Kannst du die Verluste so einstellen, dass nach mehreren Umläufen keine Energie abnimmt? Was müsstest du dafür erreichen, und warum geht das nicht?</p>
+</section>
+
+<script>
+// Tabs
+const tabs = [["t1","s1"],["t2","s2"]];
+tabs.forEach(([t,s]) => document.getElementById(t).onclick = () => {
+  tabs.forEach(([a,b]) => { document.getElementById(a).classList.toggle("on", a===t); document.getElementById(b).classList.toggle("on", b===s); });
+  if (s==="s1") draw();
+});
+
+// ---- Kugelbahn ----
+const cv = document.getElementById("cv"), ctx = cv.getContext("2d");
+const G = 9.81, A = 0.8, X0 = -1.2;
+const h  = x => A*x*x, hp = x => 2*A*x;
+const PX = x => 320 + x*190, PY = y => 410 - y*200;
+let x, v, heat, running = false, last = 0, fric = 0;
+const E0 = G*h(X0);
+
+function resetSim() { x = X0; v = 0; heat = 0; running = false; document.getElementById("go").textContent = "Start"; draw(); }
+
+function step(dt) {
+  const th = Math.atan(hp(x));
+  v += (-G*Math.sin(th) - fric*v) * dt;
+  heat += fric*v*v*dt;
+  x += v*Math.cos(th)*dt;
+}
+
+function bars(ep, ek, q) {
+  const bx = 690, base = 410, H = 320, w = 70;
+  const items = [["Lage-", ep, "var(--pot)", "#2f6fdc"], ["Bewegungs-", ek, "var(--kin)", "#2a9d5b"], ["Wärme", q, "var(--heat)", "#e0702a"]];
+  ctx.font = "16px system-ui, Arial"; ctx.textAlign = "center";
+  items.forEach(([n, val, , col], i) => {
+    const cx = bx + i*100, hh = Math.max(0, Math.min(1.05, val/E0))*H;
+    ctx.fillStyle = col; ctx.fillRect(cx - w/2, base - hh, w, hh);
+    ctx.fillStyle = "#1d2433"; ctx.fillText(n, cx, base + 20); if (i < 2) ctx.fillText("energie", cx, base + 38); else ctx.fillText("(Reibung)", cx, base + 38);
+  });
+  ctx.strokeStyle = "#1d2433"; ctx.setLineDash([6,5]); ctx.beginPath(); ctx.moveTo(bx-60, base-H); ctx.lineTo(bx+260, base-H); ctx.stroke(); ctx.setLineDash([]);
+  ctx.textAlign = "left"; ctx.fillStyle = "#1d2433"; ctx.font = "15px system-ui, Arial";
+  ctx.fillText("Gesamtenergie (Start)", bx-60, base-H-8);
+  ctx.strokeStyle = "#c9cfdb"; ctx.beginPath(); ctx.moveTo(bx-60, base); ctx.lineTo(bx+260, base); ctx.stroke();
+}
+
+function draw() {
+  ctx.clearRect(0, 0, cv.width, cv.height);
+  // Starthöhe
+  ctx.strokeStyle = "#9aa3b5"; ctx.setLineDash([6,5]); ctx.beginPath(); ctx.moveTo(PX(-1.5), PY(h(X0))); ctx.lineTo(PX(1.5), PY(h(X0))); ctx.stroke(); ctx.setLineDash([]);
+  ctx.fillStyle = "#5b6577"; ctx.font = "15px system-ui, Arial"; ctx.textAlign = "left"; ctx.fillText("Starthöhe", PX(0.85), PY(h(X0)) - 8);
+  // Bahn
+  ctx.strokeStyle = "#1d2433"; ctx.lineWidth = 4; ctx.beginPath();
+  for (let i = -150; i <= 150; i++) { const xx = i/100; i === -150 ? ctx.moveTo(PX(xx), PY(h(xx))) : ctx.lineTo(PX(xx), PY(h(xx))); }
+  ctx.stroke(); ctx.lineWidth = 1;
+  // Kugel
+  const sl = hp(x)*200/190, n = Math.hypot(sl, 1), r = 14;
+  const bxp = PX(x) - sl/n*r, byp = PY(h(x)) - 1/n*r;
+  ctx.fillStyle = "#2f6fdc"; ctx.beginPath(); ctx.arc(bxp, byp, r, 0, 7); ctx.fill();
+  // Energien
+  const ep = G*h(x), ek = 0.5*v*v;
+  bars(ep, ek, heat);
+  ctx.fillStyle = "#5b6577"; ctx.font = "15px system-ui, Arial"; ctx.textAlign = "left";
+  ctx.fillText(running ? "läuft" : "angehalten", 20, 28);
+}
+
+function loop(t) {
+  if (running) {
+    let dt = Math.min(0.05, (t - last)/1000); last = t;
+    const n = 20; for (let i = 0; i < n; i++) step(dt/n);
+    draw();
+  }
+  requestAnimationFrame(loop);
+}
+document.getElementById("go").onclick = () => { running = !running; last = performance.now(); document.getElementById("go").textContent = running ? "Pause" : "Weiter"; draw(); };
+document.getElementById("reset").onclick = resetSim;
+document.getElementById("fr").oninput = e => { const p = +e.target.value; fric = p/100*1.0; document.getElementById("frv").textContent = p + " %"; };
+resetSim(); requestAnimationFrame(loop);
+
+// ---- Energiebilanz ----
+const lr = document.getElementById("lr"), ll = document.getElementById("ll");
+function bil() {
+  let a = +lr.value, b = +ll.value;
+  document.getElementById("lrv").textContent = a + " J"; document.getElementById("llv").textContent = b + " J";
+  const loss = a + b, nutz = 100 - loss, eta = nutz/100;
+  document.getElementById("vl").textContent = loss + " J";
+  document.getElementById("nu").textContent = nutz + " J";
+  document.getElementById("wg").textContent = Math.round(eta*100) + " %";
+  const box = document.getElementById("bars"); box.innerHTML = "";
+  let e = 100;
+  for (let i = 0; i <= 6; i++) {
+    const d = document.createElement("div"); d.className = "row";
+    d.innerHTML = '<div class="lab">' + (i === 0 ? "Start" : "nach Umlauf " + i) + '</div><div class="track"><div class="fill" style="width:' + Math.max(0, e) + '%;background:var(--pot)"></div></div><div class="val">' + e.toFixed(1).replace(".", ",") + ' J</div>';
+    box.appendChild(d);
+    e = e*eta;
+  }
+  const v = document.getElementById("verdict");
+  v.innerHTML = loss > 0 ? '<span class="bad">Die Energie nimmt bei jedem Umlauf ab.</span> Die Maschine kommt zum Stillstand. Ohne Energiezufuhr von außen läuft sie nicht weiter.' : '<span class="ok">Nur theoretisch:</span> Verluste von 0 J gibt es in der Wirklichkeit nicht, und selbst dann gäbe die Maschine keine zusätzliche Arbeit ab.';
+}
+lr.oninput = ll.oninput = bil; bil();
+</script>
+</body>
+</html>

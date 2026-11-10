@@ -1,0 +1,206 @@
+<title>Strahlung Arbeitsblatt</title>
+<style>
+  :root{
+    --bg:#f6f4ef;
+    --surface:#ffffff;
+    --surface-2:#eeece4;
+    --ink:#20241f;
+    --ink-soft:#4b5148;
+    --line:#d9d5c8;
+    --accent:#1f6f5c;
+    --accent-soft:#e3f0eb;
+    --bq:#2f6f9e; --bq-soft:#e3edf5;
+    --gy:#1f6f5c; --gy-soft:#e3f0eb;
+    --sv:#a13d3d; --sv-soft:#f5e3e3;
+    color-scheme: light;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#181a17; --surface:#20231f; --surface-2:#272a25;
+      --ink:#eae7dd; --ink-soft:#b6b8ae; --line:#3a3d36;
+      --accent:#4fb99c; --accent-soft:#1f2e29;
+      --bq:#6fa8d6; --bq-soft:#1f2a33;
+      --gy:#4fb99c; --gy-soft:#1f2e29;
+      --sv:#e08a8a; --sv-soft:#332222;
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#181a17; --surface:#20231f; --surface-2:#272a25;
+    --ink:#eae7dd; --ink-soft:#b6b8ae; --line:#3a3d36;
+    --accent:#4fb99c; --accent-soft:#1f2e29;
+    --bq:#6fa8d6; --bq-soft:#1f2a33;
+    --gy:#4fb99c; --gy-soft:#1f2e29;
+    --sv:#e08a8a; --sv-soft:#332222;
+    color-scheme: dark;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; background:var(--bg); color:var(--ink);
+    font-family:"Source Sans 3","Segoe UI",system-ui,sans-serif;
+    padding-inline:16px; padding-block:32px;
+  }
+  .page{ max-width:760px; margin:0 auto; display:flex; flex-direction:column; gap:26px; }
+  h1{
+    font-family:"Fraunces",Georgia,serif; font-weight:600;
+    font-size:clamp(1.6rem,4vw,2.1rem); margin:0; text-wrap:balance; letter-spacing:-0.01em;
+  }
+  .eyebrow{
+    text-transform:uppercase; letter-spacing:0.12em; font-size:0.72rem;
+    color:var(--accent); font-weight:700; margin-bottom:8px;
+  }
+  header{ border-bottom:2px solid var(--line); padding-bottom:16px; display:flex; justify-content:space-between; gap:16px; flex-wrap:wrap; align-items:flex-end; }
+  .name-field{ font-size:0.85rem; color:var(--ink-soft); display:flex; flex-direction:column; gap:4px; }
+  .name-line{ border-bottom:1px solid var(--line); min-width:180px; min-height:1.4em; }
+
+  .task{
+    background:var(--surface); border:1px solid var(--line); border-radius:14px;
+    padding:18px 20px; display:flex; flex-direction:column; gap:12px;
+  }
+  .task-head{ display:flex; align-items:baseline; gap:10px; }
+  .task-num{
+    font-family:"JetBrains Mono",monospace; font-weight:700; color:var(--accent);
+    background:var(--accent-soft); border-radius:8px; padding:2px 9px; font-size:0.9rem;
+  }
+  .task-title{ font-weight:700; font-size:1rem; }
+  .task p{ margin:0; color:var(--ink-soft); font-size:0.94rem; line-height:1.5; }
+  .task ul{ margin:0; padding-left:1.2em; color:var(--ink-soft); font-size:0.94rem; display:flex; flex-direction:column; gap:4px; }
+  .answer-line{
+    border-bottom:1px solid var(--line); min-height:1.6em; margin-top:2px;
+  }
+  .answer-lines .answer-line{ margin-bottom:10px; }
+  .chip-row{ display:flex; gap:8px; flex-wrap:wrap; }
+  .chip{
+    font-family:"JetBrains Mono",monospace; font-size:0.82rem; padding:4px 10px;
+    border-radius:999px; border:1px solid var(--line); color:var(--ink-soft);
+  }
+  .chip.bq{ background:var(--bq-soft); color:var(--bq); border-color:transparent; }
+  .chip.gy{ background:var(--gy-soft); color:var(--gy); border-color:transparent; }
+  .chip.sv{ background:var(--sv-soft); color:var(--sv); border-color:transparent; }
+
+  .match-grid{ display:grid; grid-template-columns:1fr 1fr; gap:10px; font-size:0.92rem; }
+  .match-grid > div{ background:var(--surface-2); border-radius:10px; padding:10px 12px; }
+  @media (max-width:480px){ .match-grid{ grid-template-columns:1fr; } }
+
+  .box{
+    border-radius:14px; padding:14px 18px; font-size:0.9rem;
+    background:var(--surface-2); border:1px solid var(--line);
+  }
+  .box h3{ margin:0 0 6px 0; font-size:0.9rem; }
+  .box p{ margin:0; color:var(--ink-soft); }
+
+  footer{
+    color:var(--ink-soft); font-size:0.78rem; border-top:1px solid var(--line);
+    padding-top:14px; text-align:center;
+  }
+</style>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600&family=Source+Sans+3:wght@400;600;700&family=JetBrains+Mono:wght@500;600&display=swap">
+
+<div class="page">
+  <header>
+    <div>
+      <div class="eyebrow">Arbeitsblatt · Physik</div>
+      <h1>Becquerel, Gray, Sievert</h1>
+    </div>
+    <div class="name-field">
+      Name<span class="name-line" style="width:200px;"></span>
+      Datum<span class="name-line" style="width:140px;"></span>
+    </div>
+  </header>
+
+  <div class="task">
+    <div class="task-head"><span class="task-num">1</span><span class="task-title">Begriffe zuordnen</span></div>
+    <p>Ordne jeder Einheit die passende Beschreibung zu. Schreibe Bq, Gy oder Sv in die Lücke.</p>
+    <div class="match-grid">
+      <div>___ misst die biologische Wirkung von Strahlung auf den Körper.</div>
+      <div>___ misst, wie viele Kerne pro Sekunde zerfallen.</div>
+      <div>___ misst die absorbierte Energie pro Kilogramm Materie.</div>
+      <div>___ ist die Einheit der Aktivität einer radioaktiven Quelle.</div>
+      <div>___ berücksichtigt den Wichtungsfaktor der Strahlenart.</div>
+      <div>___ ist unabhängig von der Strahlungsart (rein physikalisch).</div>
+    </div>
+  </div>
+
+  <div class="task">
+    <div class="task-head"><span class="task-num">2</span><span class="task-title">Aktivität berechnen</span></div>
+    <p>Eine Probe enthält 8,0 · 10¹² instabile Kerne. Innerhalb von 5,0 Sekunden zerfallen 2,0 · 10⁹ davon.</p>
+    <ul>
+      <li>a) Berechne die Aktivität A der Probe in Bq.</li>
+      <li>b) Wie viele Zerfälle finden in einer Stunde statt, wenn die Aktivität näherungsweise konstant bleibt?</li>
+    </ul>
+    <div class="chip-row"><span class="chip bq">A = ΔN / Δt</span></div>
+    <div class="answer-lines">
+      <div class="answer-line"></div>
+      <div class="answer-line"></div>
+    </div>
+  </div>
+
+  <div class="task">
+    <div class="task-head"><span class="task-num">3</span><span class="task-title">Halbwertszeit</span></div>
+    <p>Ein radioaktives Präparat hat eine Anfangsaktivität von 800 Bq und eine Halbwertszeit von 6 Stunden.</p>
+    <ul>
+      <li>a) Welche Aktivität hat das Präparat nach 18 Stunden?</li>
+      <li>b) Nach wie vielen Halbwertszeiten ist die Aktivität auf unter 5 % des Anfangswerts gesunken?</li>
+    </ul>
+    <div class="answer-lines">
+      <div class="answer-line"></div>
+      <div class="answer-line"></div>
+    </div>
+  </div>
+
+  <div class="task">
+    <div class="task-head"><span class="task-num">4</span><span class="task-title">Energiedosis</span></div>
+    <p>Ein 70 kg schwerer Mensch nimmt bei einer Untersuchung 0,014 J Strahlungsenergie auf.</p>
+    <ul>
+      <li>a) Berechne die Energiedosis D in Gray.</li>
+      <li>b) Gib das Ergebnis auch in Milligray (mGy) an.</li>
+    </ul>
+    <div class="chip-row"><span class="chip gy">D = E / m</span></div>
+    <div class="answer-lines">
+      <div class="answer-line"></div>
+      <div class="answer-line"></div>
+    </div>
+  </div>
+
+  <div class="task">
+    <div class="task-head"><span class="task-num">5</span><span class="task-title">Äquivalentdosis</span></div>
+    <p>Gewebe wird mit einer Energiedosis von 0,4 Gy bestrahlt. Berechne die Äquivalentdosis H für jede der folgenden Strahlungsarten:</p>
+    <ul>
+      <li>a) γ-Strahlung (q = 1)</li>
+      <li>b) Neutronenstrahlung (q = 10)</li>
+      <li>c) α-Strahlung (q = 20)</li>
+    </ul>
+    <div class="chip-row"><span class="chip sv">H = D · q</span></div>
+    <div class="answer-lines">
+      <div class="answer-line"></div>
+      <div class="answer-line"></div>
+      <div class="answer-line"></div>
+    </div>
+    <p>d) Erkläre in ein bis zwei Sätzen, warum bei gleicher Energiedosis unterschiedliche Äquivalentdosen entstehen.</p>
+    <div class="answer-lines">
+      <div class="answer-line"></div>
+      <div class="answer-line"></div>
+    </div>
+  </div>
+
+  <div class="task">
+    <div class="task-head"><span class="task-num">6</span><span class="task-title">Verständnisfragen</span></div>
+    <ul>
+      <li>a) Warum kann man von einer Angabe in Becquerel allein nicht auf die Gefährlichkeit für einen Menschen schließen?</li>
+      <li>b) Zwei Präparate haben dieselbe Aktivität. Nenne einen Grund, warum sie trotzdem unterschiedlich gefährlich sein können.</li>
+      <li>c) Warum verwendet man in der Medizin und im Strahlenschutz meist Sievert und nicht Gray?</li>
+    </ul>
+    <div class="answer-lines">
+      <div class="answer-line"></div>
+      <div class="answer-line"></div>
+      <div class="answer-line"></div>
+    </div>
+  </div>
+
+  <div class="box">
+    <h3>Tipp</h3>
+    <p>Formeln: A = ΔN/Δt, N(t) = N₀·e^(−λt), T₁∕₂ = ln(2)/λ, D = E/m, H = D·q. Achte auf die Einheiten: 1 Gy = 1 J/kg, 1 Sv = 1 J/kg (gewichtet), 1 Bq = 1/s.</p>
+  </div>
+
+  <footer>Arbeitsblatt Strahlungsgrößen · Physik</footer>
+</div>

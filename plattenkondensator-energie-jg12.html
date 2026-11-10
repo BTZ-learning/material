@@ -1,0 +1,323 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Energie eines Plattenkondensators</title>
+<style>
+:root{
+  --bg:#f6f7f9; --card:#ffffff; --ink:#1d2330; --muted:#5d6678; --line:#c9cfdb;
+  --plus:#d94a3d; --minus:#2f6fdb; --accent:#e08a00; --area:rgba(224,138,0,.35);
+  --plate:#59627a; --ok:#2a9d5c;
+}
+@media (prefers-color-scheme: dark){
+  :root{ --bg:#14171f; --card:#1d222d; --ink:#e8ebf2; --muted:#98a1b5; --line:#3a4254;
+    --plus:#ff6b5e; --minus:#6a9bff; --accent:#ffb02e; --area:rgba(255,176,46,.32); --plate:#a9b3cc; --ok:#4cc585; }
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 system-ui,"Segoe UI",sans-serif}
+.wrap{max-width:1000px;margin:0 auto;padding:16px}
+h1{font-size:1.35rem;margin:4px 0 12px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media (max-width:720px){.grid{grid-template-columns:1fr}}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px}
+.card h2{font-size:.8rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:0 0 4px}
+svg{width:100%;height:auto;display:block}
+svg text{fill:var(--ink);font-family:system-ui,"Segoe UI",sans-serif}
+.muted{fill:var(--muted)!important}
+#explain{margin-top:12px;min-height:230px}
+#explain h3{margin:0 0 6px;font-size:1.15rem}
+#explain p{margin:.3em 0 .6em}
+.formulas{display:flex;flex-direction:column;gap:6px;margin-top:8px}
+.fl{font-size:1.2rem;padding:6px 12px;border-left:4px solid var(--accent);background:rgba(224,138,0,.08);border-radius:0 8px 8px 0;
+  opacity:0;transform:translateY(6px);transition:opacity .5s,transform .5s;font-family:"Cambria Math",Cambria,"Times New Roman",serif}
+.fl.show{opacity:1;transform:none}
+.fl.big{border-color:var(--ok);background:rgba(42,157,92,.12);font-size:1.4rem}
+.frac{display:inline-flex;flex-direction:column;vertical-align:middle;text-align:center;margin:0 .15em;line-height:1.1}
+.frac>span:first-child{border-bottom:1.5px solid currentColor;padding:0 .2em}
+.note{font-size:.9rem;color:var(--muted);margin-top:8px}
+.controls{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:12px}
+button{font:inherit;padding:8px 14px;border-radius:8px;border:1px solid var(--line);background:var(--card);color:var(--ink);cursor:pointer}
+button:hover{border-color:var(--accent)}
+button.primary{background:var(--accent);color:#1d1400;border-color:var(--accent);font-weight:600}
+button:disabled{opacity:.4;cursor:default}
+.dots{display:flex;gap:6px;margin-left:auto}
+.dot{width:12px;height:12px;border-radius:50%;background:var(--line);cursor:pointer;border:0;padding:0}
+.dot.on{background:var(--accent)}
+.dot.done{background:var(--muted)}
+.sliders{display:none;gap:16px;flex-wrap:wrap;margin-top:8px}
+.sliders.show{display:flex}
+.sliders label{display:flex;flex-direction:column;font-size:.9rem;min-width:200px}
+.sliders input{width:100%}
+.pulse{animation:pulse 1.2s infinite}
+@keyframes pulse{50%{box-shadow:0 0 0 5px rgba(224,138,0,.35)}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Herleitung: Energie eines Plattenkondensators</h1>
+  <div class="grid">
+    <div class="card"><h2>Kondensator wird geladen</h2>
+      <svg id="cap" viewBox="0 0 400 310" role="img" aria-label="Plattenkondensator"></svg></div>
+    <div class="card"><h2>q‑U‑Diagramm</h2>
+      <svg id="dia" viewBox="0 0 400 310" role="img" aria-label="Spannung über Ladung"></svg></div>
+  </div>
+
+  <div class="card" id="explain">
+    <h3 id="title"></h3>
+    <div id="text"></div>
+    <div class="formulas" id="formulas"></div>
+    <div class="sliders" id="sliders">
+      <label>Kapazität C = <b id="cv"></b> µF
+        <input id="cs" type="range" min="1" max="5" step="0.5" value="2"></label>
+      <label>Spannung U = <b id="uv"></b> V
+        <input id="us" type="range" min="1" max="12" step="0.5" value="6"></label>
+    </div>
+    <div class="note" id="note"></div>
+  </div>
+
+  <div class="controls">
+    <button id="prev">◀ Zurück</button>
+    <button id="play">⏸ Pause</button>
+    <button id="replay">↻ Schritt wiederholen</button>
+    <button id="next" class="primary">Weiter ▶</button>
+    <div class="dots" id="dots"></div>
+  </div>
+</div>
+
+<script>
+const NS="http://www.w3.org/2000/svg";
+const $=id=>document.getElementById(id);
+const fmt=(x,d=1)=>x.toLocaleString("de-DE",{minimumFractionDigits:d,maximumFractionDigits:d});
+const frac=(a,b)=>`<span class="frac"><span>${a}</span><span>${b}</span></span>`;
+
+/* feste Beispielwerte für Schritte 0–4 */
+const C0=2, U0=6, Q0=C0*U0;           // µF, V, µC
+let Cs=2, Us=6;                        // Schieberegler in Schritt 5
+
+const steps=[
+ {dur:6000, title:"1 · Idee: Den Kondensator laden",
+  text:`<p>Ein Kondensator ist anfangs ungeladen. Wir laden ihn auf, indem wir <b>nach und nach kleine Ladungsportionen d<i>q</i></b> von der einen Platte auf die andere transportieren.</p>
+        <p>Dabei wird Arbeit verrichtet. Sie steckt hinterher als <b>Energie im elektrischen Feld</b> zwischen den Platten.</p>
+        <p><b>Gesucht:</b> die gesamte Arbeit <i>W</i>, um die Ladung <i>Q</i> aufzubringen.</p>`,
+  lines:[], f:p=>p},
+ {dur:6000, title:"2 · Die Spannung wächst mit der Ladung",
+  text:`<p>Je mehr Ladung <i>q</i> schon auf den Platten sitzt, desto größer ist die Spannung. Aus der Definition der Kapazität <i>C</i> = <i>Q</i>/<i>U</i> folgt:</p>`,
+  lines:[{at:.15,h:`<i>U</i>(<i>q</i>) = ${frac("<i>q</i>","<i>C</i>")}`}],
+  note:"Im Diagramm ist das eine Ursprungsgerade. Der Punkt wandert mit wachsender Ladung nach oben.", f:p=>p},
+ {dur:6000, title:"3 · Arbeit für eine kleine Portion d<i>q</i>",
+  text:`<p>Eine winzige Ladung d<i>q</i> muss gegen die <b>momentane</b> Spannung <i>U</i>(<i>q</i>) auf die andere Platte gebracht werden. Dabei ist die Spannung praktisch konstant, also gilt „Arbeit = Spannung · Ladung“:</p>`,
+  lines:[{at:.15,h:`d<i>W</i> = <i>U</i>(<i>q</i>) · d<i>q</i>`},{at:.4,h:`d<i>W</i> = ${frac("<i>q</i>","<i>C</i>")} · d<i>q</i>`}],
+  note:"Im Diagramm ist d<i>W</i> die Fläche des schmalen orangen Streifens (Höhe <i>U</i>, Breite d<i>q</i>).", f:p=>.5},
+ {dur:7000, title:"4 · Alle Portionen aufsummieren",
+  text:`<p>Die gesamte Arbeit ist die Summe aller Streifen von <i>q</i> = 0 bis <i>q</i> = <i>Q</i>. Beim Summieren über unendlich viele, unendlich schmale Streifen wird daraus ein Integral:</p>`,
+  lines:[{at:.1,h:`<i>W</i> = ∑ d<i>W</i> = ∫<sub>0</sub><sup><i>Q</i></sup> ${frac("<i>q</i>","<i>C</i>")} d<i>q</i>`}],
+  note:"Anschaulich: <i>W</i> ist die Fläche unter der Geraden. Sie wächst mit jedem Streifen.", f:p=>p},
+ {dur:6000, title:"5 · Die Fläche ausrechnen",
+  text:`<p>Zwei Wege führen zum gleichen Ergebnis:</p>`,
+  lines:[{at:.1,h:`<b>Integral:</b> <i>W</i> = ${frac("1","<i>C</i>")} · [ ${frac("<i>q</i>²","2")} ]<sub>0</sub><sup><i>Q</i></sup> = ${frac("<i>Q</i>²","2<i>C</i>")}`},
+         {at:.45,h:`<b>Dreieck:</b> <i>W</i> = ½ · Grundseite · Höhe = ½ · <i>Q</i> · <i>U</i>`}],
+  note:"Warum nicht <i>W</i> = <i>Q</i>·<i>U</i>? Weil die Spannung am Anfang 0 war und erst langsam auf <i>U</i> anstieg. Im Mittel wirkt nur <i>U</i>/2.", f:p=>1},
+ {dur:3000, title:"6 · Ergebnis: Energie des Kondensators",
+  text:`<p>Mit <i>Q</i> = <i>C</i>·<i>U</i> lässt sich die Formel in drei gleichwertigen Formen schreiben. Probiere es mit den Reglern aus:</p>`,
+  lines:[{at:.1,h:`<i>W</i> = ½ <i>Q</i> <i>U</i>`},{at:.3,h:`<i>W</i> = ½ <i>C</i> <i>U</i>²`,},{at:.5,h:`<i>W</i> = ${frac("<i>Q</i>²","2<i>C</i>")}`}],
+  note:"Beachte: Verdoppelst du die Spannung bei gleichem <i>C</i>, wird die Energie vervierfacht (quadratischer Zusammenhang).", f:p=>1, sliders:true},
+ {dur:3000, title:"7 · Bonus: Energie steckt im Feld",
+  text:`<p>Für den Plattenkondensator gilt <i>C</i> = ε₀·<i>A</i>/<i>d</i> und <i>U</i> = <i>E</i>·<i>d</i>. Eingesetzt in <i>W</i> = ½ <i>C</i> <i>U</i>²:</p>`,
+  lines:[{at:.1,h:`<i>W</i> = ½ · ε₀ ${frac("<i>A</i>","<i>d</i>")} · (<i>E</i> <i>d</i>)² = ½ ε₀ <i>E</i>² · <i>A</i>·<i>d</i>`},
+         {at:.4,h:`<i>A</i>·<i>d</i> = <i>V</i> (Feldvolumen)  ⇒  <i>W</i> = ½ ε₀ <i>E</i>² · <i>V</i>`},
+         {at:.7,h:`Energiedichte: ρ<sub>el</sub> = ${frac("<i>W</i>","<i>V</i>")} = ½ ε₀ <i>E</i>²`,big:true}],
+  note:"Die Energie ist also im Feld gespeichert, pro Volumen ½·ε₀·E². Mit Dielektrikum: ε₀ → ε₀·εᵣ.", f:p=>1}
+];
+
+/* ---------- Zustand ---------- */
+let step=0, p=0, playing=true, last=performance.now(), flowT=0;
+
+/* ---------- SVG-Helfer ---------- */
+function el(tag,attrs,parent,txt){
+  const e=document.createElementNS(NS,tag);
+  for(const k in attrs)e.setAttribute(k,attrs[k]);
+  if(txt!==undefined)e.textContent=txt;
+  (parent||null)&&parent.appendChild(e);return e;
+}
+const cap=$("cap"), dia=$("dia");
+
+/* ---------- Kondensator zeichnen ---------- */
+const WIRE=[[145,225],[145,275],[255,275],[255,225]];
+function wirePos(t){ // t 0..1 entlang Draht
+  const seg=[],tot=[];let L=0;
+  for(let i=0;i<3;i++){const d=Math.hypot(WIRE[i+1][0]-WIRE[i][0],WIRE[i+1][1]-WIRE[i][1]);seg.push(d);L+=d;}
+  let s=t*L;
+  for(let i=0;i<3;i++){ if(s<=seg[i]){const k=s/seg[i];return [WIRE[i][0]+(WIRE[i+1][0]-WIRE[i][0])*k,WIRE[i][1]+(WIRE[i+1][1]-WIRE[i][1])*k];} s-=seg[i]; }
+  return WIRE[3];
+}
+function drawCap(f,flowing,Qc,Cc){
+  cap.innerHTML="";
+  const q=f*Qc, U=q/Cc;
+  // Draht
+  el("polyline",{points:WIRE.map(a=>a.join(",")).join(" "),fill:"none",stroke:"var(--line)","stroke-width":3},cap);
+  // Quelle
+  el("rect",{x:178,y:262,width:44,height:26,rx:6,fill:"var(--card)",stroke:"var(--accent)","stroke-width":2},cap);
+  el("text",{x:200,y:280,"text-anchor":"middle","font-size":12},cap,"Arbeit");
+  // Feldlinien
+  const nl=7;
+  for(let i=0;i<nl;i++){
+    const y=75+i*(150/(nl-1));
+    const o=Math.min(1,f*1.1);
+    el("line",{x1:153,y1:y,x2:244,y2:y,stroke:"var(--accent)","stroke-width":1+2*f,opacity:o},cap);
+    el("polygon",{points:`244,${y} 236,${y-4} 236,${y+4}`,fill:"var(--accent)",opacity:o},cap);
+  }
+  // Platten
+  el("rect",{x:140,y:60,width:10,height:170,fill:"var(--plate)",rx:2},cap);
+  el("rect",{x:250,y:60,width:10,height:170,fill:"var(--plate)",rx:2},cap);
+  // Ladungszeichen
+  const n=Math.round(f*7);
+  for(let i=0;i<7;i++){
+    const y=82+i*(130/6);
+    if(i<n){
+      el("text",{x:128,y:y+5,"text-anchor":"middle","font-size":18,"font-weight":700,fill:"var(--plus)",style:"fill:var(--plus)"},cap,"+");
+      el("text",{x:272,y:y+5,"text-anchor":"middle","font-size":18,"font-weight":700,style:"fill:var(--minus)"},cap,"−");
+    }
+  }
+  // Ladungsportionen im Draht
+  if(flowing){
+    for(let i=0;i<4;i++){
+      const t=(flowT*0.35+i/4)%1, [x,y]=wirePos(t);
+      el("circle",{cx:x,cy:y,r:5,fill:"var(--minus)"},cap);
+    }
+    el("text",{x:200,y:303,"text-anchor":"middle","font-size":11,class:"muted"},cap,"Ladungsportionen dq (Elektronen) wandern von links nach rechts");
+  }
+  // Messwerte
+  el("text",{x:200,y:24,"text-anchor":"middle","font-size":15,"font-weight":600},cap,`q = ${fmt(q)} µC   ·   U = ${fmt(U)} V`);
+  if(step>=3&&step<=4) el("text",{x:200,y:44,"text-anchor":"middle","font-size":14,style:"fill:var(--accent)"},cap,`bisher geleistete Arbeit W = ${fmt(q*U/2)} µJ`);
+  if(step>=5) el("text",{x:200,y:44,"text-anchor":"middle","font-size":14,style:"fill:var(--accent)"},cap,`W = ${fmt(q*U/2)} µJ`);
+  if(step===6){
+    // Maße A und d
+    el("line",{x1:150,y1:50,x2:250,y2:50,stroke:"var(--muted)","stroke-width":1.5},cap);
+    el("text",{x:200,y:60,"text-anchor":"middle","font-size":13,class:"muted"},cap,"d");
+    el("text",{x:290,y:150,"font-size":13,class:"muted"},cap,"Fläche A");
+    el("text",{x:290,y:168,"font-size":13,class:"muted"},cap,"Feld E");
+  }
+}
+
+/* ---------- Diagramm zeichnen ---------- */
+function drawDia(f,pp){
+  dia.innerHTML="";
+  const Qd=step>=5?Cs*Us:Q0, Ud=step>=5?Us:U0, Cd=step>=5?Cs:C0;
+  const qmax=step>=5?60:14, umax=step>=5?12:7;
+  const X=q=>50+q/qmax*320, Y=u=>250-u/umax*200;
+  // Achsen
+  el("line",{x1:50,y1:250,x2:380,y2:250,stroke:"var(--ink)","stroke-width":1.5},dia);
+  el("line",{x1:50,y1:250,x2:50,y2:30,stroke:"var(--ink)","stroke-width":1.5},dia);
+  el("text",{x:378,y:272,"text-anchor":"end","font-size":13},dia,"q in µC");
+  el("text",{x:56,y:34,"font-size":13},dia,"U in V");
+  const ticks=step>=5?[0,20,40,60]:[0,4,8,12];
+  ticks.forEach(t=>{el("line",{x1:X(t),y1:250,x2:X(t),y2:255,stroke:"var(--ink)"},dia);el("text",{x:X(t),y:268,"text-anchor":"middle","font-size":11,class:"muted"},dia,t);});
+  const uts=step>=5?[0,4,8,12]:[0,2,4,6];
+  uts.forEach(t=>{el("line",{x1:45,y1:Y(t),x2:50,y2:Y(t),stroke:"var(--ink)"},dia);el("text",{x:40,y:Y(t)+4,"text-anchor":"end","font-size":11,class:"muted"},dia,t);});
+  if(step===0){el("text",{x:215,y:150,"text-anchor":"middle","font-size":13,class:"muted"},dia,"→ wird im nächsten Schritt gebraucht");return;}
+
+  // Gerade U = q/C
+  const qEnd=Math.min(qmax,umax*Cd);
+  el("line",{x1:X(0),y1:Y(0),x2:X(qEnd),y2:Y(qEnd/Cd),stroke:"var(--plate)","stroke-width":2.5},dia);
+  el("text",{x:X(qEnd)-6,y:Y(qEnd/Cd)-8,"text-anchor":"end","font-size":13},dia,"U = q / C");
+
+  const qq=f*Qd, uu=qq/Cd;
+  // Fläche
+  if(step===3||step===4||step===5||step===6){
+    let a=step===3?f:(step===4?f:1); // Schritt 4: Fläche wächst, danach voll
+    if(step===3)a=0;
+    const qa=a*Qd, ua=qa/Cd;
+    if(step===3)a=0;
+    if(qa>0) el("polygon",{points:`${X(0)},${Y(0)} ${X(qa)},${Y(0)} ${X(qa)},${Y(ua)}`,fill:"var(--area)",stroke:"var(--accent)","stroke-width":1.5},dia);
+  }
+  // Streifen (Schritt 3)
+  if(step===2){
+    const q0=Qd*.5, dq=Qd*.07, u0=q0/Cd, pulse=.6+.4*Math.sin(pp*Math.PI*6);
+    el("rect",{x:X(q0),y:Y(u0),width:X(q0+dq)-X(q0),height:Y(0)-Y(u0),fill:"var(--accent)",opacity:pulse},dia);
+    el("line",{x1:X(0),y1:Y(u0),x2:X(q0),y2:Y(u0),stroke:"var(--muted)","stroke-dasharray":"4 3"},dia);
+    el("text",{x:X(0)-6,y:Y(u0)-4,"font-size":12,"text-anchor":"start"},dia,"U(q)");
+    el("text",{x:X(q0)+4,y:Y(0)+16,"font-size":12},dia,"dq");
+    el("text",{x:X(q0)+30,y:Y(u0)+40,"font-size":14,style:"fill:var(--accent)","font-weight":700},dia,"dW = U·dq");
+    el("line",{x1:X(q0+dq/2),y1:Y(u0)+30,x2:X(q0+dq/2),y2:Y(u0)+10,stroke:"var(--accent)","stroke-width":1.5},dia);
+  }
+  // Laufender Punkt (Schritte 1–3)
+  if(step===1||step===3){
+    el("line",{x1:X(qq),y1:Y(0),x2:X(qq),y2:Y(uu),stroke:"var(--muted)","stroke-dasharray":"4 3"},dia);
+    el("line",{x1:X(0),y1:Y(uu),x2:X(qq),y2:Y(uu),stroke:"var(--muted)","stroke-dasharray":"4 3"},dia);
+    el("circle",{cx:X(qq),cy:Y(uu),r:6,fill:"var(--accent)"},dia);
+    el("text",{x:X(qq),y:Y(0)+16,"text-anchor":"middle","font-size":12},dia,"q");
+    el("text",{x:X(0)-6,y:Y(uu)-4,"font-size":12},dia,"U");
+  }
+  // Schritt 4: wachsende Fläche mit Streifen
+  if(step===3){
+    const n=Math.floor(f*28);
+    for(let i=0;i<n;i++){
+      const qa=(i/28)*Qd, ua=qa/Cd;
+      el("rect",{x:X(qa),y:Y(ua),width:X(Qd/28)-X(0)-.5,height:Y(0)-Y(ua),fill:"var(--area)",stroke:"var(--accent)","stroke-width":.5},dia);
+    }
+    el("text",{x:215,y:200,"text-anchor":"middle","font-size":14,style:"fill:var(--accent)","font-weight":700,opacity:Math.min(1,f*3)},dia,"Summe der Streifen = Fläche");
+  }
+  // Schritt 4/5/6: Dreieck beschriften
+  if(step>=4){
+    el("line",{x1:X(Qd),y1:Y(0),x2:X(Qd),y2:Y(Ud),stroke:"var(--ink)","stroke-dasharray":"4 3"},dia);
+    el("text",{x:X(Qd),y:Y(0)+16,"text-anchor":"middle","font-size":13,"font-weight":700},dia,"Q");
+    el("line",{x1:X(0),y1:Y(Ud),x2:X(Qd),y2:Y(Ud),stroke:"var(--ink)","stroke-dasharray":"4 3"},dia);
+    el("text",{x:X(0)-6,y:Y(Ud)-4,"font-size":13,"font-weight":700},dia,"U");
+    el("circle",{cx:X(Qd),cy:Y(Ud),r:5,fill:"var(--accent)"},dia);
+  }
+  if(step>=4){
+    const cx=X(Qd*.62), cy=Y(Ud*.28);
+    el("text",{x:cx,y:cy,"text-anchor":"middle","font-size":step>=5?15:14,style:"fill:var(--accent)","font-weight":700},dia,
+      step===4?"W = Fläche":(`W = ½·Q·U = ${fmt(Qd*Ud/2)} µJ`));
+  }
+}
+
+/* ---------- Texte / UI ---------- */
+function buildStep(){
+  const s=steps[step];
+  $("title").innerHTML=s.title;
+  $("text").innerHTML=s.text;
+  $("note").innerHTML=s.note||"";
+  const fl=$("formulas");fl.innerHTML="";
+  s.lines.forEach(l=>{const d=document.createElement("div");d.className="fl"+(l.big?" big":"");d.innerHTML=l.h;fl.appendChild(d);});
+  $("sliders").classList.toggle("show",!!s.sliders);
+  $("prev").disabled=step===0;
+  $("next").disabled=step===steps.length-1;
+  document.querySelectorAll(".dot").forEach((d,i)=>{d.className="dot"+(i===step?" on":(i<step?" done":""));});
+  p=0;playing=true;$("play").textContent="⏸ Pause";
+  $("next").classList.remove("pulse");
+}
+function updateLines(){
+  const s=steps[step];
+  [...$("formulas").children].forEach((d,i)=>d.classList.toggle("show",p>=s.lines[i].at));
+}
+function frame(now){
+  const dt=now-last;last=now;
+  const s=steps[step];
+  if(playing){ p=Math.min(1,p+dt/s.dur); flowT+=dt/1000; if(p>=1){ playing=false; $("play").textContent="▶ Abspielen"; if(step<steps.length-1)$("next").classList.add("pulse"); } }
+  else if(p<1){}
+  const f=s.f(p);
+  const Qc=step>=5?Cs*Us:Q0, Cc=step>=5?Cs:C0;
+  const flowing=step<=3 && step>=0 && (step===2 || p<1) && !(step===5);
+  drawCap(f,flowing&&playing,Qc,Cc);
+  drawDia(f,p);
+  updateLines();
+  requestAnimationFrame(frame);
+}
+
+/* ---------- Steuerung ---------- */
+steps.forEach((_,i)=>{const b=document.createElement("button");b.className="dot";b.title="Schritt "+(i+1);b.onclick=()=>{step=i;buildStep();};$("dots").appendChild(b);});
+$("next").onclick=()=>{if(step<steps.length-1){step++;buildStep();}};
+$("prev").onclick=()=>{if(step>0){step--;buildStep();}};
+$("replay").onclick=()=>{p=0;playing=true;$("play").textContent="⏸ Pause";$("next").classList.remove("pulse");};
+$("play").onclick=()=>{ if(p>=1){p=0;playing=true;} else playing=!playing; $("play").textContent=playing?"⏸ Pause":"▶ Abspielen"; };
+function sl(){Cs=+$("cs").value;Us=+$("us").value;$("cv").textContent=fmt(Cs);$("uv").textContent=fmt(Us);
+  const s=$("sliders");}
+$("cs").oninput=sl;$("us").oninput=sl;sl();
+document.addEventListener("keydown",e=>{if(e.key==="ArrowRight")$("next").click();if(e.key==="ArrowLeft")$("prev").click();if(e.key===" "){e.preventDefault();$("play").click();}});
+
+buildStep();requestAnimationFrame(frame);
+</script>
+</body>
+</html>

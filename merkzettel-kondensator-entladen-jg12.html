@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Merkzettel Entladen</title>
+<style>
+  @page { size: A4; margin: 12mm; }
+  * { box-sizing: border-box; }
+  body { font-family: "Segoe UI", Arial, sans-serif; color: #1b1f24; background: #fff; margin: 0; padding: 16px; line-height: 1.4; font-size: 14px; }
+  .sheet { max-width: 780px; margin: 0 auto; }
+  h1 { font-size: 22px; margin: 0 0 2px; }
+  .sub { color: #555; margin: 0 0 12px; }
+  h2 { font-size: 15px; margin: 14px 0 6px; padding: 3px 8px; background: #e8f0fb; border-left: 4px solid #2a6bd1; }
+  ol, ul { margin: 4px 0 4px 20px; padding: 0; }
+  li { margin: 3px 0; }
+  .box { border: 2px solid #2a6bd1; border-radius: 8px; padding: 8px 12px; margin: 12px 0; background: #f6faff; }
+  .warn { border: 2px solid #d18a2a; background: #fff8ee; border-radius: 8px; padding: 8px 12px; margin: 12px 0; }
+  svg { width: 100%; height: auto; display: block; }
+  .red { color: #c0392b; font-weight: 600; }
+  .blue { color: #1f5fbf; font-weight: 600; }
+  table { border-collapse: collapse; width: 100%; margin: 6px 0; }
+  td, th { border: 1px solid #aab; padding: 4px 8px; text-align: left; vertical-align: top; }
+  th { background: #eef2f8; }
+  @media print { body { padding: 0; } }
+</style>
+</head>
+<body>
+<div class="sheet">
+
+<h1>Merkzettel: Entladen eines Plattenkondensators</h1>
+<p class="sub">Was passiert, wenn man die Platten über einen Widerstand verbindet?</p>
+
+<h2>1 &nbsp;Skizze: Die Ladungen gleichen sich aus</h2>
+<svg viewBox="0 0 640 290" role="img" aria-label="Schaltskizze Entladen des Kondensators über einen Widerstand">
+  <defs>
+    <marker id="aE" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" refX="9" refY="6" orient="auto"><path d="M0,0 L12,6 L0,12 z" fill="#1f5fbf"/></marker>
+    <marker id="aT" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" refX="9" refY="6" orient="auto"><path d="M0,0 L12,6 L0,12 z" fill="#777"/></marker>
+  </defs>
+  <!-- Draehte -->
+  <g stroke="#222" stroke-width="2.5" fill="none">
+    <path d="M330,120 H150 V240 H235"/>
+    <path d="M430,120 H520 V240 H345"/>
+  </g>
+  <!-- Widerstand -->
+  <rect x="235" y="228" width="110" height="24" fill="#fff" stroke="#222" stroke-width="2.5"/>
+  <text x="290" y="276" font-size="13" text-anchor="middle">Widerstand R</text>
+  <!-- Platten -->
+  <rect x="326" y="60" width="8" height="120" fill="#c0392b"/>
+  <rect x="426" y="60" width="8" height="120" fill="#1f5fbf"/>
+  <g font-size="18" font-weight="700" text-anchor="middle">
+    <text x="312" y="85" fill="#c0392b">+</text><text x="312" y="115" fill="#c0392b">+</text><text x="312" y="145" fill="#c0392b">+</text><text x="312" y="175" fill="#c0392b">+</text>
+    <text x="448" y="85" fill="#1f5fbf">&minus;</text><text x="448" y="115" fill="#1f5fbf">&minus;</text><text x="448" y="145" fill="#1f5fbf">&minus;</text><text x="448" y="175" fill="#1f5fbf">&minus;</text>
+  </g>
+  <text x="330" y="48" font-size="13" text-anchor="middle">linke Platte (+)</text>
+  <text x="430" y="48" font-size="13" text-anchor="middle">rechte Platte (&minus;)</text>
+  <text x="380" y="198" font-size="13" text-anchor="middle">Zu Beginn: U<tspan font-size="10" dy="3">0</tspan></text>
+  <!-- Elektronenfluss: rechte Platte -> unten -> links -> linke Platte -->
+  <g stroke="#1f5fbf" stroke-width="2.5" fill="none" marker-end="url(#aE)">
+    <path d="M520,150 V200"/>
+    <path d="M225,240 H190"/>
+    <path d="M150,200 V150"/>
+  </g>
+  <text x="530" y="170" font-size="12" fill="#1f5fbf">e&#8315; fließen</text>
+  <text x="530" y="186" font-size="12" fill="#1f5fbf">nach unten</text>
+  <text x="140" y="170" font-size="12" fill="#1f5fbf" text-anchor="end">e&#8315; fließen</text>
+  <text x="140" y="186" font-size="12" fill="#1f5fbf" text-anchor="end">nach oben</text>
+  <!-- Elektronenpfeil unten (rechts -> links) -->
+  <path d="M440,240 H380" stroke="#1f5fbf" stroke-width="2.5" marker-end="url(#aE)"/>
+  <!-- Stromrichtung technisch -->
+  <path d="M400,272 H450" stroke="#777" stroke-width="2" marker-end="url(#aT)" stroke-dasharray="5 4"/>
+  <text x="460" y="276" font-size="12" fill="#555">technische Stromrichtung (+ &rarr; &minus;)</text></svg>
+
+<h2>2 &nbsp;Was passiert beim Entladen?</h2>
+<ol>
+  <li>Man verbindet die Platten über einen Widerstand. <b>Die Quelle wird nicht gebraucht</b>.</li>
+  <li>Die Elektronen der <span class="blue">&minus;</span>-Platte werden von den anderen Elektronen abgestoßen und von der <span class="red">+</span>-Platte angezogen. Beides schiebt sie durch den Draht zur linken Platte.</li>
+  <li>Der Kondensator gibt dabei seine gespeicherte Energie ab (im Widerstand wird sie zu Wärme).</li>
+  <li>Mit jedem Elektron sinken Q und damit <b>U<sub>C</sub> = Q / C</b>. Die Antriebsspannung wird kleiner.</li>
+  <li>Am Ende sind beide Platten neutral: <b>Q = 0, U<sub>C</sub> = 0, I = 0</b>.</li>
+</ol>
+
+<h2>3 &nbsp;Graphen: Ladung und Strom beim Entladen</h2>
+<svg viewBox="0 0 640 215" role="img" aria-label="Diagramme">
+  <text x="180.0" y="14" font-size="14" font-weight="700" text-anchor="middle">t&#8211;Q-Diagramm (Entladen)</text>
+  <line x1="55.0" y1="200.0" x2="55.0" y2="25.0" stroke="#222" stroke-width="1.8"/>
+  <line x1="47.0" y1="190.0" x2="310.0" y2="190.0" stroke="#222" stroke-width="1.8"/>
+  <path d="M310.0,185.0 L322.0,190.0 L310.0,195.0 z" fill="#222"/>
+  <text x="323.0" y="206.0" font-size="13">t</text>
+  <text x="63.0" y="20.0" font-size="13">Q</text>
+  <line x1="55.0" y1="50.0" x2="295.0" y2="50.0" stroke="#bbb" stroke-dasharray="3 4"/>
+  <text x="49.0" y="54.0" font-size="12" text-anchor="end">Q&#8320;</text>
+  <polyline fill="none" stroke="#c0392b" stroke-width="3" points="55.0,50.0 61.0,66.5 67.0,81.0 73.0,93.8 79.0,105.1 85.0,115.1 91.0,123.9 97.0,131.6 103.0,138.5 109.0,144.5 115.0,149.9 121.0,154.6 127.0,158.8 133.0,162.4 139.0,165.7 145.0,168.5 151.0,171.1 157.0,173.3 163.0,175.2 169.0,177.0 175.0,178.5 181.0,179.9 187.0,181.1 193.0,182.1 199.0,183.0 205.0,183.8 211.0,184.6 217.0,185.2 223.0,185.8 229.0,186.3 235.0,186.7 241.0,187.1 247.0,187.4 253.0,187.7 259.0,188.0 265.0,188.2 271.0,188.4 277.0,188.6 283.0,188.8 289.0,188.9 295.0,189.1"/>
+  <line x1="103.0" y1="190.0" x2="103.0" y2="138.5" stroke="#2a6bd1" stroke-dasharray="4 3"/>
+  <line x1="55.0" y1="138.5" x2="103.0" y2="138.5" stroke="#2a6bd1" stroke-dasharray="4 3"/>
+  <circle cx="103.0" cy="138.5" r="4" fill="#2a6bd1"/>
+  <text x="113.0" y="130.5" font-size="12" fill="#2a6bd1">&#8776; 37 % von Q&#8320;</text>
+  <text x="103.0" y="208.0" font-size="12" fill="#2a6bd1" text-anchor="middle">&#964;</text>
+  <text x="295.0" y="208.0" font-size="12" text-anchor="middle">5&#964;</text>
+  <text x="490.0" y="14" font-size="14" font-weight="700" text-anchor="middle">t&#8211;I-Diagramm (Entladen)</text>
+  <line x1="365.0" y1="20.0" x2="365.0" y2="205.0" stroke="#222" stroke-width="1.8"/>
+  <line x1="357.0" y1="40.0" x2="620.0" y2="40.0" stroke="#222" stroke-width="1.8"/>
+  <path d="M620.0,35.0 L632.0,40.0 L620.0,45.0 z" fill="#222"/>
+  <text x="633.0" y="32.0" font-size="13">t</text>
+  <text x="373.0" y="16.0" font-size="13">I</text>
+  <line x1="365.0" y1="180.0" x2="605.0" y2="180.0" stroke="#bbb" stroke-dasharray="3 4"/>
+  <text x="359.0" y="184.0" font-size="12" text-anchor="end">&#8722;I&#8320;</text>
+  <polyline fill="none" stroke="#1f5fbf" stroke-width="3" points="365.0,180.0 371.0,163.5 377.0,149.0 383.0,136.2 389.0,124.9 395.0,114.9 401.0,106.1 407.0,98.4 413.0,91.5 419.0,85.5 425.0,80.1 431.0,75.4 437.0,71.2 443.0,67.6 449.0,64.3 455.0,61.5 461.0,58.9 467.0,56.7 473.0,54.8 479.0,53.0 485.0,51.5 491.0,50.1 497.0,48.9 503.0,47.9 509.0,47.0 515.0,46.2 521.0,45.4 527.0,44.8 533.0,44.2 539.0,43.7 545.0,43.3 551.0,42.9 557.0,42.6 563.0,42.3 569.0,42.0 575.0,41.8 581.0,41.6 587.0,41.4 593.0,41.2 599.0,41.1 605.0,40.9"/>
+  <line x1="413.0" y1="40.0" x2="413.0" y2="91.5" stroke="#2a6bd1" stroke-dasharray="4 3"/>
+  <line x1="365.0" y1="91.5" x2="413.0" y2="91.5" stroke="#2a6bd1" stroke-dasharray="4 3"/>
+  <circle cx="413.0" cy="91.5" r="4" fill="#2a6bd1"/>
+  <text x="423.0" y="107.5" font-size="12" fill="#2a6bd1">&#8776; 37 % von &#8722;I&#8320;</text>
+  <text x="413.0" y="32.0" font-size="12" fill="#2a6bd1" text-anchor="middle">&#964;</text>
+  <text x="605.0" y="32.0" font-size="12" text-anchor="middle">5&#964;</text>
+</svg>
+<ul>
+  <li><b>Q(t) = Q<sub>0</sub> &middot; e<sup>&minus;t/&tau;</sup></b>: Die Ladung sinkt am Anfang schnell, dann immer langsamer auf null. Die Spannung U<sub>C</sub> = Q / C hat denselben Verlauf.</li>
+  <li><b>I(t) = &minus;I<sub>0</sub> &middot; e<sup>&minus;t/&tau;</sup></b> mit I<sub>0</sub> = U<sub>0</sub> / R: Das <b>Minuszeichen</b> zeigt, dass der Strom entgegengesetzt zum Ladestrom flie&szlig;t. Der Betrag ist am Anfang am gr&ouml;&szlig;ten.</li>
+  <li>Der Strom ist die <b>Steigung der t&ndash;Q-Kurve</b> (I = &Delta;Q / &Delta;t). Q f&auml;llt, die Steigung ist negativ, deshalb ist I negativ.</li>
+  <li>Je gr&ouml;&szlig;er <b>R</b> oder <b>C</b>, desto gr&ouml;&szlig;er &tau; = R &middot; C und desto langsamer entl&auml;dt sich der Kondensator.</li>
+</ul>
+
+<div class="box">
+  <b>Merke:</b> Entladen = Ladungsausgleich über den Widerstand, <u>ohne</u> Quelle.<br>
+  Der Entladestrom fließt <b>entgegengesetzt</b> zum Ladestrom.<br>
+  <b>U<sub>C</sub>(t) = U<sub>0</sub> &middot; e<sup>&minus;t/(R&middot;C)</sup></b> &nbsp;&nbsp; und &nbsp;&nbsp; <b>&tau; = R &middot; C</b>
+</div>
+
+<table>
+  <tr><th>Größe</th><th>Bedeutung</th></tr>
+  <tr><td>U<sub>0</sub></td><td>Spannung zu Beginn des Entladens (= Ladespannung)</td></tr>
+  <tr><td>&tau; = R&middot;C</td><td>Zeitkonstante: nach &tau; sind noch ca. 37 % übrig</td></tr>
+  <tr><td>I(t)</td><td>Entladestrom, hat den gleichen Verlauf wie U<sub>C</sub></td></tr>
+</table>
+
+<div class="warn">
+  <b>Achtung, nicht verwechseln:</b> Die <b>Elektronen</b> wandern im Draht von &minus; nach +.
+  Die <b>technische Stromrichtung</b> ist per Definition von + nach &minus;, also die Gegenrichtung.
+  Beim Entladen ist die Richtung der Elektronen genau <u>umgekehrt wie beim Aufladen</u>.
+</div>
+
+</div>
+</body>
+</html>
+
+
+

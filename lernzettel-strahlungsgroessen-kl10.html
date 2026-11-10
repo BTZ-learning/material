@@ -1,0 +1,356 @@
+<title>Strahlungsgrößen</title>
+<style>
+  :root{
+    --bg:#f6f4ef;
+    --surface:#ffffff;
+    --surface-2:#eeece4;
+    --ink:#20241f;
+    --ink-soft:#4b5148;
+    --line:#d9d5c8;
+    --accent:#1f6f5c;
+    --accent-soft:#e3f0eb;
+    --warn:#b5651d;
+    --warn-soft:#f5e6d8;
+    --bq:#2f6f9e;
+    --bq-soft:#e3edf5;
+    --gy:#1f6f5c;
+    --gy-soft:#e3f0eb;
+    --sv:#a13d3d;
+    --sv-soft:#f5e3e3;
+    color-scheme: light;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#181a17;
+      --surface:#20231f;
+      --surface-2:#272a25;
+      --ink:#eae7dd;
+      --ink-soft:#b6b8ae;
+      --line:#3a3d36;
+      --accent:#4fb99c;
+      --accent-soft:#1f2e29;
+      --warn:#e0975a;
+      --warn-soft:#2e2620;
+      --bq:#6fa8d6;
+      --bq-soft:#1f2a33;
+      --gy:#4fb99c;
+      --gy-soft:#1f2e29;
+      --sv:#e08a8a;
+      --sv-soft:#332222;
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#181a17;
+    --surface:#20231f;
+    --surface-2:#272a25;
+    --ink:#eae7dd;
+    --ink-soft:#b6b8ae;
+    --line:#3a3d36;
+    --accent:#4fb99c;
+    --accent-soft:#1f2e29;
+    --warn:#e0975a;
+    --warn-soft:#2e2620;
+    --bq:#6fa8d6;
+    --bq-soft:#1f2a33;
+    --gy:#4fb99c;
+    --gy-soft:#1f2e29;
+    --sv:#e08a8a;
+    --sv-soft:#332222;
+    color-scheme: dark;
+  }
+
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--ink);
+    font-family: "Source Sans 3", "Segoe UI", system-ui, sans-serif;
+    padding-inline:16px;
+    padding-block:32px;
+  }
+  .page{
+    max-width:760px;
+    margin:0 auto;
+    display:flex;
+    flex-direction:column;
+    gap:28px;
+  }
+  h1{
+    font-family:"Fraunces","Georgia",serif;
+    font-size:clamp(1.7rem, 4vw, 2.3rem);
+    font-weight:600;
+    margin:0;
+    text-wrap:balance;
+    letter-spacing:-0.01em;
+  }
+  .subtitle{
+    color:var(--ink-soft);
+    font-size:0.95rem;
+    margin-top:6px;
+  }
+  header{
+    border-bottom:2px solid var(--line);
+    padding-bottom:18px;
+  }
+  .eyebrow{
+    text-transform:uppercase;
+    letter-spacing:0.12em;
+    font-size:0.72rem;
+    color:var(--accent);
+    font-weight:700;
+    margin-bottom:8px;
+  }
+  section{
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+  }
+  .unit-card{
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:14px;
+    padding:18px 20px;
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+  }
+  .unit-head{
+    display:flex;
+    align-items:baseline;
+    gap:12px;
+    flex-wrap:wrap;
+  }
+  .unit-symbol{
+    font-family:"Fraunces",serif;
+    font-weight:700;
+    font-size:1.9rem;
+    border-radius:10px;
+    padding:2px 12px;
+    line-height:1.2;
+  }
+  .unit-symbol.bq{ background:var(--bq-soft); color:var(--bq); }
+  .unit-symbol.gy{ background:var(--gy-soft); color:var(--gy); }
+  .unit-symbol.sv{ background:var(--sv-soft); color:var(--sv); }
+
+  .unit-name{
+    font-weight:600;
+    font-size:1.1rem;
+  }
+  .unit-what{
+    color:var(--ink-soft);
+    font-size:0.92rem;
+  }
+  .formula-row{
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px;
+    align-items:center;
+  }
+  .formula{
+    font-family:"JetBrains Mono", ui-monospace, monospace;
+    background:var(--surface-2);
+    border-radius:8px;
+    padding:8px 12px;
+    font-size:0.95rem;
+    font-variant-numeric: tabular-nums;
+  }
+  .def-list{
+    margin:0;
+    padding-left:0;
+    list-style:none;
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+    font-size:0.9rem;
+    color:var(--ink-soft);
+  }
+  .def-list li{ display:flex; gap:8px; }
+  .def-list b{ color:var(--ink); min-width:1.6em; font-family:"JetBrains Mono", monospace; }
+
+  .compare-table{
+    width:100%;
+    border-collapse:collapse;
+    font-size:0.88rem;
+    overflow-x:auto;
+    display:block;
+  }
+  .compare-table table{ width:100%; border-collapse:collapse; }
+  .compare-table th,.compare-table td{
+    text-align:left;
+    padding:10px 12px;
+    border-bottom:1px solid var(--line);
+    vertical-align:top;
+  }
+  .compare-table th{
+    font-size:0.72rem;
+    text-transform:uppercase;
+    letter-spacing:0.06em;
+    color:var(--ink-soft);
+    font-weight:700;
+  }
+  .compare-wrap{ overflow-x:auto; border:1px solid var(--line); border-radius:14px; background:var(--surface); }
+  .compare-wrap table{ margin:0; }
+  .compare-wrap th, .compare-wrap td{ padding:10px 14px; }
+
+  .box{
+    border-radius:14px;
+    padding:16px 18px;
+    font-size:0.92rem;
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+  }
+  .box.warn{ background:var(--warn-soft); border:1px solid color-mix(in srgb, var(--warn) 35%, transparent); }
+  .box.info{ background:var(--accent-soft); border:1px solid color-mix(in srgb, var(--accent) 35%, transparent); }
+  .box h3{ margin:0; font-size:0.95rem; color:var(--ink); }
+  .box p{ margin:0; color:var(--ink-soft); }
+
+  .values-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit, minmax(180px,1fr));
+    gap:10px;
+  }
+  .value-tile{
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:12px;
+    padding:12px 14px;
+    display:flex;
+    flex-direction:column;
+    gap:4px;
+  }
+  .value-tile .amount{ font-family:"JetBrains Mono",monospace; font-weight:600; font-size:1rem; }
+  .value-tile .label{ font-size:0.8rem; color:var(--ink-soft); }
+
+  h2{
+    font-size:1.15rem;
+    margin:0;
+    font-weight:700;
+  }
+
+  footer{
+    color:var(--ink-soft);
+    font-size:0.78rem;
+    border-top:1px solid var(--line);
+    padding-top:14px;
+    text-align:center;
+  }
+</style>
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Source+Sans+3:wght@400;600;700&family=JetBrains+Mono:wght@500;600&display=swap">
+
+<div class="page">
+  <header>
+    <div class="eyebrow">Lernzettel · Kernphysik</div>
+    <h1>Becquerel, Gray und Sievert</h1>
+    <div class="subtitle">Die drei Einheiten der Radioaktivität — und warum eine gleiche Dosis nicht gleich gefährlich ist.</div>
+  </header>
+
+  <section>
+    <div class="unit-card">
+      <div class="unit-head">
+        <span class="unit-symbol bq">Bq</span>
+        <span class="unit-name">Becquerel — Aktivität</span>
+      </div>
+      <div class="unit-what">Wie viele Atomkerne einer Probe <b>pro Sekunde zerfallen</b>. Beschreibt die Quelle, nicht die Wirkung auf einen Körper.</div>
+      <div class="formula-row">
+        <span class="formula">A = ΔN / Δt</span>
+        <span class="formula">1 Bq = 1 Zerfall/s</span>
+      </div>
+      <ul class="def-list">
+        <li><b>A</b> Aktivität in Bq</li>
+        <li><b>ΔN</b> Anzahl der in der Zeit Δt zerfallenen Kerne</li>
+        <li><b>Δt</b> Zeitspanne in Sekunden</li>
+      </ul>
+      <div class="formula-row">
+        <span class="formula">N(t) = N₀ · e^(−λt)</span>
+        <span class="formula">T₁∕₂ = ln(2) / λ</span>
+      </div>
+      <ul class="def-list">
+        <li><b>N₀</b> Anzahl der Kerne zu Beginn (t = 0)</li>
+        <li><b>λ</b> Zerfallskonstante des Nuklids</li>
+        <li><b>T₁∕₂</b> Halbwertszeit — Zeit, in der die Hälfte der Kerne zerfällt</li>
+      </ul>
+    </div>
+
+    <div class="unit-card">
+      <div class="unit-head">
+        <span class="unit-symbol gy">Gy</span>
+        <span class="unit-name">Gray — Energiedosis</span>
+      </div>
+      <div class="unit-what">Wie viel Strahlungs<b>energie</b> in einem Kilogramm Materie <b>absorbiert</b> wird. Rein physikalische Größe, unabhängig von der Strahlungsart.</div>
+      <div class="formula-row">
+        <span class="formula">D = E / m</span>
+        <span class="formula">1 Gy = 1 J/kg</span>
+      </div>
+      <ul class="def-list">
+        <li><b>D</b> Energiedosis in Gy</li>
+        <li><b>E</b> absorbierte Energie in Joule</li>
+        <li><b>m</b> Masse des bestrahlten Gewebes/Stoffs in kg</li>
+      </ul>
+    </div>
+
+    <div class="unit-card">
+      <div class="unit-head">
+        <span class="unit-symbol sv">Sv</span>
+        <span class="unit-name">Sievert — Äquivalentdosis</span>
+      </div>
+      <div class="unit-what">Wie <b>schädlich</b> eine Energiedosis für den Menschen ist. Gleiche Energiedosis wirkt bei α-Strahlung viel stärker als bei β- oder γ-Strahlung — der Wichtungsfaktor gleicht das aus.</div>
+      <div class="formula-row">
+        <span class="formula">H = D · q</span>
+        <span class="formula">1 Sv = 1 J/kg (gewichtet)</span>
+      </div>
+      <ul class="def-list">
+        <li><b>H</b> Äquivalentdosis in Sv</li>
+        <li><b>D</b> Energiedosis in Gy</li>
+        <li><b>q</b> Strahlungs-Wichtungsfaktor (früher: Qualitätsfaktor)</li>
+      </ul>
+      <div class="values-grid">
+        <div class="value-tile"><span class="amount">q ≈ 1</span><span class="label">β- und γ-Strahlung</span></div>
+        <div class="value-tile"><span class="amount">q ≈ 20</span><span class="label">α-Strahlung</span></div>
+        <div class="value-tile"><span class="amount">q ≈ 5–20</span><span class="label">Neutronenstrahlung</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Auf einen Blick</h2>
+    <div class="compare-wrap">
+      <table>
+        <thead>
+          <tr><th>Größe</th><th>Einheit</th><th>Was wird gemessen?</th><th>Betrifft…</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Aktivität</td><td>Becquerel (Bq)</td><td>Zerfälle pro Sekunde</td><td>die Strahlenquelle</td></tr>
+          <tr><td>Energiedosis</td><td>Gray (Gy)</td><td>absorbierte Energie pro kg</td><td>den bestrahlten Stoff</td></tr>
+          <tr><td>Äquivalentdosis</td><td>Sievert (Sv)</td><td>biologische Wirkung pro kg</td><td>den menschlichen Körper</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <h2>Typische Werte zur Orientierung</h2>
+    <div class="values-grid">
+      <div class="value-tile"><span class="amount">≈ 2,4 mSv/Jahr</span><span class="label">natürliche Strahlenbelastung (D)</span></div>
+      <div class="value-tile"><span class="amount">≈ 0,01 mSv</span><span class="label">Röntgen Zahnaufnahme</span></div>
+      <div class="value-tile"><span class="amount">≈ 10 mSv</span><span class="label">Ganzkörper-CT</span></div>
+      <div class="value-tile"><span class="amount">≈ 4000 mSv</span><span class="label">tödliche Akutdosis (ohne Behandlung, ca. 50 %)</span></div>
+      <div class="value-tile"><span class="amount">≈ 3700 Bq</span><span class="label">1 µCi (alte Einheit Curie zum Vergleich)</span></div>
+      <div class="value-tile"><span class="amount">1 Sv = 100 rem</span><span class="label">alte Einheit „rem“</span></div>
+    </div>
+  </section>
+
+  <div class="box info">
+    <h3>Merksatz</h3>
+    <p>Becquerel beschreibt die <b>Quelle</b> („Wie aktiv ist das Material?“), Gray die <b>physikalische Dosis</b> („Wie viel Energie kommt an?“), Sievert die <b>biologische Wirkung</b> („Wie schädlich ist das für mich?“).</p>
+  </div>
+
+  <div class="box warn">
+    <h3>Häufiger Fehler</h3>
+    <p>Bq, Gy und Sv sind <b>nicht direkt umrechenbar</b> ohne weitere Angaben: Von Bq zu Gy braucht man Angaben zur Bestrahlungsgeometrie/Zeit, von Gy zu Sv den Wichtungsfaktor q der jeweiligen Strahlenart.</p>
+  </div>
+
+  <footer>Lernzettel Strahlungsgrößen · Physik</footer>
+</div>

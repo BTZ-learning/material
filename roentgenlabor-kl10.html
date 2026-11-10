@@ -1,0 +1,1220 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="dark">
+<title>Röntgenlabor Klasse 10</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<script>
+window.MathJax={
+  tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']]},
+  svg:{fontCache:'global',scale:1.0},
+  options:{enableMenu:false},
+  startup:{typeset:true}
+};
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-svg.min.js" async></script>
+<style>
+/* Layout wie die Plattform „Radioaktivität Klasse 10“ (Versuchslabor bei Nacht), bewusst nur dunkel:
+   Leuchtschirm, Glühwendel und Röntgenbild wirken nur auf dunklem Grund.
+   Je Modul: Vorhersage -> Versuchsbühne -> Sicherung -> Denkfalle -> Aufgaben mit Rückmeldung -> Ich-kann-Liste.
+   Farbcode: Elektronen blau (wie β⁻ auf der Radioaktivitäts-Plattform), Röntgenquanten violett, Wärme orange. */
+:root{
+  --bg:#04060c; --bg2:#070b14; --panel:#0b1220; --panel2:#101a2c; --raise:#16233a;
+  --line:#1b2942; --line2:#2a3c55;
+  --ink:#e9eff7; --ink2:#a3b3c9; --ink3:#73849e;
+  --el:#46b4ff; --xr:#b994ff; --heat:#ff9a4c; --lead:#7f8ea6; --screen:#b8ff7a;
+  --ok:#5fcb7c; --okbg:rgba(95,203,124,.12); --bad:#ff7084; --badbg:rgba(255,112,132,.12);
+  --warn:#ffb648; --infobg:rgba(127,178,255,.10); --equi:#38d9bc;
+  --acc:#b994ff;
+  --font:Arial,"Helvetica Neue",Helvetica,sans-serif;
+  --mono:ui-monospace,"SF Mono","Cascadia Mono",Consolas,"Courier New",monospace;
+  --r:14px;
+  color-scheme:dark;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.001ms !important;transition-duration:.001ms !important}}
+html{-webkit-text-size-adjust:100%;background:var(--bg)}
+body{margin:0;
+  background:
+    radial-gradient(1200px 700px at 78% -8%, rgba(150,100,255,.16), transparent 62%),
+    radial-gradient(900px 600px at 8% 4%, rgba(70,180,255,.08), transparent 60%),
+    var(--bg);
+  color:var(--ink);font-family:var(--font);font-size:16px;line-height:1.55;
+  -webkit-font-smoothing:antialiased;overflow-x:hidden}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:50;background:var(--bg)}
+[hidden]{display:none !important}
+button,input,select,textarea{font:inherit;color:inherit;touch-action:manipulation}
+.shell{max-width:1180px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 90px}
+h1,h2,h3,h4{margin:0;letter-spacing:-.015em;text-wrap:balance}
+p{margin:0 0 .7em}
+p:last-child{margin-bottom:0}
+b,strong{color:#fff;font-weight:700}
+mjx-container{color:inherit}
+mjx-container[display="true"]{margin:.5em 0 !important;overflow-x:auto;overflow-y:hidden;max-width:100%;padding:2px 0}
+.mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
+
+/* ---------- Kopfbild ---------- */
+.hero{position:relative;overflow:hidden;border-bottom:1px solid var(--line);background:var(--bg)}
+.hero canvas{position:absolute;left:0;top:0;display:block;width:100%;height:100%}
+.hero-mask{position:absolute;inset:0;z-index:1;pointer-events:none;
+  background:linear-gradient(90deg,rgba(4,6,12,.94) 0%,rgba(4,6,12,.7) 45%,rgba(4,6,12,.1) 100%),
+             linear-gradient(180deg,transparent 60%,var(--bg) 100%)}
+.hero-txt{position:relative;z-index:2;max-width:1180px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:120px 26px;pointer-events:none}
+@media(max-width:720px){.hero-txt{padding-block:84px 22px}}
+.eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--acc);margin:0 0 8px}
+.hero h1{font-size:clamp(36px,6.6vw,64px);font-weight:700;line-height:1.0;text-shadow:0 2px 30px rgba(0,0,0,.75)}
+.hero .h1b{font-size:clamp(17px,2.6vw,24px);font-weight:700;color:var(--acc);margin:6px 0 0}
+.hero .sub{margin:12px 0 0;max-width:60ch;color:var(--ink2);font-size:15px}
+.kicker{display:flex;gap:7px;align-items:center;margin-top:14px;flex-wrap:wrap}
+.pill{display:inline-block;padding:4px 10px;border:1px solid var(--line2);border-radius:999px;
+  font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink2);background:rgba(10,16,28,.62)}
+
+/* ---------- Modulleiste ---------- */
+nav.modnav{position:sticky;top:env(safe-area-inset-top,0px);z-index:40;margin:0 0 26px;
+  padding-block:8px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
+  background:rgba(4,6,12,.92);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);
+  border-bottom:1px solid var(--line);overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+nav.modnav::-webkit-scrollbar{display:none}
+.navrow{display:flex;gap:6px;max-width:1180px;margin:0 auto;min-width:max-content}
+.navbtn{flex:0 0 auto;display:grid;grid-template-columns:auto auto;align-items:center;column-gap:9px;
+  padding:7px 13px 6px;border-radius:11px;border:1px solid transparent;background:transparent;
+  color:var(--ink3);font-size:13.5px;cursor:pointer;white-space:nowrap;min-height:44px;transition:color .18s,background .18s,border-color .18s}
+.navbtn .num{grid-row:span 2;font-family:var(--mono);font-size:10.5px;width:22px;height:22px;display:grid;place-items:center;border-radius:6px;background:var(--panel2);color:var(--ink3)}
+.navbtn .pb{display:block;height:3px;border-radius:2px;background:var(--line2);overflow:hidden;margin-top:3px}
+.navbtn .pb i{display:block;height:100%;width:0;background:var(--acc);transition:width .4s}
+.navbtn:hover{color:var(--ink2)}
+.navbtn[aria-current="true"]{color:var(--ink);background:var(--panel2);border-color:var(--line2)}
+.navbtn[aria-current="true"] .num{background:var(--acc);color:#0b0718;font-weight:700}
+.navbtn:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+
+/* ---------- Modul ---------- */
+.mod{display:none}
+.mod.on{display:block;animation:rise .34s ease both}
+@keyframes rise{from{opacity:.2;transform:translateY(12px)}to{opacity:1;transform:none}}
+.modhead{margin:0 0 22px}
+.modhead h2{font-size:clamp(24px,3.4vw,34px);font-weight:700}
+.modhead .lead{margin-top:9px;max-width:76ch;color:var(--ink2);font-size:15.5px}
+.card{background:linear-gradient(180deg,var(--panel) 0%,rgba(8,13,22,.9) 100%);border:1px solid var(--line);border-radius:var(--r);padding:20px;margin:0 0 20px;min-width:0}
+.card h3{font-size:17px;margin-bottom:8px}
+.card .tag{font-family:var(--mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--acc);display:block;margin-bottom:7px}
+.card.merk{background:linear-gradient(180deg,rgba(56,217,188,.09),rgba(8,13,22,.6));border-color:rgba(56,217,188,.3)}
+.card.merk .tag{color:var(--equi)}
+.card.warnc{background:linear-gradient(180deg,rgba(255,182,72,.08),rgba(8,13,22,.6));border-color:rgba(255,182,72,.28)}
+.card.warnc .tag{color:var(--warn)}
+.card ul,.card ol{margin:.4em 0 0;padding-left:1.15em}
+.card li{margin-bottom:.5em}
+.card li:last-child{margin-bottom:0}
+.grid2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:20px;margin-bottom:20px}
+@media(max-width:820px){.grid2{grid-template-columns:minmax(0,1fr)}}
+.grid2>.card{margin:0}
+.note{font-size:13px;color:var(--ink3);margin-top:9px}
+.tbl{overflow-x:auto;margin-top:8px}
+.tbl table{border-collapse:collapse;width:100%;font-size:14.5px;min-width:420px}
+.tbl th,.tbl td{border-bottom:1px solid var(--line);padding:7px 8px;text-align:left;vertical-align:top}
+.tbl th{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink3);font-weight:400}
+
+/* ---------- Vorhersage ---------- */
+.poe .pq{font-weight:700;margin-bottom:10px;max-width:70ch}
+.poe .opts{display:flex;flex-wrap:wrap;gap:8px}
+.poe .act{margin-top:12px;padding:10px 12px;border-radius:10px;background:var(--infobg);border:1px solid var(--line2);font-size:14.5px}
+.poe .act b.t{display:block;font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink2);margin-bottom:3px;font-weight:400}
+.poe .steps{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink3);margin-bottom:8px}
+.poe .steps b{color:var(--acc)}
+
+/* ---------- Versuchsbühne ---------- */
+.stage{border:1px solid var(--line);border-radius:var(--r);overflow:hidden;background:var(--bg2);margin:0 0 20px;box-shadow:0 24px 60px -30px rgba(0,0,0,.95)}
+.stage-grid{display:grid;grid-template-columns:minmax(0,1fr) 290px}
+@media(max-width:900px){.stage-grid{grid-template-columns:minmax(0,1fr)}}
+.canvas-wrap{position:relative;background:#03050a;border-right:1px solid var(--line);min-width:0;-webkit-user-select:none;user-select:none}
+@media(max-width:900px){.canvas-wrap{border-right:none;border-bottom:1px solid var(--line)}}
+.canvas-wrap canvas{position:absolute;left:0;top:0;width:100%;height:100%;display:block}
+.panel{padding:15px 15px 18px;background:var(--panel);display:flex;flex-direction:column;gap:14px;min-width:0}
+.pgroup{border-top:1px solid var(--line);padding-top:12px}
+.pgroup:first-child{border-top:none;padding-top:0}
+.plabel{font-family:var(--mono);font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink3);margin:0 0 9px}
+.ctl{margin-bottom:10px}
+.ctl:last-child{margin-bottom:0}
+.ctl-h{display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin-bottom:2px}
+.ctl-h .nm{font-size:13px;color:var(--ink2)}
+.ctl-h .val{font-family:var(--mono);font-size:13px;color:var(--ink);white-space:nowrap}
+input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:34px;background:transparent;margin:0;display:block;cursor:pointer}
+input[type=range]::-webkit-slider-runnable-track{height:4px;border-radius:2px;background:var(--line2)}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:24px;height:24px;border-radius:50%;background:#fff;margin-top:-10px;box-shadow:0 0 0 3px rgba(0,0,0,.45),0 2px 8px rgba(0,0,0,.6)}
+input[type=range]::-moz-range-track{height:4px;border-radius:2px;background:var(--line2)}
+input[type=range]::-moz-range-thumb{width:22px;height:22px;border:none;border-radius:50%;background:#fff}
+input[type=range]:focus-visible{outline:2px solid var(--acc);outline-offset:4px;border-radius:4px}
+.seg{display:flex;border:1px solid var(--line2);border-radius:9px;overflow:hidden;background:var(--panel2)}
+.seg button{flex:1;min-height:40px;padding:6px 4px;border:none;background:transparent;color:var(--ink3);font-size:12.5px;cursor:pointer;border-right:1px solid var(--line2)}
+.seg button:last-child{border-right:none}
+.seg button[aria-pressed="true"]{background:var(--raise);color:var(--ink);box-shadow:inset 0 -2px 0 var(--acc)}
+.seg button:focus-visible{outline:2px solid var(--acc);outline-offset:-2px}
+.seg.wrap{flex-wrap:wrap}
+.seg.wrap button{flex:1 1 45%;border-bottom:1px solid var(--line2)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:42px;padding:8px 14px;border-radius:10px;border:1px solid var(--line2);background:var(--panel2);color:var(--ink2);font-size:13.5px;cursor:pointer}
+.btn:active{transform:translateY(1px)}
+.btn.primary{background:var(--acc);border-color:var(--acc);color:#0b0718;font-weight:700}
+.btn:disabled{opacity:.4;cursor:default;transform:none}
+.btn:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+.panel .btn{width:100%}
+.chip{display:inline-flex;align-items:center;min-height:44px;padding:8px 12px;border-radius:10px;border:1px solid var(--line2);background:var(--panel2);color:var(--ink2);font-size:14px;cursor:pointer;text-align:left}
+.chip[aria-pressed="true"]{color:var(--ink);border-color:var(--acc);background:var(--raise)}
+.chip:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+
+.rdl{display:grid;gap:7px}
+.rdl .r{display:flex;justify-content:space-between;gap:10px;font-size:13px;color:var(--ink2);align-items:baseline}
+.rdl .r b{font-family:var(--mono);font-weight:400;color:var(--ink);font-variant-numeric:tabular-nums;white-space:nowrap}
+.meter{height:8px;border-radius:4px;background:var(--line);overflow:hidden;margin-top:4px}
+.meter i{display:block;height:100%;width:0;border-radius:4px;transition:width .25s}
+.meter.m-el i{background:var(--el)}
+.meter.m-xr i{background:var(--xr)}
+.ebal{display:flex;height:22px;border-radius:6px;overflow:hidden;font-family:var(--mono);font-size:10.5px}
+.ebal span{display:flex;align-items:center;padding:0 6px;color:#0b0718;font-weight:700;white-space:nowrap}
+.eval{font-size:13.5px;padding:9px 11px;border-radius:9px;border:1px solid var(--line2);background:var(--infobg)}
+.eval.ok{border-color:var(--ok);background:var(--okbg)}
+.eval.no{border-color:var(--warn);background:rgba(255,182,72,.10)}
+.eval b.t{display:block;font-family:var(--mono);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink2);font-weight:400;margin-bottom:2px}
+.legend{display:flex;flex-wrap:wrap;gap:8px 16px;padding:11px 15px;border-top:1px solid var(--line);background:var(--bg2);font-size:12px;color:var(--ink3)}
+.legend i{display:inline-flex;align-items:center;gap:6px;font-style:normal}
+.legend .sw{width:13px;height:13px;border-radius:4px;flex:0 0 auto}
+
+/* ---------- Spektrum ---------- */
+.spec{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px;margin:10px 0 6px}
+@media(max-width:620px){.spec{grid-template-columns:repeat(4,minmax(0,1fr))}}
+.spec button{min-height:58px;border-radius:9px;border:1px solid var(--line2);color:#0b0718;font-size:12.5px;font-weight:700;cursor:pointer;padding:4px;line-height:1.2}
+.spec button[aria-pressed="true"]{outline:2px solid #fff;outline-offset:2px}
+.spec button:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+.specax{display:flex;justify-content:space-between;font-family:var(--mono);font-size:10.5px;color:var(--ink3);letter-spacing:.06em;gap:8px}
+.specinfo{margin-top:12px;padding:12px 14px;border-radius:10px;border:1px solid var(--line2);background:var(--panel2);font-size:14.5px}
+
+/* ---------- Aufgaben ---------- */
+.tasks{margin-top:30px}
+.tasks>h3{font-size:20px;margin-bottom:12px}
+.tlist{display:grid;gap:14px}
+.task{border:1px solid var(--line);border-left:3px solid var(--line2);border-radius:12px;padding:16px 18px;background:rgba(11,18,32,.66);min-width:0}
+.task.s1{border-left-color:#4d8fd6}
+.task.s2{border-left-color:#b98cf0}
+.task.s3{border-left-color:#f0794f}
+.task-h{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:9px;flex-wrap:wrap}
+.task-n{font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink3)}
+.task-n .bd{display:inline-block;margin-left:8px;padding:2px 8px;border:1px solid var(--line2);border-radius:99px;letter-spacing:.08em}
+.task-n .dn{color:var(--ok);margin-left:8px}
+.stars{font-size:13px;letter-spacing:2px;color:#ffd24a;white-space:nowrap}
+.q{font-size:16px;margin-bottom:12px;max-width:72ch;overflow-wrap:anywhere}
+.opt{display:flex;gap:12px;align-items:flex-start;width:100%;text-align:left;min-height:48px;padding:11px 13px;border-radius:11px;border:1px solid var(--line2);background:var(--panel2);cursor:pointer;margin-bottom:7px;color:var(--ink);font-size:15px}
+.opt i{flex:none;width:26px;height:26px;border-radius:50%;border:2px solid var(--ink3);display:grid;place-items:center;font-style:normal;font-size:12px;font-weight:700;color:var(--ink2)}
+.opt.right{border-color:var(--ok);background:var(--okbg)}
+.opt.wrong{border-color:var(--bad);background:var(--badbg)}
+.opt:disabled{cursor:default}
+.opt:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+.ans{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:12px 0}
+.ans input{min-height:48px;padding:0 12px;border-radius:11px;border:1px solid var(--line2);background:var(--bg2);font-size:18px;font-family:var(--mono);color:var(--ink);width:150px}
+.ans input:focus{outline:2px solid var(--acc);outline-offset:1px}
+.ans .uu{font-weight:700;font-size:16px;color:var(--ink2)}
+.fb{border-radius:11px;padding:13px 15px;margin:12px 0 0;color:var(--ink);font-size:15px}
+.fb.ok{background:var(--okbg);border:1px solid var(--ok)}
+.fb.no{background:var(--badbg);border:1px solid var(--bad)}
+.fb.info{background:var(--infobg);border:1px solid var(--line2)}
+.fb .h{display:block;font-weight:700;font-size:16px;margin-bottom:4px}
+.fb.ok .h{color:var(--ok)}
+.fb.no .h{color:var(--bad)}
+.brow{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+
+/* ---------- Ich-kann-Liste ---------- */
+.check{margin-top:30px;border:1px solid var(--line2);border-radius:var(--r);padding:18px 20px;background:var(--panel)}
+.check h3{font-size:18px;margin-bottom:4px}
+.check .sub{color:var(--ink3);font-size:13.5px;margin-bottom:8px}
+.check label{display:flex;gap:12px;align-items:flex-start;padding:9px 0;border-bottom:1px solid var(--line);cursor:pointer;min-height:44px}
+.check label:last-child{border-bottom:none}
+.check input{width:24px;height:24px;flex:none;accent-color:var(--acc);margin-top:1px}
+.check label span{flex:1 1 auto;min-width:0}
+
+.foot{display:flex;flex-wrap:wrap;gap:6px 22px;justify-content:space-between;margin-top:46px;padding-top:16px;border-top:1px solid var(--line);font-size:12px;color:var(--ink3)}
+</style>
+
+<header class="hero">
+  <canvas id="heroCv" aria-hidden="true"></canvas>
+  <div class="hero-mask"></div>
+  <div class="hero-txt">
+    <p class="eyebrow">Physik · Klasse 10 · Strahlung</p>
+    <h1>Röntgenlabor</h1>
+    <p class="h1b">Röntgenstrahlung entstehen lassen, durchleuchten, abschirmen</p>
+    <p class="sub">Am 8. November 1895 entdeckte Wilhelm Conrad Röntgen in Würzburg eine Strahlung, die durch Papier, Holz und Haut geht. Hier baust du sie selbst: Du regelst die Röhre, machst Aufnahmen und prüfst, wie man sich schützt.</p>
+    <div class="kicker"><span class="pill">4 Versuche</span><span class="pill">alles live berechnet</span><span class="pill">Aufgaben mit Rückmeldung</span></div>
+  </div>
+</header>
+
+<nav class="modnav" aria-label="Module">
+  <div class="navrow" id="navrow"></div>
+</nav>
+
+<main class="shell">
+
+<!-- ================= Modul 1 ================= -->
+<section class="mod" id="m1" data-token="roehre" data-title="Die Röntgenröhre">
+  <div class="modhead">
+    <h2>1 · Wie entsteht Röntgenstrahlung?</h2>
+    <p class="lead">In der Röntgenröhre werden Elektronen stark beschleunigt und prallen auf eine Metallplatte. Beim plötzlichen Abbremsen entsteht Röntgenstrahlung. Regle Heizung und Hochspannung und beobachte, was sich ändert.</p>
+  </div>
+
+  <div class="card poe" id="poe1"></div>
+
+  <div class="stage">
+    <div class="stage-grid">
+      <div class="canvas-wrap" id="cv1wrap"><canvas id="cv1" aria-label="Röntgenröhre im Querschnitt mit Elektronen und Röntgenquanten"></canvas></div>
+      <div class="panel">
+        <div class="pgroup">
+          <p class="plabel">Heizung der Kathode</p>
+          <div class="seg" id="m1heat"><button type="button" data-v="0">aus</button><button type="button" data-v="1" aria-pressed="true">an</button></div>
+          <div class="ctl" style="margin-top:8px">
+            <div class="ctl-h"><span class="nm">Heizstärke (Elektronenmenge)</span><span class="val" id="m1hIv">60 %</span></div>
+            <input type="range" id="m1hI" min="10" max="100" step="5" value="60">
+          </div>
+        </div>
+        <div class="pgroup">
+          <p class="plabel">Hochspannung</p>
+          <div class="ctl">
+            <div class="ctl-h"><span class="nm">Spannung U</span><span class="val" id="m1Uv">60 kV</span></div>
+            <input type="range" id="m1U" min="0" max="120" step="5" value="60">
+          </div>
+        </div>
+        <div class="pgroup">
+          <p class="plabel">Messwerte</p>
+          <div class="rdl">
+            <div class="r">Röntgenstrahlung <b id="r1X">an</b></div>
+            <div class="r">Röhrenstrom <b id="r1I">6,0 mA</b></div>
+            <div class="r">Anode (Modell) <b id="r1T">20 °C</b></div>
+            <div><div class="r">Menge der Quanten <b id="r1Mt">mittel</b></div><div class="meter m-el"><i id="r1M"></i></div></div>
+            <div><div class="r">Energie je Quant <b id="r1Et">mittel</b></div><div class="meter m-xr"><i id="r1E"></i></div></div>
+          </div>
+        </div>
+        <div class="pgroup">
+          <p class="plabel">Energiebilanz der Röhre</p>
+          <div class="ebal"><span style="flex:99;background:var(--heat)">99 % Wärme</span><span style="flex:6;background:var(--xr)" title="etwa 1 % Röntgenstrahlung">1 %</span></div>
+          <p class="note">Nur etwa 1 % der Energie der Elektronen wird zu Röntgenstrahlung. In der Simulation sind es mehr Quanten, damit du sie siehst.</p>
+        </div>
+      </div>
+    </div>
+    <div class="legend">
+      <i><span class="sw" style="background:var(--el)"></span>Elektron</i>
+      <i><span class="sw" style="background:var(--xr)"></span>Röntgenquant (kurze Welle = viel Energie)</i>
+      <i><span class="sw" style="background:var(--heat)"></span>Wärme beim Aufprall</i>
+      <i><span class="sw" style="background:var(--lead)"></span>Bleigehäuse</i>
+      <i><span class="sw" style="background:var(--screen)"></span>Leuchtschirm</i>
+    </div>
+  </div>
+
+  <div class="grid2">
+    <div class="card merk">
+      <span class="tag">Sicherung</span>
+      <h3>So arbeitet die Röntgenröhre</h3>
+      <ol>
+        <li>Die <b>Glühwendel (Kathode, −)</b> wird geheizt. Aus dem heißen Metall treten Elektronen aus (glühelektrischer Effekt).</li>
+        <li>Die <b>Hochspannung</b> \(U\) (etwa 25 kV bis 150 kV) beschleunigt die Elektronen zur <b>Anode (+)</b> aus Wolfram. Die Röhre ist luftleer, damit die Elektronen nicht mit Luftteilchen zusammenstoßen.</li>
+        <li>Beim Aufprall werden die Elektronen schlagartig <b>abgebremst</b>. Dabei entsteht Röntgenstrahlung (Bremsstrahlung), aber nur etwa 1 % der Energie. Etwa 99 % werden zu Wärme.</li>
+      </ol>
+      <div class="tbl"><table>
+        <tr><th>Du änderst</th><th>Das ändert sich</th></tr>
+        <tr><td>Heizung (Röhrenstrom)</td><td><b>Menge</b> der Röntgenquanten</td></tr>
+        <tr><td>Hochspannung \(U\)</td><td><b>Energie je Quant</b>: Die Strahlung wird „härter“ und durchdringt Stoffe besser.</td></tr>
+      </table></div>
+      <p class="note">Zusatz: Ein Elektron, das die Spannung \(U = 100\,\mathrm{kV}\) durchläuft, hat danach die Energie \(E = e\cdot U = 100\,\mathrm{keV}\) (Kiloelektronenvolt). Mehr Energie kann ein einzelnes Röntgenquant nicht bekommen.</p>
+    </div>
+    <div class="card warnc">
+      <span class="tag">Denkfalle</span>
+      <h3>„Röntgenstrahlung besteht aus den schnellen Elektronen.“</h3>
+      <p>Die Elektronen bleiben in der Röhre und landen in der Anode. Röntgenstrahlung ist <b>elektromagnetische Strahlung</b> wie Licht, nur mit viel mehr Energie je Quant. Sie fliegt immer mit Lichtgeschwindigkeit: Eine höhere Spannung macht sie nicht schneller, sondern energiereicher (kürzere Wellenlänge).</p>
+      <p>Auch wichtig: Ohne Heizung gibt es keine freien Elektronen. Dann entsteht auch bei hoher Spannung keine Röntgenstrahlung.</p>
+    </div>
+  </div>
+
+  <div class="tasks"><h3>Aufgaben</h3><div class="tlist" id="t1"></div></div>
+  <div class="check" id="c1"></div>
+</section>
+
+<!-- ================= Modul 2 ================= -->
+<section class="mod" id="m2" data-token="bild" data-title="Das Röntgenbild">
+  <div class="modhead">
+    <h2>2 · Wie entsteht ein Röntgenbild?</h2>
+    <p class="lead">Die Strahlung durchdringt den Körper unterschiedlich gut. Was hinter dem Körper ankommt, schwärzt den Detektor. Stelle Spannung und Strahlenmenge so ein, dass die Knochen gut zu erkennen sind, und zwar mit möglichst wenig Strahlung.</p>
+  </div>
+
+  <div class="card poe" id="poe2"></div>
+
+  <div class="stage">
+    <div class="stage-grid">
+      <div class="canvas-wrap" id="cv2wrap"><canvas id="cv2" aria-label="Seitenansicht des Strahlengangs und berechnetes Röntgenbild"></canvas></div>
+      <div class="panel">
+        <div class="pgroup">
+          <p class="plabel">Objekt</p>
+          <div class="seg" id="m2obj"><button type="button" data-v="hand" aria-pressed="true">Hand mit Ring</button><button type="button" data-v="case">Koffer</button></div>
+        </div>
+        <div class="pgroup">
+          <p class="plabel">Röhre einstellen</p>
+          <div class="ctl">
+            <div class="ctl-h"><span class="nm">Spannung U (Härte)</span><span class="val" id="m2Uv">60 kV</span></div>
+            <input type="range" id="m2U" min="25" max="120" step="5" value="60">
+          </div>
+          <div class="ctl">
+            <div class="ctl-h"><span class="nm">Strom · Zeit (Menge)</span><span class="val" id="m2Qv">5 mAs</span></div>
+            <input type="range" id="m2Q" min="1" max="20" step="1" value="5">
+          </div>
+        </div>
+        <div class="pgroup">
+          <p class="plabel">Bewertung der Aufnahme</p>
+          <div class="eval" id="m2eval"></div>
+          <div class="rdl" style="margin-top:10px">
+            <div><div class="r">Strahlenbelastung (Modell) <b id="m2D">1,0-fach</b></div><div class="meter m-xr"><i id="m2Dm"></i></div></div>
+          </div>
+          <p class="note">Bezug: 60 kV und 5 mAs entsprechen dem Wert 1,0.</p>
+        </div>
+      </div>
+    </div>
+    <div class="legend">
+      <i><span class="sw" style="background:var(--xr)"></span>Röntgenstrahl (blasser = weniger Strahlung)</i>
+      <i><span class="sw" style="background:#c98a70"></span>Gewebe</i>
+      <i><span class="sw" style="background:#e9e2cf"></span>Knochen</i>
+      <i><span class="sw" style="background:#9fb3c8"></span>Metall</i>
+      <i><span class="sw" style="background:#0c0f14;border:1px solid var(--line2)"></span>dunkel = viel Strahlung angekommen</i>
+    </div>
+  </div>
+
+  <div class="grid2">
+    <div class="card merk">
+      <span class="tag">Sicherung</span>
+      <h3>Das Röntgenbild ist ein Schattenbild</h3>
+      <ul>
+        <li>Röntgenstrahlung wird beim Durchgang durch Stoffe <b>geschwächt</b> (absorbiert). Wie stark, hängt ab von der <b>Dicke</b>, vom <b>Material</b> (Dichte, schwere Atome wie Calcium im Knochen oder Metall) und von der <b>Energie der Quanten</b>.</li>
+        <li>Wo viel Strahlung ankommt, wird der Detektor <b>dunkel</b>. Hinter Knochen kommt wenig an, deshalb sind Knochen <b>hell</b>.</li>
+        <li>Die <b>Spannung</b> steuert, wie gut die Strahlung durchdringt, und damit den Kontrast. Die <b>Menge</b> (Strom · Zeit) steuert, wie hell oder dunkel das ganze Bild wird.</li>
+        <li>Ziel in der Medizin: ein brauchbares Bild mit <b>möglichst geringer Strahlenbelastung</b>.</li>
+      </ul>
+    </div>
+    <div class="card warnc">
+      <span class="tag">Denkfalle</span>
+      <h3>„Helle Stellen im Röntgenbild sind die Stellen mit viel Strahlung.“</h3>
+      <p>Es ist umgekehrt. Ein Röntgenbild ist wie ein Negativ: <b>Hell</b> heißt, dass dort <b>wenig</b> Strahlung angekommen ist, weil etwas im Weg war. Knochen leuchten nicht und spiegeln auch nichts. Sie werfen einen Schatten.</p>
+    </div>
+  </div>
+
+  <div class="tasks"><h3>Aufgaben</h3><div class="tlist" id="t2"></div></div>
+  <div class="check" id="c2"></div>
+</section>
+
+<!-- ================= Modul 3 ================= -->
+<section class="mod" id="m3" data-token="abschirmung" data-title="Abschirmung">
+  <div class="modhead">
+    <h2>3 · Wie gut schirmt ein Stoff ab?</h2>
+    <p class="lead">Schicke Röntgenquanten durch eine Platte und zähle, wie viele hinten ankommen. Mach die Platte Schritt für Schritt dicker. Du findest dasselbe Halbieren wieder, das du von der Halbwertszeit kennst.</p>
+  </div>
+
+  <div class="card poe" id="poe3"></div>
+
+  <div class="stage">
+    <div class="stage-grid">
+      <div class="canvas-wrap" id="cv3wrap"><canvas id="cv3" aria-label="Röntgenquanten durchqueren eine Platte, darunter das Diagramm Anteil gegen Dicke"></canvas></div>
+      <div class="panel">
+        <div class="pgroup">
+          <p class="plabel">Material</p>
+          <div class="seg wrap" id="m3mat"><button type="button" data-v="pb" aria-pressed="true">Blei</button><button type="button" data-v="al">Aluminium</button><button type="button" data-v="be">Beton</button><button type="button" data-v="wa">Wasser</button></div>
+        </div>
+        <div class="pgroup">
+          <div class="ctl">
+            <div class="ctl-h"><span class="nm">Dicke d</span><span class="val" id="m3dv">0,6 mm</span></div>
+            <input type="range" id="m3d" min="0" max="10" step="1" value="6">
+          </div>
+          <button type="button" class="btn" id="m3reset">Zähler zurücksetzen</button>
+        </div>
+        <div class="pgroup">
+          <p class="plabel">Auswertung</p>
+          <div class="rdl">
+            <div class="r">Halbwertsdicke d½ <b id="m3h">0,2 mm</b></div>
+            <div class="r">Anzahl n = d : d½ <b id="m3n">3</b></div>
+            <div class="r">berechnet (½)ⁿ <b id="m3th">12,5 %</b></div>
+            <div class="r">gezählt <b id="m3me">–</b></div>
+            <div class="r">Quanten gesendet <b id="m3cnt">0</b></div>
+          </div>
+          <p class="note">Die gezählten Werte schwanken, weil der Zufall entscheidet, wo ein einzelnes Quant absorbiert wird. Je mehr Quanten, desto näher am berechneten Wert.</p>
+        </div>
+      </div>
+    </div>
+    <div class="legend">
+      <i><span class="sw" style="background:var(--xr)"></span>Röntgenquant</i>
+      <i><span class="sw" style="background:var(--heat)"></span>Quant wird absorbiert</i>
+      <i><span class="sw" style="border:1px dashed var(--ink2)"></span>Grenze nach je einer Halbwertsdicke</i>
+    </div>
+  </div>
+
+  <div class="grid2">
+    <div class="card merk">
+      <span class="tag">Sicherung</span>
+      <h3>Halbwertsdicke</h3>
+      <p>Die <b>Halbwertsdicke</b> \(d_{1/2}\) ist die Dicke, nach der nur noch die Hälfte der Strahlung durchkommt. Jede weitere Halbwertsdicke halbiert wieder.</p>
+      \[ N = N_0\cdot\left(\tfrac{1}{2}\right)^{n} \qquad\text{mit}\qquad n=\frac{d}{d_{1/2}} \]
+      <p>Beispiel Blei, \(d = 0{,}6\,\mathrm{mm}\):</p>
+      \[ n=\frac{0{,}6\,\mathrm{mm}}{0{,}2\,\mathrm{mm}}=3 \qquad \frac{N}{N_0}=\left(\tfrac{1}{2}\right)^{3}=\tfrac{1}{8}=12{,}5\,\% \]
+      <div class="tbl"><table>
+        <tr><th>Material</th><th>\(d_{1/2}\) (Modellwert, ca. 100 kV)</th></tr>
+        <tr><td>Blei</td><td>\(0{,}2\,\mathrm{mm}\)</td></tr>
+        <tr><td>Aluminium</td><td>\(3\,\mathrm{mm}\)</td></tr>
+        <tr><td>Beton</td><td>\(1{,}5\,\mathrm{cm}\)</td></tr>
+        <tr><td>Wasser (≈ Körpergewebe)</td><td>\(3\,\mathrm{cm}\)</td></tr>
+      </table></div>
+      <p class="note">Bei höherer Spannung sind die Quanten energiereicher. Dann wird die Halbwertsdicke größer.</p>
+    </div>
+    <div class="card warnc">
+      <span class="tag">Denkfalle</span>
+      <h3>„Nach zwei Halbwertsdicken ist die Strahlung weg.“</h3>
+      <p>Die erste Halbwertsdicke nimmt die Hälfte weg, die zweite die Hälfte <b>vom Rest</b>. Nach zwei Halbwertsdicken kommen also noch \(\tfrac{1}{4} = 25\,\%\) durch, nach drei noch \(12{,}5\,\%\). Die Strahlung wird immer schwächer, aber nie ganz null. Deshalb nimmt man für den Schutz ausreichend dicke Bleischichten.</p>
+    </div>
+  </div>
+
+  <div class="tasks"><h3>Aufgaben</h3><div class="tlist" id="t3"></div></div>
+  <div class="check" id="c3"></div>
+</section>
+
+<!-- ================= Modul 4 ================= -->
+<section class="mod" id="m4" data-token="schutz" data-title="Strahlenschutz">
+  <div class="modhead">
+    <h2>4 · Strahlenschutz und Einordnung</h2>
+    <p class="lead">Wer im Röntgenraum arbeitet, schützt sich mit drei Regeln: Abstand, Abschirmung und kurze Aufenthaltsdauer. Probiere aus, wie stark jede Regel wirkt. Danach ordnest du Röntgenstrahlung in die Familie der elektromagnetischen Strahlung ein.</p>
+  </div>
+
+  <div class="card poe" id="poe4"></div>
+
+  <div class="stage">
+    <div class="stage-grid">
+      <div class="canvas-wrap" id="cv4wrap"><canvas id="cv4" aria-label="Strahlung breitet sich von einer Quelle aus und verteilt sich auf immer größere Flächen"></canvas></div>
+      <div class="panel">
+        <div class="pgroup">
+          <p class="plabel">Röntgenquelle</p>
+          <div class="seg" id="m4on"><button type="button" data-v="0">aus</button><button type="button" data-v="1" aria-pressed="true">an</button></div>
+        </div>
+        <div class="pgroup">
+          <div class="ctl">
+            <div class="ctl-h"><span class="nm">Abstand r</span><span class="val" id="m4rv">1,0 m</span></div>
+            <input type="range" id="m4r" min="1" max="8" step="1" value="2">
+          </div>
+          <div class="ctl">
+            <div class="ctl-h"><span class="nm">Aufenthaltsdauer t</span><span class="val" id="m4tv">30 min</span></div>
+            <input type="range" id="m4t" min="5" max="120" step="5" value="30">
+          </div>
+          <p class="plabel" style="margin-top:6px">Abschirmung</p>
+          <div class="seg" id="m4wall"><button type="button" data-v="0" aria-pressed="true">keine</button><button type="button" data-v="1">2 mm Blei</button></div>
+        </div>
+        <div class="pgroup">
+          <p class="plabel">Deine Dosis (Modell)</p>
+          <div class="rdl">
+            <div class="r">Dosisleistung <b id="m4dl">20 µSv/h</b></div>
+            <div class="r">Dosis <b id="m4d">10 µSv</b></div>
+          </div>
+          <div class="eval" id="m4cmp" style="margin-top:8px"></div>
+          <p class="note">Modellquelle: 20 µSv pro Stunde in 1 m Abstand.<br>Dosis = Dosisleistung · Zeit.</p>
+        </div>
+      </div>
+    </div>
+    <div class="legend">
+      <i><span class="sw" style="background:var(--xr)"></span>Röntgenquant</i>
+      <i><span class="sw" style="background:rgba(184,255,122,.35);border:1px solid var(--screen)"></span>Fläche 1 m² (dein Körper)</i>
+    </div>
+  </div>
+
+  <div class="grid2">
+    <div class="card merk">
+      <span class="tag">Sicherung</span>
+      <h3>Die drei A des Strahlenschutzes</h3>
+      <ul>
+        <li><b>Abstand:</b> Die Strahlung verteilt sich auf eine immer größere Fläche. Bei doppeltem Abstand ist die Fläche viermal so groß, es trifft dich nur noch \(\tfrac{1}{4}\). Bei dreifachem Abstand nur noch \(\tfrac{1}{9}\).</li>
+        <li><b>Abschirmung:</b> Blei (Schürze, Wand, Bleiglas) schwächt die Strahlung stark. 2 mm Blei sind 10 Halbwertsdicken: \(\left(\tfrac12\right)^{10}=\tfrac{1}{1024}\).</li>
+        <li><b>Aufenthaltsdauer:</b> \(\text{Dosis} = \text{Dosisleistung}\cdot\text{Zeit}\). Halbe Zeit, halbe Dosis.</li>
+      </ul>
+      <p>Vergleichswerte: Zahnaufnahme etwa \(10\,\mu\mathrm{Sv}\), natürliche Strahlung etwa \(6\,\mu\mathrm{Sv}\) pro Tag (\(2{,}1\,\mathrm{mSv}\) pro Jahr).</p>
+    </div>
+    <div class="card warnc">
+      <span class="tag">Denkfalle</span>
+      <h3>„Nach dem Röntgen ist man selbst radioaktiv.“</h3>
+      <p>Röntgenstrahlung entsteht nur, solange die Röhre eingeschaltet ist. Schaltet man ab, ist sie sofort weg, wie das Licht einer Lampe. Im Körper entstehen dabei keine radioaktiven Stoffe. Man strahlt danach also nicht. Trotzdem ist Röntgenstrahlung <b>ionisierend</b> und kann Zellen schädigen. Deshalb wird nur geröntgt, wenn der Nutzen größer ist als das Risiko.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <span class="tag">Einordnung</span>
+    <h3>Röntgenstrahlung in der Familie der elektromagnetischen Strahlung</h3>
+    <p>Tippe auf einen Bereich. Alle diese Strahlungen breiten sich mit Lichtgeschwindigkeit aus. Sie unterscheiden sich in der Energie je Quant.</p>
+    <div class="spec" id="spec"></div>
+    <div class="specax"><span>wenig Energie je Quant · lange Wellen</span><span>viel Energie je Quant · kurze Wellen</span></div>
+    <div class="specinfo" id="specinfo"></div>
+    <div class="tbl" style="margin-top:14px"><table>
+      <tr><th></th><th>Röntgenstrahlung</th><th>γ-Strahlung</th></tr>
+      <tr><td>Art</td><td>elektromagnetische Strahlung</td><td>elektromagnetische Strahlung</td></tr>
+      <tr><td>Entstehung</td><td>in der Röntgenröhre, beim Abbremsen von Elektronen (in der Atomhülle)</td><td>im <b>Atomkern</b>, beim radioaktiven Zerfall</td></tr>
+      <tr><td>abschaltbar?</td><td>ja, Röhre aus</td><td>nein, das Präparat strahlt weiter</td></tr>
+      <tr><td>Wirkung</td><td>ionisierend, durchdringend</td><td>ionisierend, sehr durchdringend</td></tr>
+    </table></div>
+  </div>
+
+  <div class="tasks"><h3>Aufgaben</h3><div class="tlist" id="t4"></div></div>
+  <div class="check" id="c4"></div>
+</section>
+
+<div class="foot">
+  <span>Röntgenlabor · Klasse 10 · BTZ</span>
+  <span>Alle Versuche werden live berechnet · Fortschritt bleibt nur in diesem Browser gespeichert</span>
+  <span style="flex-basis:100%;font-weight:700;color:var(--ink2)">© BTZ · Schuljahr 2026/27 · Nur für den Unterricht. Weitergabe und Veröffentlichung nicht gestattet.</span>
+</div>
+</main>
+
+<script>
+(function(){
+'use strict';
+var DPR=Math.min(window.devicePixelRatio||1,2);
+function $(s,r){return (r||document).querySelector(s);}
+function $$(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s));}
+function fmt(x,d){return (d==null?String(x):x.toFixed(d)).replace('.',',');}
+function clamp(x,a,b){return x<a?a:x>b?b:x;}
+function ld(k,d){try{var v=localStorage.getItem('rlab10_'+k);return v==null?d:JSON.parse(v);}catch(e){return d;}}
+function sv(k,v){try{localStorage.setItem('rlab10_'+k,JSON.stringify(v));}catch(e){}}
+function typeset(el){if(window.MathJax&&MathJax.typesetPromise){MathJax.typesetPromise(el?[el]:undefined).catch(function(){});}}
+function rr(c,x,y,w,h,r){c.beginPath();c.moveTo(x+r,y);c.lineTo(x+w-r,y);c.quadraticCurveTo(x+w,y,x+w,y+r);c.lineTo(x+w,y+h-r);c.quadraticCurveTo(x+w,y+h,x+w-r,y+h);c.lineTo(x+r,y+h);c.quadraticCurveTo(x,y+h,x,y+h-r);c.lineTo(x,y+r);c.quadraticCurveTo(x,y,x+r,y);c.closePath();}
+function txt(c,s,x,y,col,size,align,bold){c.fillStyle=col||'#a3b3c9';c.font=(bold?'700 ':'')+(size||12)+'px Arial, sans-serif';c.textAlign=align||'left';c.textBaseline='middle';c.fillText(s,x,y);}
+function Stage(id,hfn){
+  var wrap=document.getElementById(id),cv=wrap.querySelector('canvas'),c=cv.getContext('2d');
+  var s={wrap:wrap,cv:cv,c:c,W:0,H:0};
+  s.fit=function(){var w=wrap.clientWidth;if(!w)return false;var h=Math.round(hfn(w));
+    if(h!==s.H||w!==s.W){wrap.style.height=h+'px';cv.width=Math.round(w*DPR);cv.height=Math.round(h*DPR);s.W=w;s.H=h;s.dirty=true;}
+    c.setTransform(DPR,0,0,DPR,0,0);return true;};
+  return s;
+}
+function seg(id,cb){var el=document.getElementById(id);$$('button',el).forEach(function(b){b.addEventListener('click',function(){
+  $$('button',el).forEach(function(o){o.setAttribute('aria-pressed',o===b?'true':'false');});cb(b.getAttribute('data-v'));});});}
+
+/* =========================================================
+   Modul 1: Röntgenröhre
+   ========================================================= */
+var M1=(function(){
+  var st={heat:true,hI:60,U:60,el:[],ph:[],sp:[],scr:[],T:20,acc:0,tRd:0};
+  var S=Stage('cv1wrap',function(w){return clamp(w*0.62,340,520);});
+  function geo(){
+    var W=S.W,H=S.H,g={W:W,H:H};
+    g.cy=H*0.38; g.hx0=W*0.04; g.hx1=W*0.96; g.hy0=H*0.15; g.hy1=H*0.62;
+    g.bx0=W*0.08; g.bx1=W*0.92; g.by0=g.cy-H*0.15; g.by1=g.cy+H*0.15;
+    g.kx=W*0.2; g.ah=H*0.075; g.aa=g.ah*0.95; g.ax=W*0.63; g.abw=W*0.12;
+    g.fx=g.ax+g.aa/2; g.fy=g.cy;
+    g.wx0=g.fx-H*0.14; g.wx1=g.fx+H*0.14;
+    g.sy=H*0.92; g.sx0=Math.max(8,g.fx-H*0.34); g.sx1=Math.min(W-8,g.fx+H*0.34);
+    return g;
+  }
+  function emit(g){
+    var ang=Math.random()<0.7?Math.PI/2+(Math.random()-0.5)*0.85:Math.random()*Math.PI*2;
+    st.ph.push({x:g.fx,y:g.fy,vx:Math.cos(ang),vy:Math.sin(ang),E:st.U*(0.3+0.7*Math.random()),k:Math.random(),out:false});
+  }
+  function step(dt,g){
+    var fly=st.U>0,rate=st.heat?st.hI/100*40:0,i,cloudN=0;
+    for(i=0;i<st.el.length;i++)if(st.el[i].c)cloudN++;
+    var cap=Math.round(4+st.hI*0.16);
+    st.acc+=rate*dt;
+    while(st.acc>=1){st.acc-=1;if(!fly&&cloudN>=cap)continue;
+      st.el.push({c:!fly,t:0,s:0,y0:(Math.random()-0.5)*g.ah*0.9,ph:Math.random()*6.283,r:0.4+Math.random()*0.6});if(!fly)cloudN++;}
+    var a=1.0+16*st.U/120;
+    for(i=st.el.length-1;i>=0;i--){var e=st.el[i];
+      if(e.c){if(fly){e.c=false;e.t=0;}else{e.ph+=dt*(1.5+e.r*2);if(!st.heat&&Math.random()<dt*1.5)st.el.splice(i,1);continue;}}
+      e.t+=dt;e.s=0.5*a*e.t*e.t;
+      if(e.s>=1){st.el.splice(i,1);st.sp.push({x:g.fx+(Math.random()-0.5)*5,y:g.fy+(Math.random()-0.5)*8,l:0.35});if(Math.random()<0.14)emit(g);}
+    }
+    var I=st.heat&&fly?st.hI/100:0;
+    var Teq=20+2400*I*(st.U/120);
+    st.T+=(Teq-st.T)*(1-Math.exp(-dt/2.2));
+    var sp=Math.max(200,380*g.W/800);
+    for(i=st.ph.length-1;i>=0;i--){var q=st.ph[i];q.x+=q.vx*sp*dt;q.y+=q.vy*sp*dt;q.k+=dt;
+      if(!q.out){
+        if(q.x<g.hx0||q.x>g.hx1||q.y<g.hy0||q.y>g.hy1){
+          if(q.y>g.hy1&&q.x>=g.wx0&&q.x<=g.wx1){q.out=true;}
+          else{st.sp.push({x:clamp(q.x,g.hx0,g.hx1),y:clamp(q.y,g.hy0,g.hy1),l:0.45,lead:true});st.ph.splice(i,1);continue;}
+        }
+      }else{
+        if(q.y>=g.sy&&q.x>=g.sx0&&q.x<=g.sx1){st.scr.push({x:q.x,l:0.8});st.ph.splice(i,1);continue;}
+        if(q.x<0||q.x>g.W||q.y>g.H){st.ph.splice(i,1);continue;}
+      }
+    }
+    for(i=st.sp.length-1;i>=0;i--){st.sp[i].l-=dt;if(st.sp[i].l<=0)st.sp.splice(i,1);}
+    for(i=st.scr.length-1;i>=0;i--){st.scr[i].l-=dt;if(st.scr[i].l<=0)st.scr.splice(i,1);}
+  }
+  function drawQ(c,q){
+    var lam=clamp(6+700/Math.max(q.E,1),7,44),L=30,amp=3.2,ux=q.vx,uy=q.vy,px=-uy,py=ux;
+    c.strokeStyle='hsl(270,95%,'+Math.round(64+Math.min(28,q.E/120*28))+'%)';c.lineWidth=1.7;c.beginPath();
+    for(var k=0;k<=L;k+=1.5){var env=Math.sin(Math.PI*k/L),o=Math.sin(k/lam*6.283-q.k*30)*amp*env,x=q.x-ux*k+px*o,y=q.y-uy*k+py*o;if(k===0)c.moveTo(x,y);else c.lineTo(x,y);}
+    c.stroke();
+  }
+  function draw(g){
+    var c=S.c,W=g.W,H=g.H,small=W<560,fs=small?10.5:12;
+    c.clearRect(0,0,W,H);
+    // Bleigehäuse
+    c.fillStyle='#0a1019';rr(c,g.hx0,g.hy0,g.hx1-g.hx0,g.hy1-g.hy0,10);c.fill();
+    c.strokeStyle='#5d6b80';c.lineWidth=6;c.lineCap='butt';c.beginPath();
+    c.moveTo(g.wx0,g.hy1);c.lineTo(g.hx0,g.hy1);c.lineTo(g.hx0,g.hy0);c.lineTo(g.hx1,g.hy0);c.lineTo(g.hx1,g.hy1);c.lineTo(g.wx1,g.hy1);c.stroke();
+    c.strokeStyle='rgba(185,148,255,.55)';c.lineWidth=2;c.setLineDash([4,4]);c.beginPath();c.moveTo(g.wx0,g.hy1);c.lineTo(g.wx1,g.hy1);c.stroke();c.setLineDash([]);
+    txt(c,'Bleigehäuse',g.hx0+10,g.hy0+13,'#7f8ea6',fs-1);
+    txt(c,'Fenster',g.wx1+6,g.hy1+12,'#b994ff',fs-1);
+    // Glaskolben
+    var bh=g.by1-g.by0;
+    c.fillStyle='rgba(120,160,255,.045)';rr(c,g.bx0,g.by0,g.bx1-g.bx0,bh,bh/2);c.fill();
+    c.strokeStyle='rgba(160,200,255,.35)';c.lineWidth=1.5;c.stroke();
+    txt(c,'Glaskolben (Vakuum)',(g.kx+g.ax)/2,g.by0+14,'#73849e',fs-1,'center');
+    // Kathode
+    var heatGlow=st.heat?st.hI/100:0;
+    c.strokeStyle='#8a94a6';c.lineWidth=2;c.beginPath();c.moveTo(g.bx0+bh*0.3,g.cy-6);c.lineTo(g.kx-4,g.cy-6);c.moveTo(g.bx0+bh*0.3,g.cy+6);c.lineTo(g.kx-4,g.cy+6);c.stroke();
+    if(heatGlow>0){var gr=c.createRadialGradient(g.kx,g.cy,1,g.kx,g.cy,28);gr.addColorStop(0,'rgba(255,160,70,'+(0.25+0.5*heatGlow)+')');gr.addColorStop(1,'rgba(255,120,40,0)');c.fillStyle=gr;c.beginPath();c.arc(g.kx,g.cy,28,0,6.283);c.fill();}
+    c.strokeStyle=heatGlow>0?'hsl('+Math.round(20+25*heatGlow)+',100%,'+Math.round(50+20*heatGlow)+'%)':'#8a94a6';c.lineWidth=2.2;c.beginPath();
+    for(var k=0;k<=8;k++){var yy=g.cy-14+k*3.5,xx=g.kx+(k%2?5:-5);if(k===0)c.moveTo(g.kx-4,g.cy-14);c.lineTo(xx,yy);}c.stroke();
+    txt(c,'Kathode (−)',g.kx,g.by1+14,'#46b4ff',fs,'center',true);
+    txt(c,'Glühwendel',g.kx,g.by1+28,'#73849e',fs-1,'center');
+    // Anode
+    var hot=clamp((st.T-500)/1900,0,1);
+    c.fillStyle='#c27a45';c.fillRect(g.ax+g.abw,g.cy-g.ah*0.45,g.bx1-g.ax-g.abw+W*0.02,g.ah*0.9);
+    c.beginPath();c.moveTo(g.ax,g.cy-g.ah);c.lineTo(g.ax+g.abw,g.cy-g.ah);c.lineTo(g.ax+g.abw,g.cy+g.ah);c.lineTo(g.ax+g.aa,g.cy+g.ah);c.closePath();
+    c.fillStyle='rgb('+Math.round(140+115*hot)+','+Math.round(150+20*hot-60*hot)+','+Math.round(170-120*hot)+')';c.fill();
+    if(hot>0){var ga=c.createRadialGradient(g.fx,g.fy,2,g.fx,g.fy,g.ah*2.2);ga.addColorStop(0,'rgba(255,140,60,'+(0.55*hot)+')');ga.addColorStop(1,'rgba(255,90,30,0)');c.fillStyle=ga;c.beginPath();c.arc(g.fx,g.fy,g.ah*2.2,0,6.283);c.fill();}
+    txt(c,'Anode (+)',g.ax+g.abw*0.55,g.by1+14,'#ff7084',fs,'center',true);
+    txt(c,'Wolfram',g.ax+g.abw*0.55,g.by1+28,'#73849e',fs-1,'center');
+    // Hochspannung
+    var hy=H*0.06,ax2=g.ax+g.abw*0.6;
+    c.strokeStyle='#3a4d6a';c.lineWidth=1.5;c.beginPath();c.moveTo(g.kx,hy);c.lineTo(g.kx,g.cy-16);c.moveTo(ax2,hy);c.lineTo(ax2,g.cy-g.ah);c.moveTo(g.kx,hy);c.lineTo(ax2,hy);c.stroke();
+    var lbl='Hochspannung U = '+st.U+' kV',bw=c.measureText?0:0;
+    c.font='700 '+fs+'px Arial, sans-serif';bw=c.measureText(lbl).width+20;
+    var bx=(g.kx+ax2)/2-bw/2;c.fillStyle='#101a2c';rr(c,bx,hy-12,bw,24,7);c.fill();c.strokeStyle=st.U>0?'#ffd24a':'#2a3c55';c.lineWidth=1.2;c.stroke();
+    txt(c,lbl,(g.kx+ax2)/2,hy,st.U>0?'#ffd24a':'#73849e',fs,'center',true);
+    txt(c,'−',g.kx-10,hy+12,'#46b4ff',14,'center',true);txt(c,'+',ax2+10,hy+12,'#ff7084',14,'center',true);
+    // Elektronen
+    c.fillStyle='#46b4ff';
+    for(var i=0;i<st.el.length;i++){var e=st.el[i],x,y;
+      if(e.c){x=g.kx+10+(Math.cos(e.ph)*0.6+0.7)*14*e.r+4;y=g.cy+Math.sin(e.ph*1.3)*16*e.r;}
+      else{var s=Math.min(1,e.s);x=g.kx+8+s*(g.fx-g.kx-8);y=g.cy+e.y0*(1-s);}
+      c.globalAlpha=0.35;c.beginPath();c.arc(x,y,5,0,6.283);c.fill();c.globalAlpha=1;c.beginPath();c.arc(x,y,2.4,0,6.283);c.fill();}
+    // Funken
+    for(i=0;i<st.sp.length;i++){var p=st.sp[i];c.globalAlpha=clamp(p.l*2.5,0,1);c.fillStyle=p.lead?'#9aa8bd':'#ff9a4c';c.beginPath();c.arc(p.x,p.y,p.lead?2.5:3.2,0,6.283);c.fill();}
+    c.globalAlpha=1;
+    // Quanten
+    for(i=0;i<st.ph.length;i++)drawQ(c,st.ph[i]);
+    // Leuchtschirm
+    c.fillStyle='#16210f';c.fillRect(g.sx0,g.sy,g.sx1-g.sx0,7);
+    for(i=0;i<st.scr.length;i++){var f=st.scr[i],gs=c.createRadialGradient(f.x,g.sy+3,0,f.x,g.sy+3,14);gs.addColorStop(0,'rgba(184,255,122,'+clamp(f.l,0,0.9)+')');gs.addColorStop(1,'rgba(184,255,122,0)');c.fillStyle=gs;c.fillRect(f.x-14,g.sy-11,28,25);}
+    txt(c,'Leuchtschirm',g.sx0,g.sy-10,'#8fbf62',fs-1);
+    if(!st.heat&&st.U>0)txt(c,'Heizung aus: keine freien Elektronen',W/2,H*0.71,'#ffb648',fs,'center',true);
+    else if(st.heat&&st.U===0)txt(c,'U = 0: Elektronen bleiben als Wolke an der Kathode',W/2,H*0.71,'#ffb648',fs,'center',true);
+  }
+  function readouts(){
+    var on=st.heat&&st.U>0,I=on?st.hI/100:0;
+    $('#r1X').textContent=on?'wird erzeugt':'keine';$('#r1X').style.color=on?'var(--xr)':'var(--ink3)';
+    $('#r1I').textContent=fmt(I*10,1)+' mA';
+    $('#r1T').textContent=Math.round(st.T/10)*10+' °C';
+    $('#r1M').style.width=(I*100)+'%';$('#r1Mt').textContent=!on?'keine':I<0.35?'gering':I<0.7?'mittel':'groß';
+    $('#r1E').style.width=(on?st.U/120*100:0)+'%';$('#r1Et').textContent=!on?'–':st.U<35?'gering (weich)':st.U<70?'mittel':st.U<100?'hoch (hart)':'sehr hoch';
+  }
+  seg('m1heat',function(v){st.heat=v==='1';readouts();});
+  $('#m1hI').addEventListener('input',function(){st.hI=+this.value;$('#m1hIv').textContent=st.hI+' %';});
+  $('#m1U').addEventListener('input',function(){st.U=+this.value;$('#m1Uv').textContent=st.U+' kV';});
+  return {S:S,frame:function(dt){if(!S.W&&!S.fit())return;if(S.dirty){st.ph=[];st.sp=[];st.scr=[];S.dirty=false;}step(dt,geo());draw(geo());st.tRd-=dt;if(st.tRd<=0){st.tRd=0.2;readouts();}}};
+})();
+
+/* =========================================================
+   Modul 2: Röntgenbild (Schwächung je Pixel berechnet)
+   ========================================================= */
+var FW=128,FH=160; /* Detektor 16 cm x 20 cm, 1 Pixel = 1,25 mm */
+var G2=0.44;
+function MU(U){var f=Math.pow(60/U,3);return{g:0.17+0.12*f,k:0.35+0.9*f,m:4+60*f,p:0.15+0.10*f,a:0.10+0.08*f,w:0.17+0.12*f,b:1.2+8*f};}
+function capT(px,py,x1,y1,x2,y2,r){var dx=x2-x1,dy=y2-y1,L2=dx*dx+dy*dy,t=((px-x1)*dx+(py-y1)*dy)/L2;t=t<0?0:t>1?1:t;var qx=x1+t*dx-px,qy=y1+t*dy-py,d2=qx*qx+qy*qy;return d2<r*r?2*Math.sqrt(r*r-d2):0;}
+function sph(px,py,cx,cy,r){var d2=(px-cx)*(px-cx)+(py-cy)*(py-cy);return d2<r*r?2*Math.sqrt(r*r-d2):0;}
+function buildHand(){
+  var N=FW*FH,g=new Float32Array(N),k=new Float32Array(N),m=new Float32Array(N);
+  var fingers=[[5.6,8.2,4.9,1.7,0.82,3],[7.6,7.8,7.5,0.7,0.86,3],[9.6,8.1,10.1,1.6,0.84,3],[11.4,9.0,12.6,3.8,0.74,3],[5.4,13.2,1.9,7.3,0.98,2]];
+  var bones=[];
+  fingers.forEach(function(f,fi){
+    var bx=f[0],by=f[1],tx=f[2],ty=f[3],r=f[4],np=f[5];
+    var dx=tx-bx,dy=ty-by,L=Math.sqrt(dx*dx+dy*dy),ux=dx/L,uy=dy/L;
+    var start=fi===4?2.2:0.15,len=L-0.35-start,fr=np===3?[0.46,0.31,0.23]:[0.56,0.44],pos=start;
+    for(var j=0;j<np;j++){var sl=len*fr[j],rb=(j===0?0.4:j===1?0.35:0.31)*r/0.85,a0=pos+rb+0.1,a1=pos+sl-rb-0.1;
+      if(a1<a0)a1=a0;bones.push([bx+ux*a0,by+uy*a0,bx+ux*a1,by+uy*a1,rb]);pos+=sl;}
+    if(fi<4){var mx=8.2+(bx-8.2)*0.45;bones.push([mx,13.5,bx,by+0.55,0.42]);}
+    else{bones.push([6.0,14.0,bx+ux*1.85,by+uy*1.85,0.45]);}
+  });
+  bones.push([6.9,16.6,6.8,21,0.9]);bones.push([9.9,16.7,10.2,21,0.62]);
+  var carp=[[6.6,14.5,.62],[7.8,14.3,.6],[9.0,14.4,.58],[10.1,14.7,.52],[6.9,15.5,.6],[8.2,15.4,.62],[9.5,15.6,.58],[10.4,15.7,.45]];
+  var rf=fingers[2],rdx=rf[2]-rf[0],rdy=rf[3]-rf[1],rL=Math.sqrt(rdx*rdx+rdy*rdy),rux=rdx/rL,ruy=rdy/rL,rcx=rf[0]+rux*1.5,rcy=rf[1]+ruy*1.5,ri=rf[4]+0.02,ro=rf[4]+0.14;
+  for(var j=0;j<FH;j++)for(var i=0;i<FW;i++){
+    var x=(i+0.5)*16/FW,y=(j+0.5)*20/FH,id=j*FW+i,t=0,q,u;
+    q=Math.pow((x-8.2)/4.1,2)+Math.pow((y-11.4)/3.7,2);if(q<1)t=Math.max(t,3.1*Math.pow(1-q,0.35));
+    if(y>13.2){u=(x-8.4)/3.5;if(Math.abs(u)<1)t=Math.max(t,4.3*Math.sqrt(1-u*u)*clamp((y-13.2)/2.2,0,1));}
+    for(var f=0;f<5;f++){var F=fingers[f];t=Math.max(t,capT(x,y,F[0],F[1],F[2],F[3],F[4]));}
+    var b=0;for(var n=0;n<bones.length;n++){var B=bones[n];b+=capT(x,y,B[0],B[1],B[2],B[3],B[4]);}
+    for(n=0;n<carp.length;n++)b+=sph(x,y,carp[n][0],carp[n][1],carp[n][2]);
+    b=Math.min(b,t*0.8);
+    var al=(x-rcx)*rux+(y-rcy)*ruy,pp=Math.abs(-(x-rcx)*ruy+(y-rcy)*rux),mt=0;
+    if(Math.abs(al)<0.32&&pp<ro)mt=2*(Math.sqrt(Math.max(0,ro*ro-pp*pp))-Math.sqrt(Math.max(0,ri*ri-pp*pp)));
+    g[id]=t-b;k[id]=b;m[id]=mt;
+  }
+  return {g:g,k:k,m:m};
+}
+function buildCase(){
+  var N=FW*FH,p=new Float32Array(N),a=new Float32Array(N),w=new Float32Array(N),m=new Float32Array(N),b=new Float32Array(N);
+  for(var j=0;j<FH;j++)for(var i=0;i<FW;i++){
+    var x=(i+0.5)*16/FW,y=(j+0.5)*20/FH,id=j*FW+i;
+    if(x>1&&x<15&&y>1.5&&y<18.5){
+      var e=Math.min(x-1,15-x,y-1.5,18.5-y);p[id]=e<0.3?14:0.5;
+      if(x>2.4&&x<8.4&&y>2.8&&y<11)a[id]=3.2;
+      w[id]=capT(x,y,11.2,3.2,11.2,12.2,1.6);p[id]+=w[id]>0?0.15:0;
+      if(x>2.4&&x<7.2&&y>12.8&&y<17.6)b[id]=2.2;
+      var bl=capT(x,y,9.2,14.6,13.8,17.4,0.24)>0||capT(x,y,9.2,17.2,13.8,14.4,0.24)>0;
+      if(bl)m[id]=0.16;
+      var r1=Math.sqrt((x-8.4)*(x-8.4)+(y-14.2)*(y-14.2)),r2=Math.sqrt((x-8.4)*(x-8.4)+(y-17.6)*(y-17.6));
+      if((r1<0.75&&r1>0.45)||(r2<0.75&&r2>0.45))p[id]+=1.2;
+      if(Math.abs(x-12.3)<0.5&&Math.abs(y-15.9)<0.15)m[id]=Math.max(m[id],0.3);
+    }
+  }
+  return {p:p,a:a,w:w,m:m,b:b};
+}
+var MAPS={};
+function filmTo(img,obj,U,mAs,noise){
+  var map=MAPS[obj]||(MAPS[obj]=obj==='hand'?buildHand():buildCase());
+  var mu=MU(U),i0=mAs*Math.pow(U/60,2),d=img.data,keys=Object.keys(map),N=FW*FH;
+  for(var i=0;i<N;i++){var s=0;for(var k=0;k<keys.length;k++)s+=mu[keys[k]]*map[keys[k]][i];
+    var dose=G2*i0*Math.exp(-s),b=Math.exp(-dose);
+    if(noise)b=clamp(b+(Math.random()-0.5)*0.12/Math.sqrt(1+dose*25),0,1);
+    var v=Math.pow(b,0.85);d[i*4]=Math.round(v*226+12);d[i*4+1]=Math.round(v*234+13);d[i*4+2]=Math.round(v*244+18);d[i*4+3]=255;}
+}
+var M2=(function(){
+  var st={obj:'hand',U:60,Q:5,dirty:true};
+  var off=document.createElement('canvas');off.width=FW;off.height=FH;var octx=off.getContext('2d'),img=octx.createImageData(FW,FH);
+  var S=Stage('cv2wrap',function(w){if(w>=620)return clamp(w*0.62,380,560);var fw=Math.min(w-32,300);return 262+fw*1.25+34;});
+  function render(){filmTo(img,st.obj,st.U,st.Q,true);octx.putImageData(img,0,0);st.dirty=false;}
+  // Querschnitt für die Seitenansicht: Weglängen je Material bei x (cm)
+  function paths(x){
+    if(st.obj==='hand'){var c1=Math.abs(x)<1?2*Math.sqrt(1-x*x):0,c2=Math.abs(x)<0.45?2*Math.sqrt(0.2025-x*x):0;return {g:c1-c2,k:c2};}
+    var p=0,m=0,w=0;if(Math.abs(x)<4.5){p=Math.abs(x)>4.2?3:0.5;}
+    if(x>-3&&x<-1.6)m=0.16;if(Math.abs(x-2)<1.2)w=2*Math.sqrt(1.44-(x-2)*(x-2));
+    return {p:p,m:m,w:w};
+  }
+  function Tof(x){var P=paths(x),mu=MU(st.U),s=0;for(var k in P)s+=mu[k]*P[k];return Math.exp(-s);}
+  function drawSide(c,x0,y0,w,h){
+    var hand=st.obj==='hand',span=hand?1.9:5,cx=x0+w/2,sy=y0+26,oy=y0+h*0.44,fy=y0+h*0.70,mag=(fy-sy)/(oy-sy),sc=Math.min((w*0.86)/(2*span*mag),(oy-sy-14)/(hand?1.1:1.7)),i0=st.Q*Math.pow(st.U/60,2);
+    txt(c,'Seitenansicht',x0+8,y0+12,'#73849e',11);
+    c.fillStyle='#16233a';rr(c,cx-26,sy-12,52,18,5);c.fill();c.fillStyle='#b994ff';c.beginPath();c.arc(cx,sy+4,3,0,6.283);c.fill();
+    txt(c,'Röhre',cx+32,sy-3,'#a3b3c9',11);
+    // Objekt
+    if(hand){c.fillStyle='rgba(201,138,112,.55)';c.beginPath();c.arc(cx,oy,1*sc,0,6.283);c.fill();c.fillStyle='#e9e2cf';c.beginPath();c.arc(cx,oy,0.45*sc,0,6.283);c.fill();
+      txt(c,'Finger im Schnitt',cx+1*sc+6,oy-10,'#c98a70',11);txt(c,'Knochen',cx+1*sc+6,oy+6,'#e9e2cf',11);}
+    else{c.strokeStyle='rgba(160,180,200,.7)';c.lineWidth=2;c.strokeRect(cx-4.35*sc,oy-1.5*sc,8.7*sc,3*sc);
+      c.fillStyle='#9fb3c8';c.fillRect(cx-3*sc,oy-0.1*sc,1.4*sc,Math.max(2,0.16*sc));
+      c.fillStyle='rgba(79,143,214,.6)';c.beginPath();c.arc(cx+2*sc,oy,1.2*sc,0,6.283);c.fill();
+      txt(c,'Metall',cx-2.3*sc,oy-1.5*sc-9,'#9fb3c8',11,'center');txt(c,'Wasser',cx+2*sc,oy-1.5*sc-9,'#4f8fd6',11,'center');}
+    // Strahlen
+    var nR=hand?13:17;
+    for(var r=0;r<nR;r++){var xo=-span+2*span*(r+0.5)/nR,T=Tof(xo),ox=cx+xo*sc,fx=cx+xo*sc*mag;
+      c.strokeStyle='rgba(185,148,255,.75)';c.lineWidth=1.3;c.beginPath();c.moveTo(cx,sy+4);c.lineTo(cx+(ox-cx)*((oy-sy-(hand?1:1.5)*sc)/(oy-sy)),oy-(hand?1:1.5)*sc);c.stroke();
+      c.strokeStyle='rgba(185,148,255,'+(0.06+0.8*T)+')';c.beginPath();c.moveTo(cx+(ox-cx)*((oy-sy+(hand?1:1.5)*sc)/(oy-sy)),oy+(hand?1:1.5)*sc);c.lineTo(fx,fy);c.stroke();}
+    // Film-Streifen und Profil
+    var fx0=cx-span*sc*mag,fx1=cx+span*sc*mag,py0=fy+20,ph=h-(py0-y0)-26;
+    for(var px=Math.floor(fx0);px<fx1;px++){var xo2=(px+0.5-cx)/(sc*mag),T2=Tof(xo2),b=Math.exp(-G2*i0*T2),v=Math.round(Math.pow(b,0.85)*226+12);
+      c.fillStyle='rgb('+v+','+(v+1)+','+(v+6)+')';c.fillRect(px,fy,1,12);}
+    c.strokeStyle='#2a3c55';c.lineWidth=1;c.strokeRect(fx0,fy,fx1-fx0,12);
+    txt(c,'Detektor',fx0,fy-8,'#a3b3c9',11);
+    c.strokeStyle='#2a3c55';c.beginPath();c.moveTo(fx0,py0+ph);c.lineTo(fx1,py0+ph);c.moveTo(fx0,py0);c.lineTo(fx0,py0+ph);c.stroke();
+    c.strokeStyle='#b994ff';c.lineWidth=1.8;c.beginPath();
+    for(px=Math.floor(fx0);px<fx1;px++){var T3=Tof((px+0.5-cx)/(sc*mag)),yy=py0+ph-T3*ph;if(px===Math.floor(fx0))c.moveTo(px,yy);else c.lineTo(px,yy);}c.stroke();
+    txt(c,'ankommende Strahlung',fx0+4,py0+ph+12,'#73849e',10.5);
+  }
+  function draw(){
+    var c=S.c,W=S.W,H=S.H;c.clearRect(0,0,W,H);
+    if(st.dirty)render();
+    var wide=W>=620,fx,fyy,fw,fh;
+    if(wide){drawSide(c,0,0,W*0.42,H);fh=H-58;fw=fh*0.8;if(fw>W*0.58-32){fw=W*0.58-32;fh=fw*1.25;}fx=W*0.42+(W*0.58-fw)/2;fyy=32;}
+    else{drawSide(c,0,0,W,262);fw=Math.min(W-32,300);fh=fw*1.25;fx=(W-fw)/2;fyy=262+24;}
+    c.fillStyle='#0d1320';rr(c,fx-8,fyy-8,fw+16,fh+16,10);c.fill();
+    c.imageSmoothingEnabled=true;c.drawImage(off,fx,fyy,fw,fh);
+    txt(c,'Röntgenbild (Detektor von vorn)',fx,fyy-18,'#a3b3c9',11.5,'left',true);
+  }
+  function evaluate(){
+    var mu=MU(st.U),i0=st.Q*Math.pow(st.U/60,2),bAir=Math.exp(-G2*i0),bT,bB,c,el=$('#m2eval'),D=st.Q*Math.pow(st.U/60,2)/5,msg,ok=false;
+    if(st.obj==='hand'){
+      bT=Math.exp(-G2*i0*Math.exp(-mu.g*1.7));bB=Math.exp(-G2*i0*Math.exp(-mu.g*1.0-mu.k*0.75));c=bB-bT;
+      if(bAir>0.45)msg='Unterbelichtet: Selbst neben der Hand kommt zu wenig Strahlung an, das Bild ist überall hell. Erhöhe die Menge (mAs).';
+      else if(bT>0.8)msg='Spannung zu niedrig: Schon das Gewebe verschluckt fast alle Quanten. Hand und Knochen sind beide weiß. Erhöhe die Spannung.';
+      else if(c<0.12&&bB<0.2&&st.U<85)msg='Überbelichtet: Es kommt so viel Strahlung an, dass auch hinter den Knochen alles dunkel wird. Verringere die Menge.';
+      else if(c<0.12)msg='Zu wenig Kontrast: Die energiereichen Quanten durchdringen auch die Knochen gut. Verringere die Spannung.';
+      else{ok=true;msg='Gute Aufnahme: Knochen heben sich deutlich vom Gewebe ab.'+(D>1.6?' Geht es auch mit weniger Strahlung?':'');}
+    }else{ok=true;msg='Vergleiche: Welche Gegenstände bleiben auch bei 120 kV hell? Was verschwindet bei hoher Spannung fast ganz?';}
+    el.className='eval '+(ok?'ok':'no');el.innerHTML='<b class="t">'+(st.obj==='hand'?'Bildqualität':'Gepäckkontrolle')+'</b>'+msg;
+    $('#m2D').textContent=fmt(D,1)+'-fach';$('#m2Dm').style.width=clamp(D/6.4*100,2,100)+'%';
+  }
+  seg('m2obj',function(v){st.obj=v;st.dirty=true;evaluate();});
+  $('#m2U').addEventListener('input',function(){st.U=+this.value;$('#m2Uv').textContent=st.U+' kV';st.dirty=true;evaluate();});
+  $('#m2Q').addEventListener('input',function(){st.Q=+this.value;$('#m2Qv').textContent=st.Q+' mAs';st.dirty=true;evaluate();});
+  evaluate();
+  var last={};
+  return {S:S,frame:function(){if(!S.W&&!S.fit())return;if(st.dirty||S.dirty||last.U!==st.U||last.Q!==st.Q||last.o!==st.obj){draw();S.dirty=false;last={U:st.U,Q:st.Q,o:st.obj};}}};
+})();
+
+/* =========================================================
+   Modul 3: Abschirmung, Halbwertsdicke
+   ========================================================= */
+var M3=(function(){
+  var MAT={pb:{n:'Blei',h:0.2,u:'mm',d:1,col:'#7f8ea6'},al:{n:'Aluminium',h:3,u:'mm',d:1,col:'#b9c4d0'},be:{n:'Beton',h:1.5,u:'cm',d:2,col:'#9c9384'},wa:{n:'Wasser',h:3,u:'cm',d:1,col:'#3f7cc0'}};
+  var st={mat:'pb',v:6,q:[],hist:[],sent:0,acc:0,tRd:0};
+  var S=Stage('cv3wrap',function(w){return clamp(w*0.66,400,560);});
+  function n(){return st.v/2;}
+  function dStr(v){var m=MAT[st.mat],d=v/2*m.h;return fmt(Math.round(d*100)/100,d%1===0?0:(Math.round(d*100)%10===0?1:2))+' '+m.u;}
+  function reset(){st.q=[];st.hist=[];st.sent=0;}
+  function geo(){var W=S.W,H=S.H,g={W:W,H:H};g.top=H*0.06;g.bh=H*0.44;g.cy=g.top+g.bh/2;g.sx=36;g.bx0=W*0.3;g.half=(W*0.42)/5;g.bx1=g.bx0+n()*g.half;g.dx=W-46;
+    g.gx0=58;g.gx1=W-24;g.gy0=H*0.62;g.gy1=H-34;return g;}
+  function step(dt,g){
+    var sp=Math.max(170,300*g.W/900);
+    st.acc+=dt*45;while(st.acc>=1){st.acc-=1;var a=-Math.log(1-Math.random())/Math.LN2;
+      st.q.push({x:g.sx+14,y:g.cy+(Math.random()-0.5)*g.bh*0.62,a:a,stop:-1,k:Math.random()});}
+    for(var i=st.q.length-1;i>=0;i--){var q=st.q[i];
+      if(q.stop>=0){q.stop-=dt;if(q.stop<=0)st.q.splice(i,1);continue;}
+      q.x+=sp*dt;q.k+=dt;
+      var nn=n();
+      if(!q.done&&q.a<nn&&q.x>=g.bx0+q.a*g.half){q.x=g.bx0+q.a*g.half;q.stop=0.5;q.done=true;rec(0);continue;}
+      if(!q.done&&q.x>=g.bx1&&q.a>=nn){q.done=true;rec(1);}
+      if(q.x>=g.dx){st.q.splice(i,1);}
+    }
+  }
+  function rec(v){st.hist.push(v);st.sent++;if(st.hist.length>500)st.hist.shift();}
+  function draw(g){
+    var c=S.c,W=g.W,H=g.H,m=MAT[st.mat],nn=n(),i;
+    c.clearRect(0,0,W,H);
+    // Quelle und Detektor
+    c.fillStyle='#16233a';rr(c,g.sx-20,g.cy-22,30,44,6);c.fill();c.fillStyle='#b994ff';c.beginPath();c.arc(g.sx+6,g.cy,3.5,0,6.283);c.fill();
+    txt(c,'Quelle',g.sx-5,g.cy+34,'#73849e',11,'center');
+    c.fillStyle='#16210f';rr(c,g.dx,g.cy-g.bh*0.36,14,g.bh*0.72,4);c.fill();c.strokeStyle='#8fbf62';c.lineWidth=1;c.stroke();
+    txt(c,'Zähler',g.dx+7,g.cy+g.bh*0.36+14,'#8fbf62',11,'center');
+    // Platte
+    if(nn>0){c.fillStyle=m.col;c.globalAlpha=0.32;c.fillRect(g.bx0,g.top+6,g.bx1-g.bx0,g.bh-12);c.globalAlpha=1;
+      c.strokeStyle=m.col;c.lineWidth=1.5;c.strokeRect(g.bx0,g.top+6,g.bx1-g.bx0,g.bh-12);}
+    c.setLineDash([4,4]);c.strokeStyle='rgba(233,239,247,.45)';c.lineWidth=1;
+    for(i=1;i<=Math.floor(nn);i++){var xx=g.bx0+i*g.half;if(i<nn||i===nn){c.beginPath();c.moveTo(xx,g.top+6);c.lineTo(xx,g.top+g.bh-6);c.stroke();}}
+    c.setLineDash([]);
+    var labs=['100 %','50 %','25 %','12,5 %','6,25 %','3,1 %'];
+    txt(c,labs[0],g.bx0,g.top-1,'#e9eff7',10.5,'center');
+    for(i=1;i<=Math.floor(nn);i++)txt(c,labs[i],g.bx0+i*g.half,g.top-1,'#e9eff7',10.5,'center');
+    if(nn>0)txt(c,m.n+', d = '+dStr(st.v),(g.bx0+g.bx1)/2,g.top+g.bh+4,m.col,11.5,'center',true);
+    else txt(c,'keine Platte',g.bx0+20,g.top+g.bh+4,'#73849e',11.5,'center');
+    // Quanten
+    for(i=0;i<st.q.length;i++){var q=st.q[i];
+      if(q.stop>=0){c.globalAlpha=clamp(q.stop*2,0,1);c.fillStyle='#ff9a4c';c.beginPath();c.arc(q.x,q.y,3.2,0,6.283);c.fill();c.globalAlpha=1;continue;}
+      c.strokeStyle='#c9a8ff';c.lineWidth=1.5;c.beginPath();for(var k=0;k<=18;k+=1.5){var yy=q.y+Math.sin(k/7*6.283-q.k*30)*2.6*Math.sin(Math.PI*k/18);if(k===0)c.moveTo(q.x-k,yy);else c.lineTo(q.x-k,yy);}c.stroke();}
+    // Diagramm
+    var gx0=g.gx0,gx1=g.gx1,gy0=g.gy0,gy1=g.gy1,X=function(t){return gx0+t/5*(gx1-gx0);},Y=function(p){return gy1-p*(gy1-gy0);};
+    c.strokeStyle='#2a3c55';c.lineWidth=1;c.beginPath();c.moveTo(gx0,gy0-6);c.lineTo(gx0,gy1);c.lineTo(gx1+4,gy1);c.stroke();
+    txt(c,'durchgelassener Anteil',gx0+6,gy0-14,'#a3b3c9',11);
+    [1,0.5,0.25,0.125].forEach(function(p){c.strokeStyle='rgba(42,60,85,.6)';c.beginPath();c.moveTo(gx0,Y(p));c.lineTo(gx1,Y(p));c.stroke();txt(c,(p*100).toString().replace('.',',')+' %',gx0-6,Y(p),'#73849e',10,'right');});
+    for(i=0;i<=5;i++){txt(c,i===0?'0':fmt(Math.round(i*m.h*100)/100,(i*m.h)%1===0?0:(Math.round(i*m.h*100)%10===0?1:2)),X(i),gy1+12,'#73849e',10,'center');}
+    txt(c,'Dicke d in '+m.u,gx1,gy1+26,'#a3b3c9',10.5,'right');
+    c.strokeStyle='#b994ff';c.lineWidth=2;c.beginPath();for(var t=0;t<=5.001;t+=0.05){var yy2=Y(Math.pow(0.5,t));if(t===0)c.moveTo(X(t),yy2);else c.lineTo(X(t),yy2);}c.stroke();
+    c.setLineDash([3,4]);c.strokeStyle='rgba(185,148,255,.55)';for(i=1;i<=3;i++){c.beginPath();c.moveTo(X(i),gy1);c.lineTo(X(i),Y(Math.pow(0.5,i)));c.lineTo(gx0,Y(Math.pow(0.5,i)));c.stroke();}c.setLineDash([]);
+    var th=Math.pow(0.5,nn);c.fillStyle='#ffd24a';c.beginPath();c.arc(X(nn),Y(th),5,0,6.283);c.fill();
+    if(st.hist.length>=30){var me=mean();c.strokeStyle='#5fcb7c';c.lineWidth=2;c.beginPath();c.arc(X(nn),Y(me),7,0,6.283);c.stroke();}
+    txt(c,'● berechnet   ○ gezählt',gx1,gy0-14,'#a3b3c9',10.5,'right');
+  }
+  function mean(){var s=0;for(var i=0;i<st.hist.length;i++)s+=st.hist[i];return st.hist.length?s/st.hist.length:0;}
+  function readouts(){
+    var m=MAT[st.mat],nn=n(),th=Math.pow(0.5,nn);
+    $('#m3dv').textContent=dStr(st.v);
+    $('#m3h').textContent=fmt(m.h,m.h%1?1:0)+' '+m.u;
+    $('#m3n').textContent=fmt(nn,nn%1?1:0);
+    $('#m3th').textContent=String(+(th*100).toFixed(2)).replace('.',',')+' %';
+    $('#m3me').textContent=st.hist.length>=30?fmt(mean()*100,1)+' %':'–';
+    $('#m3cnt').textContent=st.sent;
+  }
+  seg('m3mat',function(v){st.mat=v;reset();readouts();});
+  $('#m3d').addEventListener('input',function(){st.v=+this.value;reset();readouts();});
+  $('#m3reset').addEventListener('click',function(){reset();readouts();});
+  readouts();
+  return {S:S,frame:function(dt){if(!S.W&&!S.fit())return;var g=geo();step(dt,g);draw(g);st.tRd-=dt;if(st.tRd<=0){st.tRd=0.25;readouts();}}};
+})();
+
+/* =========================================================
+   Modul 4: Abstand, Abschirmung, Zeit
+   ========================================================= */
+var M4=(function(){
+  var st={on:true,v:2,t:30,wall:false,dots:[],dT:0};
+  var NDOT=72;
+  var S=Stage('cv4wrap',function(w){return clamp(w*0.6,320,470);});
+  function r(){return st.v/2;}
+  function geo(){var W=S.W,H=S.H,g={W:W,H:H};g.yc=H*0.53;g.xs=40;g.cell=Math.min(H*0.15,(W-80)/7);g.kx=(W-g.xs-2*g.cell*0.6-30)/4;return g;}
+  function P(g,rr2,u,v){var X=g.xs+rr2*g.kx,hs=rr2*g.cell/2;return [X+u*hs*0.6,g.yc+v*hs-u*hs*0.32];}
+  function regen(){st.dots=[];var k=st.wall?1/1024:1;for(var i=0;i<NDOT;i++){if(!st.on||Math.random()>k)continue;st.dots.push([Math.random()*2-1,Math.random()*2-1]);}}
+  function sq(c,g,rr2,stroke,fill,lw,dash){var a=P(g,rr2,-1,-1),b=P(g,rr2,1,-1),d=P(g,rr2,1,1),e=P(g,rr2,-1,1);c.beginPath();c.moveTo(a[0],a[1]);c.lineTo(b[0],b[1]);c.lineTo(d[0],d[1]);c.lineTo(e[0],e[1]);c.closePath();
+    if(fill){c.fillStyle=fill;c.fill();}if(stroke){c.setLineDash(dash||[]);c.strokeStyle=stroke;c.lineWidth=lw||1;c.stroke();c.setLineDash([]);}}
+  function draw(dt){
+    var g=geo(),c=S.c,W=g.W,H=g.H,R=r(),i;
+    st.dT-=dt;if(st.dT<=0){st.dT=0.35;regen();}
+    c.clearRect(0,0,W,H);
+    // Pyramide
+    var corners=[[-1,-1],[1,-1],[1,1],[-1,1]];
+    c.strokeStyle='rgba(185,148,255,.18)';c.lineWidth=1;
+    corners.forEach(function(k){var p=P(g,4,k[0],k[1]);c.beginPath();c.moveTo(g.xs,g.yc);c.lineTo(p[0],p[1]);c.stroke();});
+    for(i=1;i<=4;i++){sq(c,g,i,'rgba(163,179,201,.28)',null,1,[3,4]);var lp=P(g,i,-1,1);txt(c,i+' m',lp[0]-2,lp[1]+12,'#73849e',10.5,'center');}
+    // Wand
+    if(st.wall){var wx=g.xs+0.3*g.kx;c.fillStyle='#5d6b80';c.fillRect(wx-3,g.yc-g.cell*0.9,6,g.cell*1.8);txt(c,'2 mm Blei',wx,g.yc-g.cell*0.9-10,'#a3b3c9',10.5,'center');}
+    // aktuelles Quadrat
+    sq(c,g,R,'#b994ff','rgba(185,148,255,.06)',1.6);
+    var inv=1/R;sq(c,g,R,null,null);
+    var a=P(g,R,-inv,-inv),b=P(g,R,inv,-inv),d=P(g,R,inv,inv),e=P(g,R,-inv,inv);
+    c.beginPath();c.moveTo(a[0],a[1]);c.lineTo(b[0],b[1]);c.lineTo(d[0],d[1]);c.lineTo(e[0],e[1]);c.closePath();c.fillStyle='rgba(184,255,122,.22)';c.fill();c.strokeStyle='#b8ff7a';c.lineWidth=1.6;c.stroke();
+    // Quanten
+    var hits=0;
+    for(i=0;i<st.dots.length;i++){var u=st.dots[i][0],v=st.dots[i][1],p=P(g,R,u,v),inside=Math.abs(u)<=inv&&Math.abs(v)<=inv;if(inside)hits++;
+      c.fillStyle=inside?'#e4d4ff':'#b994ff';c.beginPath();c.arc(p[0],p[1],inside?2.8:2.2,0,6.283);c.fill();}
+    // Quelle
+    c.fillStyle='#16233a';rr(c,g.xs-30,g.yc-16,32,32,6);c.fill();c.fillStyle=st.on?'#b994ff':'#3a4d6a';c.beginPath();c.arc(g.xs,g.yc,4,0,6.283);c.fill();
+    txt(c,st.on?'Quelle an':'Quelle aus',g.xs-14,g.yc+30,st.on?'#b994ff':'#73849e',10.5,'center');
+    var top=P(g,R,inv,-inv);
+    txt(c,'1 m²',top[0]+6,top[1]-8,'#b8ff7a',11,'left',true);
+    txt(c,'Treffer in 1 m²: '+hits+' von '+st.dots.length,W-12,16,'#e9eff7',12,'right',true);
+    txt(c,'Abstand '+fmt(R,1)+' m → Fläche '+fmt(R*R,2).replace(/,00$/,'')+' m²',W-12,34,'#a3b3c9',11.5,'right');
+  }
+  function readouts(){
+    var R=r(),dl=st.on?20/(R*R)*(st.wall?1/1024:1):0,D=dl*st.t/60;
+    $('#m4rv').textContent=fmt(R,1)+' m';$('#m4tv').textContent=st.t+' min';
+    $('#m4dl').textContent=(dl===0?'0':dl<0.1?fmt(dl,3):fmt(dl,dl<10?2:1))+' µSv/h';
+    $('#m4d').textContent=(D===0?'0':D<0.1?fmt(D,3):fmt(D,D<10?2:1))+' µSv';
+    var el=$('#m4cmp'),msg;
+    if(!st.on){msg='Die Quelle ist aus: keine Strahlung, auch kein „Nachstrahlen“.';}
+    else{msg='Das entspricht etwa '+fmt(D/10,D/10<0.1?3:2)+' Zahnaufnahmen oder '+fmt(D/6*24,D/6*24<1?2:1)+' Stunden natürlicher Strahlung.';}
+    el.className='eval';el.innerHTML='<b class="t">Vergleich</b>'+msg;
+  }
+  seg('m4on',function(v){st.on=v==='1';regen();readouts();});
+  seg('m4wall',function(v){st.wall=v==='1';regen();readouts();});
+  $('#m4r').addEventListener('input',function(){st.v=+this.value;readouts();});
+  $('#m4t').addEventListener('input',function(){st.t=+this.value;readouts();});
+  readouts();
+  return {S:S,frame:function(dt){if(!S.W&&!S.fit())return;draw(dt);}};
+})();
+
+/* ---------- Spektrum ---------- */
+(function(){
+  var B=[
+    ['Radio­wellen','#5b6b8a','Radio, WLAN, Handy','nein','Wellenlänge von Zentimetern bis Kilometern.'],
+    ['Mikro­wellen','#6f7fa0','Mikrowellenherd, Radar','nein','Erwärmen Wasser in Lebensmitteln.'],
+    ['Infrarot','#c9524a','Wärmestrahlung, Fernbedienung','nein','Jeder warme Körper sendet Infrarot aus.'],
+    ['Licht','linear-gradient(90deg,#ff5a5a,#ffd24a,#5fcb7c,#46b4ff,#9a6bff)','was unsere Augen sehen','nein','Der einzige Bereich, den wir sehen können.'],
+    ['UV','#8e6bff','Sonnenbrand, Schwarzlicht','nur sehr energiereiches UV','Kann die Haut schädigen, daher Sonnenschutz.'],
+    ['Röntgen','#b994ff','Röntgenbild, Gepäckkontrolle, CT','ja','Entsteht in der Röntgenröhre beim Abbremsen schneller Elektronen.'],
+    ['γ-Strahlung','#5fcb7c','radioaktive Präparate, Krebstherapie','ja','Entsteht im Atomkern. Überschneidet sich in der Energie mit Röntgenstrahlung.']
+  ];
+  var box=$('#spec'),info=$('#specinfo');
+  B.forEach(function(b,i){var bt=document.createElement('button');bt.type='button';bt.innerHTML=b[0];bt.style.background=b[1];bt.setAttribute('aria-pressed',i===5?'true':'false');
+    bt.addEventListener('click',function(){$$('button',box).forEach(function(o){o.setAttribute('aria-pressed',o===bt?'true':'false');});show(i);});box.appendChild(bt);});
+  function show(i){var b=B[i];info.innerHTML='<b>'+b[0].replace('\u00ad','')+'</b>: '+b[4]+'<br>Beispiel: '+b[2]+'<br>Ionisierend: <b>'+b[3]+'</b>';}
+  show(5);
+})();
+
+/* =========================================================
+   Vorhersagen
+   ========================================================= */
+var POE={
+  poe1:{q:'Die Heizung ist aus. Du drehst die Hochspannung auf 100 kV. Was passiert?',o:['Es entsteht Röntgenstrahlung, weil die Spannung hoch genug ist.','Es entsteht keine Röntgenstrahlung.','Die Kathode fängt an zu glühen.'],c:1,
+    act:'Schalte die Heizung aus und stelle U = 100 kV ein. Schalte danach die Heizung wieder an.',
+    ex:'Ohne Heizung treten keine Elektronen aus der Glühwendel aus. Die Hochspannung hat nichts, was sie beschleunigen kann, also entsteht keine Röntgenstrahlung. Die Heizung liefert die Elektronen, die Hochspannung gibt ihnen Energie.'},
+  poe2:{q:'Im Röntgenbild erscheinen Knochen hell. Woran liegt das?',o:['Knochen leuchten, wenn Röntgenstrahlung sie trifft.','Knochen lassen weniger Strahlung durch. Dahinter kommt weniger an.','Knochen werfen die Strahlung zurück wie ein Spiegel.'],c:1,
+    act:'Schau dir die Seitenansicht an: Wie hell sind die Strahlen hinter dem Knochen? Vergleiche mit dem Profil unter dem Detektor.',
+    ex:'Knochen enthalten Calcium und sind dichter als Gewebe. Sie absorbieren mehr Strahlung. Hinter ihnen wird der Detektor kaum geschwärzt und bleibt hell. Das Röntgenbild ist ein Schattenbild.'},
+  poe3:{q:'Eine 0,2 mm dicke Bleiplatte lässt die Hälfte der Strahlung durch. Wie viel lässt eine 0,4 mm dicke Platte durch?',o:['nichts mehr, zweimal die Hälfte ist alles','ein Viertel (25 %)','ein Drittel (33 %)'],c:1,
+    act:'Wähle Blei und stelle d = 0,4 mm ein. Warte, bis einige Hundert Quanten gezählt sind.',
+    ex:'Die erste Schicht lässt 50 % durch. Die zweite Schicht lässt von diesen 50 % wieder die Hälfte durch, also 25 %. Jede Halbwertsdicke halbiert den Rest.'},
+  poe4:{q:'Du stellst dich doppelt so weit von der Röntgenquelle weg. Wie viel Strahlung trifft dich dann?',o:['die Hälfte','ein Viertel','gleich viel, Strahlung reicht weit'],c:1,
+    act:'Stelle den Abstand von 1 m auf 2 m. Zähle die Treffer in der grünen Fläche.',
+    ex:'Die Strahlung verteilt sich bei doppeltem Abstand auf die vierfache Fläche (2 · 2 = 4). Auf deine Fläche fällt nur noch ein Viertel.'}
+};
+Object.keys(POE).forEach(function(id){
+  var p=POE[id],el=document.getElementById(id),saved=ld('poe_'+id,null);
+  el.innerHTML='<span class="tag">Erst vermuten, dann prüfen</span><div class="steps"><b>1 Vermuten</b> · 2 Ausprobieren · 3 Erklären</div><div class="pq">'+p.q+'</div><div class="opts"></div><div class="res"></div>';
+  var opts=$('.opts',el),res=$('.res',el);
+  p.o.forEach(function(o,i){var b=document.createElement('button');b.type='button';b.className='chip';b.textContent=o;b.setAttribute('aria-pressed','false');
+    b.addEventListener('click',function(){pick(i);});opts.appendChild(b);});
+  function pick(i,silent){
+    $$('.chip',opts).forEach(function(b,k){b.setAttribute('aria-pressed',k===i?'true':'false');});
+    $('.steps',el).innerHTML='1 Vermuten · <b>2 Ausprobieren</b> · 3 Erklären';
+    res.innerHTML='<div class="act"><b class="t">Jetzt ausprobieren</b>'+p.act+'</div><div class="brow"><button type="button" class="btn">Auflösung zeigen</button></div>';
+    $('.btn',res).addEventListener('click',function(){
+      $('.steps',el).innerHTML='1 Vermuten · 2 Ausprobieren · <b>3 Erklären</b>';
+      res.innerHTML='<div class="fb '+(i===p.c?'ok':'info')+'"><span class="h">'+(i===p.c?'Deine Vermutung stimmt.':'Richtig ist: '+p.o[p.c])+'</span>'+p.ex+'</div>';
+      sv('poe_'+id,i);typeset(res);
+    });
+    if(!silent)sv('poe_'+id,i);
+  }
+  if(saved!=null)pick(saved,true);
+});
+
+/* =========================================================
+   Aufgaben
+   ========================================================= */
+var TASKS={
+t1:[
+ {s:1,type:'mc',q:'Wozu wird die Kathode der Röntgenröhre geheizt?',o:[
+   ['Damit Elektronen aus dem Metall austreten können.',1,'Richtig. Im heißen Metall bewegen sich die Elektronen so stark, dass einige austreten (glühelektrischer Effekt). Erst dann gibt es Elektronen, die beschleunigt werden können.'],
+   ['Damit die Anode heiß wird und Röntgenstrahlung abgibt.',0,'Die Anode wird heiß, aber durch den Aufprall der Elektronen, nicht durch die Heizung. Die Heizung sitzt an der Kathode.'],
+   ['Damit die Elektronen schneller werden.',0,'Schnell werden die Elektronen durch die Hochspannung zwischen Kathode und Anode. Die Heizung sorgt nur dafür, dass überhaupt freie Elektronen da sind.'],
+   ['Weil die Glühwendel selbst die Röntgenstrahlung aussendet.',0,'Die Glühwendel leuchtet nur rot bis gelb. Röntgenstrahlung entsteht erst an der Anode, wenn die schnellen Elektronen abgebremst werden.']]},
+ {s:1,type:'mc',q:'Warum ist die Röntgenröhre luftleer gepumpt?',o:[
+   ['Damit die Röntgenstrahlung sich ausbreiten kann.',0,'Röntgenstrahlung geht problemlos durch Luft, sonst könnte man ja nicht durch den Raum hindurch röntgen. Das Vakuum ist für die Elektronen nötig.'],
+   ['Damit die Elektronen auf dem Weg zur Anode nicht mit Luftteilchen zusammenstoßen.',1,'Richtig. In Luft würden die Elektronen ständig gegen Luftteilchen prallen und abgebremst, bevor sie die Anode mit voller Energie erreichen.'],
+   ['Weil Elektronen nur im Vakuum entstehen.',0,'Die heiße Glühwendel gibt auch in Luft Elektronen ab. Sie kämen dort aber nicht weit, weil sie mit Luftteilchen zusammenstoßen.'],
+   ['Damit die Röhre leichter ist.',0,'Das Gewicht spielt keine Rolle. Überlege, was den Elektronen auf ihrem Weg passieren würde.']]},
+ {s:2,type:'mc',q:'Die Hochspannung wird von 50 kV auf 100 kV erhöht, die Heizung bleibt gleich. Was ändert sich vor allem?',o:[
+   ['Es treten doppelt so viele Elektronen aus der Kathode aus.',0,'Wie viele Elektronen austreten, hängt von der Heizung ab, und die bleibt gleich. Probiere es in Versuch 1: Der Röhrenstrom ändert sich nicht, wenn du nur U änderst.'],
+   ['Die Röntgenquanten bekommen mehr Energie und durchdringen Stoffe besser.',1,'Richtig. Die Elektronen kommen mit mehr Energie an der Anode an, deshalb können die Röntgenquanten mehr Energie bekommen. Die Strahlung wird „härter“.'],
+   ['Die Röntgenstrahlung breitet sich schneller aus.',0,'Röntgenstrahlung ist elektromagnetische Strahlung. Sie ist immer so schnell wie Licht. Schau auf die Wellen in der Simulation: Bei hoher Spannung sind sie kürzer, aber nicht schneller.'],
+   ['Die Anode bleibt kühler.',0,'Im Gegenteil: Die Elektronen bringen mehr Energie mit. 99 % davon werden zu Wärme, die Anode wird heißer. Achte auf die Anzeige „Anode“.']]},
+ {s:2,type:'num',q:'Eine Röntgenröhre nimmt die elektrische Leistung \\(P = 20\\,\\mathrm{kW}\\) auf. Etwa 1 % davon wird zu Röntgenstrahlung. Wie viel Leistung wird in Wärme umgewandelt?',unit:'kW',ans:19.8,tol:0.05,
+   diag:[[0.2,0.01,'Das ist der Teil, der zu Röntgenstrahlung wird (1 % von 20 kW). Gefragt ist der Rest, der zu Wärme wird.'],[200,1,'1 % bedeutet ein Hundertstel: 20 kW : 100 = 0,2 kW, nicht 200 kW.'],[18,0.05,'Du hast mit 10 % gerechnet. 1 % von 20 kW sind 0,2 kW.'],[19800,1,'In Watt stimmt das. Gib die Antwort in kW an: 19 800 W = 19,8 kW.'],[20,0.01,'Die Röntgenstrahlung musst du noch abziehen: 1 % von 20 kW sind 0,2 kW.']],
+   hints:['Wie viel Prozent werden zu Wärme, wenn 1 % zu Röntgenstrahlung wird?','99 % von 20 kW: \\(0{,}99\\cdot 20\\,\\mathrm{kW}\\)'],
+   sol:'\\(P_{\\text{Wärme}} = 0{,}99\\cdot 20\\,\\mathrm{kW} = 19{,}8\\,\\mathrm{kW}\\). Diese Wärme muss abgeführt werden, sonst schmilzt die Anode. Deshalb gibt es Drehanoden und Ölkühlung.'},
+ {s:3,type:'mc',q:'Warum besteht die Anode aus Wolfram und dreht sich bei großen Geräten schnell?',o:[
+   ['Wolfram hat einen sehr hohen Schmelzpunkt (3422 °C). Durch das Drehen trifft der Strahl nicht immer dieselbe Stelle, die Wärme verteilt sich.',1,'Richtig. Fast die ganze Energie wird zu Wärme. Ein Metall mit hohem Schmelzpunkt hält das aus, und die Drehung verteilt die Hitze auf einen ganzen Ring.'],
+   ['Wolfram ist magnetisch und lenkt die Elektronen auf die Anode.',0,'Die Elektronen werden durch die Hochspannung zur Anode gezogen, nicht durch Magnetismus. Denk an die Energiebilanz: Wohin gehen 99 % der Energie?'],
+   ['Durch das Drehen wird die Röntgenstrahlung stärker gebündelt.',0,'Die Drehung bündelt nichts. Überlege, was mit einer Stelle passiert, auf die ständig Elektronen mit hoher Energie prallen.'],
+   ['Wolfram ist besonders leicht, damit sich die Anode schnell drehen kann.',0,'Wolfram ist eines der schwersten Metalle. Gewählt wird es, weil es extrem hitzebeständig ist.']]}
+],
+t2:[
+ {s:1,type:'mc',q:'Warum erscheinen Knochen im Röntgenbild hell?',o:[
+   ['Knochen absorbieren mehr Röntgenstrahlung als Gewebe. Hinter ihnen wird der Detektor kaum geschwärzt.',1,'Richtig. Das Röntgenbild ist ein Schattenbild: hell heißt wenig Strahlung angekommen.'],
+   ['Knochen lassen mehr Strahlung durch als Gewebe.',0,'Genau andersherum. Schau in der Seitenansicht: Hinter dem Knochen sind die Strahlen blasser, es kommt weniger an.'],
+   ['Knochen spiegeln die Röntgenstrahlung zurück.',0,'Röntgenstrahlung wird im Knochen verschluckt (absorbiert), nicht gespiegelt. Ein Spiegel würde nichts am Bild auf der Rückseite erklären.'],
+   ['Knochen leuchten, wenn sie bestrahlt werden.',0,'Knochen leuchten nicht. Sie werfen einen Schatten, weil sie mehr Strahlung absorbieren.']]},
+ {s:2,type:'mc',q:'Bei einer Aufnahme ist der Hintergrund schwarz, die ganze Hand aber weiß. Man sieht keine Knochen. Was sollte man ändern?',o:[
+   ['Die Menge (mAs) erhöhen.',0,'Mehr Quanten mit zu wenig Energie werden genauso im Gewebe verschluckt. Der Hintergrund ist schon schwarz, es kommt also genug Strahlung an. Und die Belastung steigt.'],
+   ['Die Spannung erhöhen.',1,'Richtig. Die Quanten sind zu energiearm und werden schon vom Gewebe fast ganz absorbiert. Mit höherer Spannung kommen sie durch das Gewebe, und die Knochen heben sich ab. Probiere es: 30 kV und dann 60 kV.'],
+   ['Die Spannung verringern.',0,'Dann werden die Quanten noch energieärmer und noch mehr im Gewebe verschluckt. Probiere es in Versuch 2.'],
+   ['Die Menge verringern.',0,'Dann wird auch der Hintergrund heller, aber in der Hand sieht man immer noch nichts. Das Problem ist die Energie je Quant.']]},
+ {s:2,type:'mc',q:'Bei 120 kV sind die Knochen kaum noch vom Gewebe zu unterscheiden. Warum?',o:[
+   ['Die Röhre erzeugt bei 120 kV keine Röntgenstrahlung mehr.',0,'Doch, sie erzeugt sogar energiereichere Strahlung. Das Bild entsteht ja, nur der Kontrast fehlt.'],
+   ['Die energiereichen Quanten durchdringen auch Knochen gut. Der Unterschied zum Gewebe wird klein.',1,'Richtig. Wenn fast alles durchkommt, gibt es kaum Schatten. Für Knochenaufnahmen nimmt man deshalb mittlere Spannungen.'],
+   ['Die Knochen werden durch die Strahlung durchsichtig.',0,'Die Knochen verändern sich nicht. Es liegt an der Energie der Quanten: Mit viel Energie kommen sie durch fast alles hindurch.']]},
+ {s:3,type:'mc',q:'Bei der Gepäckkontrolle (Objekt „Koffer“) ist die Schere sehr deutlich zu sehen, die Wasserflasche viel schwächer, obwohl sie dicker ist. Welche Erklärung ist richtig?',o:[
+   ['Metall besteht aus schweren Atomen mit großer Dichte und absorbiert schon bei kleiner Dicke sehr stark.',1,'Richtig. Es kommt nicht nur auf die Dicke an, sondern vor allem auf das Material. Wenige Millimeter Metall schwächen mehr als mehrere Zentimeter Wasser.'],
+   ['Die Schere ist größer als die Flasche.',0,'Die Flasche ist größer und dicker. Trotzdem schwächt sie weniger. Es muss am Material liegen.'],
+   ['Wasser lässt Röntgenstrahlung vollständig durch.',0,'Wasser schwächt die Strahlung auch, sonst wäre die Flasche gar nicht zu sehen. Aber viel weniger als Metall.']]}
+],
+t3:[
+ {s:1,type:'num',q:'Röntgenstrahlung trifft auf eine \\(0{,}6\\,\\mathrm{mm}\\) dicke Bleiplatte. Die Halbwertsdicke von Blei ist \\(d_{1/2} = 0{,}2\\,\\mathrm{mm}\\). Wie viel Prozent der Strahlung kommen durch?',unit:'%',ans:12.5,tol:0.2,
+   diag:[[33.3,0.5,'Du hast durch 3 geteilt. Drei Halbwertsdicken bedeuten aber dreimal halbieren: 100 % → 50 % → 25 % → …'],[25,0.2,'Das sind zwei Halbierungen. Wie viele Halbwertsdicken passen in 0,6 mm?'],[6.25,0.1,'Das wären vier Halbierungen. Rechne nach: 0,6 mm : 0,2 mm = ?'],[87.5,0.2,'87,5 % werden absorbiert. Gefragt ist, was durchkommt.'],[0,0.01,'Die Strahlung wird nie ganz null. Jede Schicht halbiert nur den Rest.'],[50,0.1,'Nach einer Halbwertsdicke wären es 50 %. Die Platte ist aber dicker.']],
+   hints:['Berechne zuerst \\(n = \\frac{d}{d_{1/2}}\\).','\\(n = 3\\). Halbiere dreimal: 100 % → 50 % → …'],
+   sol:'\\(n = \\frac{0{,}6\\,\\mathrm{mm}}{0{,}2\\,\\mathrm{mm}} = 3\\), also \\(\\left(\\tfrac12\\right)^3 = \\tfrac18 = 12{,}5\\,\\%\\).'},
+ {s:2,type:'mc',q:'Lea sagt: „Zwei Halbwertsdicken Blei, und die Strahlung ist komplett abgeschirmt.“ Stimmt das?',o:[
+   ['Ja, zweimal 50 % sind 100 %.',0,'Die zweite Schicht nimmt nicht noch einmal 50 % vom Anfangswert weg, sondern die Hälfte vom Rest. Probiere in Versuch 3: Bei 2 Halbwertsdicken kommen noch 25 % an.'],
+   ['Nein, es kommen noch 25 % durch.',1,'Richtig. 100 % → 50 % → 25 %. Ganz null wird die Strahlung nie.'],
+   ['Nein, es kommt noch die Hälfte durch.',0,'Das gilt nach einer Halbwertsdicke. Nach der zweiten wird der Rest noch einmal halbiert.']]},
+ {s:2,type:'num',q:'Beton hat die Halbwertsdicke \\(d_{1/2} = 1{,}5\\,\\mathrm{cm}\\). Wie dick muss eine Betonwand sein, damit nur noch \\(\\tfrac{1}{16}\\) der Strahlung durchkommt?',unit:'cm',ans:6,tol:0.05,
+   diag:[[4,0.01,'4 ist die Anzahl der Halbwertsdicken. Multipliziere noch mit \\(d_{1/2} = 1{,}5\\,\\mathrm{cm}\\).'],[24,0.1,'Du hast 16 · 1,5 cm gerechnet. Für \\(\\tfrac1{16}\\) braucht man aber nicht 16, sondern nur 4 Halbierungen: \\(2\\cdot2\\cdot2\\cdot2 = 16\\).'],[12,0.05,'8 Halbwertsdicken ergäben \\(\\tfrac1{256}\\). Wie oft muss man halbieren, um auf \\(\\tfrac1{16}\\) zu kommen?'],[60,0.5,'Achte auf die Einheit: Gefragt ist cm. 60 mm = 6 cm.']],
+   hints:['Wie oft muss man halbieren, um von 1 auf \\(\\tfrac1{16}\\) zu kommen?','\\(\\left(\\tfrac12\\right)^4 = \\tfrac1{16}\\), also \\(n = 4\\). Dann \\(d = n\\cdot d_{1/2}\\).'],
+   sol:'\\(\\left(\\tfrac12\\right)^4=\\tfrac1{16}\\Rightarrow n=4\\). \\(d = 4\\cdot 1{,}5\\,\\mathrm{cm} = 6\\,\\mathrm{cm}\\).'},
+ {s:3,type:'num',q:'Wie dick muss eine Betonwand (\\(d_{1/2} = 1{,}5\\,\\mathrm{cm}\\)) sein, damit sie genauso gut abschirmt wie \\(1\\,\\mathrm{mm}\\) Blei (\\(d_{1/2} = 0{,}2\\,\\mathrm{mm}\\))?',unit:'cm',ans:7.5,tol:0.05,
+   diag:[[1.5,0.01,'Das ist nur eine Halbwertsdicke Beton. Wie viele Halbwertsdicken stecken in 1 mm Blei?'],[5,0.01,'5 ist die Anzahl der Halbwertsdicken. Beton braucht ebenfalls 5 Halbwertsdicken: 5 · 1,5 cm.'],[75,0.5,'Achte auf die Einheit: 75 mm = 7,5 cm.'],[0.3,0.01,'Gleiche Abschirmung heißt gleiche Anzahl Halbwertsdicken, nicht gleiche Dicke in einer anderen Rechnung. Bestimme zuerst n für Blei.']],
+   hints:['Gleiche Abschirmung heißt: gleiche Anzahl \\(n\\) von Halbwertsdicken.','Blei: \\(n = \\frac{1\\,\\mathrm{mm}}{0{,}2\\,\\mathrm{mm}} = 5\\).'],
+   sol:'Blei: \\(n = \\frac{1\\,\\mathrm{mm}}{0{,}2\\,\\mathrm{mm}} = 5\\). Beton: \\(d = 5\\cdot 1{,}5\\,\\mathrm{cm} = 7{,}5\\,\\mathrm{cm}\\). Deshalb sind Wände von Röntgenräumen dick oder mit Blei ausgekleidet.'}
+],
+t4:[
+ {s:1,type:'mc',q:'Ist ein Mensch nach einer Röntgenaufnahme radioaktiv?',o:[
+   ['Ja, für einige Stunden.',0,'Röntgenstrahlung macht nichts radioaktiv. Sie ist weg, sobald die Röhre abgeschaltet ist, wie Licht beim Ausschalten einer Lampe.'],
+   ['Nein. Die Strahlung entsteht nur, solange die Röhre an ist, und im Körper entstehen keine radioaktiven Stoffe.',1,'Richtig. Schalte in Versuch 4 die Quelle aus: Sofort kommt nichts mehr an.'],
+   ['Nur wenn man sehr oft geröntgt wird.',0,'Auch dann nicht. Häufiges Röntgen erhöht die Dosis und damit das Risiko für Zellschäden, macht aber nicht radioaktiv.']]},
+ {s:2,type:'num',q:'In \\(1\\,\\mathrm{m}\\) Abstand beträgt die Dosisleistung \\(20\\,\\tfrac{\\mu\\mathrm{Sv}}{\\mathrm{h}}\\). Wie groß ist sie in \\(2\\,\\mathrm{m}\\) Abstand?',unit:'µSv/h',ans:5,tol:0.05,
+   diag:[[10,0.05,'Bei doppeltem Abstand verteilt sich die Strahlung auf die vierfache Fläche (2 · 2). Es bleibt ein Viertel, nicht die Hälfte.'],[40,0.1,'Mit größerem Abstand wird die Strahlung schwächer, nicht stärker.'],[80,0.1,'Mit größerem Abstand wird die Strahlung schwächer, nicht stärker.'],[2.5,0.05,'Das wäre ein Achtel. Die Fläche wächst mit Abstand mal Abstand: 2 · 2 = 4.']],
+   hints:['Zähle in Versuch 4 die Treffer bei 1 m und bei 2 m.','Doppelter Abstand → vierfache Fläche → \\(\\tfrac14\\) der Strahlung.'],
+   sol:'\\(20\\,\\tfrac{\\mu\\mathrm{Sv}}{\\mathrm{h}}\\cdot\\tfrac14 = 5\\,\\tfrac{\\mu\\mathrm{Sv}}{\\mathrm{h}}\\).'},
+ {s:2,type:'mc',q:'Worin unterscheiden sich Röntgenstrahlung und γ-Strahlung?',o:[
+   ['γ-Strahlung besteht aus Teilchen, Röntgenstrahlung aus Wellen.',0,'Beide sind elektromagnetische Strahlung. Der Unterschied liegt darin, wo sie entstehen.'],
+   ['Röntgenstrahlung entsteht beim Abbremsen von Elektronen in der Röhre, γ-Strahlung im Atomkern.',1,'Richtig. Deshalb lässt sich Röntgenstrahlung abschalten, ein radioaktives Präparat strahlt dagegen weiter.'],
+   ['Röntgenstrahlung ist nicht ionisierend.',0,'Röntgenstrahlung ist ionisierend, deshalb braucht man Strahlenschutz.'],
+   ['Röntgenstrahlung ist langsamer als γ-Strahlung.',0,'Beide breiten sich mit Lichtgeschwindigkeit aus.']]},
+ {s:3,type:'num',q:'Eine Person steht in \\(2\\,\\mathrm{m}\\) Abstand von der Modellquelle (\\(5\\,\\tfrac{\\mu\\mathrm{Sv}}{\\mathrm{h}}\\)). Nach wie vielen Stunden hat sie dieselbe Dosis erhalten wie bei einer Zahnaufnahme (\\(10\\,\\mu\\mathrm{Sv}\\))?',unit:'h',ans:2,tol:0.02,
+   diag:[[0.5,0.02,'Du hast Dosisleistung durch Dosis gerechnet. Es gilt: Zeit = Dosis : Dosisleistung.'],[50,0.1,'Du hast multipliziert. Es gilt: Zeit = Dosis : Dosisleistung = 10 µSv : 5 µSv/h.'],[1,0.02,'Du hast vermutlich mit 10 µSv/h gerechnet (halbe statt ein Viertel). Bei 2 m sind es 5 µSv/h.'],[120,0.5,'In Minuten stimmt das. Gefragt sind Stunden.']],
+   hints:['Dosis = Dosisleistung · Zeit. Stelle nach der Zeit um.','\\(t = \\frac{10\\,\\mu\\mathrm{Sv}}{5\\,\\frac{\\mu\\mathrm{Sv}}{\\mathrm{h}}}\\)'],
+   sol:'\\(t = \\frac{10\\,\\mu\\mathrm{Sv}}{5\\,\\frac{\\mu\\mathrm{Sv}}{\\mathrm{h}}} = 2\\,\\mathrm{h}\\).'}
+]};
+var SOLVED=ld('solved',{});
+function parseNum(s){s=String(s).replace(/\s/g,'').replace('%','').replace(',','.');if(s===''||isNaN(+s))return NaN;return +s;}
+function mountTasks(id){
+  var box=document.getElementById(id);
+  TASKS[id].forEach(function(t,k){
+    var key=id+'_'+k,el=document.createElement('div');el.className='task s'+t.s;
+    el.innerHTML='<div class="task-h"><span class="task-n">Aufgabe '+(k+1)+'<span class="bd">'+['','AB I','AB II','AB III'][t.s]+'</span><span class="dn">'+(SOLVED[key]?'✓ gelöst':'')+'</span></span><span class="stars">'+'★★★'.slice(0,t.s)+'<span style="opacity:.25">'+'★★★'.slice(t.s)+'</span></span></div><div class="q">'+t.q+'</div><div class="body"></div><div class="out"></div>';
+    var body=$('.body',el),out=$('.out',el);
+    function done(){SOLVED[key]=1;sv('solved',SOLVED);$('.dn',el).textContent='✓ gelöst';progress();}
+    if(t.type==='mc'){
+      t.o.forEach(function(o,j){var b=document.createElement('button');b.type='button';b.className='opt';b.innerHTML='<i>'+'ABCD'[j]+'</i><span>'+o[0]+'</span>';
+        b.addEventListener('click',function(){
+          $$('.opt',body).forEach(function(x){x.classList.remove('wrong');});
+          if(o[1]){b.classList.add('right');$$('.opt',body).forEach(function(x){x.disabled=true;});done();}else b.classList.add('wrong');
+          out.innerHTML='<div class="fb '+(o[1]?'ok':'no')+'"><span class="h">'+(o[1]?'Richtig':'Noch nicht')+'</span>'+o[2]+(o[1]?'':' Versuche es noch einmal.')+'</div>';typeset(out);
+        });body.appendChild(b);});
+    }else{
+      var tries=0,hi=0;
+      body.innerHTML='<div class="ans"><input type="text" inputmode="decimal" autocomplete="off" aria-label="Antwort" id="in_'+key+'"><span class="uu">'+t.unit+'</span><button type="button" class="btn primary">Prüfen</button><button type="button" class="btn hint">Tipp</button><button type="button" class="btn sol" hidden>Lösung zeigen</button></div><div class="tips"></div>';
+      var inp=$('input',body),tips=$('.tips',body);
+      function check(){
+        var v=parseNum(inp.value),msg,ok=false;
+        if(isNaN(v)){out.innerHTML='<div class="fb info"><span class="h">Zahl fehlt</span>Gib eine Zahl ein, zum Beispiel 12,5.</div>';return;}
+        tries++;
+        if(Math.abs(v-t.ans)<=t.tol){ok=true;msg=t.sol;}
+        else{for(var i=0;i<t.diag.length;i++){if(Math.abs(v-t.diag[i][0])<=t.diag[i][1]){msg=t.diag[i][2];break;}}
+          if(!msg)msg='Das passt noch nicht. Schreibe die Rechnung Schritt für Schritt auf und prüfe jeden Schritt. Ein Tipp hilft dir weiter.';}
+        out.innerHTML='<div class="fb '+(ok?'ok':'no')+'"><span class="h">'+(ok?'Richtig':'Noch nicht')+'</span>'+msg+'</div>';typeset(out);
+        if(ok){inp.disabled=true;$('.btn.primary',body).disabled=true;done();}
+        if(!ok&&tries>=2)$('.btn.sol',body).hidden=false;
+      }
+      $('.btn.primary',body).addEventListener('click',check);
+      inp.addEventListener('keydown',function(e){if(e.key==='Enter')check();});
+      $('.btn.hint',body).addEventListener('click',function(){if(hi>=t.hints.length)return;var d=document.createElement('div');d.className='tip';d.innerHTML='<b>Tipp '+(hi+1)+'</b>'+t.hints[hi];tips.appendChild(d);hi++;typeset(d);if(hi>=t.hints.length)this.disabled=true;});
+      $('.btn.sol',body).addEventListener('click',function(){out.innerHTML='<div class="fb info"><span class="h">Lösung</span>'+t.sol+'</div>';typeset(out);});
+    }
+    box.appendChild(el);
+  });
+}
+['t1','t2','t3','t4'].forEach(mountTasks);
+
+/* ---------- Ich-kann-Listen ---------- */
+var CAN={
+  c1:['Ich kann den Aufbau einer Röntgenröhre beschreiben (Kathode, Anode, Hochspannung, Vakuum).','Ich kann erklären, wie Röntgenstrahlung entsteht.','Ich kann sagen, was Heizung und Hochspannung jeweils bewirken.','Ich kann erklären, warum die Anode gekühlt werden muss.'],
+  c2:['Ich kann erklären, warum ein Röntgenbild ein Schattenbild ist.','Ich kann nennen, wovon die Schwächung abhängt (Material, Dicke, Energie).','Ich kann begründen, warum Knochen hell erscheinen.','Ich kann erklären, wie Spannung und Menge das Bild verändern.'],
+  c3:['Ich kann erklären, was die Halbwertsdicke ist.','Ich kann mit \\(N = N_0\\cdot\\left(\\tfrac12\\right)^n\\) berechnen, wie viel Strahlung durchkommt.','Ich kann begründen, warum Strahlung nie ganz abgeschirmt wird.'],
+  c4:['Ich kann die drei A des Strahlenschutzes erklären.','Ich kann berechnen, wie sich die Strahlung bei doppeltem Abstand ändert.','Ich kann Röntgen- und γ-Strahlung vergleichen.','Ich kann erklären, warum man nach dem Röntgen nicht radioaktiv ist.']
+};
+var CANS=ld('can',{});
+Object.keys(CAN).forEach(function(id){
+  var el=document.getElementById(id);el.innerHTML='<h3>Ich kann …</h3><p class="sub">Hake ab, was du sicher kannst. Bei Lücken: zurück zum Versuch.</p>';
+  CAN[id].forEach(function(s,k){var key=id+'_'+k,l=document.createElement('label');l.innerHTML='<input type="checkbox" id="can_'+key+'"'+(CANS[key]?' checked':'')+'><span>'+s+'</span>';
+    $('input',l).addEventListener('change',function(){CANS[key]=this.checked?1:0;sv('can',CANS);});el.appendChild(l);});
+});
+
+/* =========================================================
+   Navigation, Hauptschleife
+   ========================================================= */
+var MODS=$$('.mod'),SIMS=[M1,M2,M3,M4],cur=0,navBtns=[];
+MODS.forEach(function(m,i){var b=document.createElement('button');b.type='button';b.className='navbtn';
+  b.innerHTML='<span class="num">'+(i+1)+'</span><span>'+m.getAttribute('data-title')+'</span><span class="pb"><i></i></span>';
+  b.addEventListener('click',function(){show(i,true);});$('#navrow').appendChild(b);navBtns.push(b);});
+function progress(){['t1','t2','t3','t4'].forEach(function(id,i){var n=TASKS[id].length,s=0;for(var k=0;k<n;k++)if(SOLVED[id+'_'+k])s++;$('.pb i',navBtns[i]).style.width=(s/n*100)+'%';});}
+function show(i,scroll){cur=i;MODS.forEach(function(m,k){m.classList.toggle('on',k===i);navBtns[k].setAttribute('aria-current',k===i?'true':'false');});
+  sv('mod',i);try{history.replaceState(null,'','#'+MODS[i].getAttribute('data-token'));}catch(e){}
+  SIMS[i].S.fit();SIMS[i].S.dirty=true;
+  if(scroll){var top=$('nav.modnav').getBoundingClientRect().top+window.pageYOffset;if(window.pageYOffset>top)window.scrollTo(0,top);}
+  typeset(MODS[i]);}
+var start=ld('mod',0),h=(location.hash||'').slice(1);
+MODS.forEach(function(m,i){if(m.getAttribute('data-token')===h)start=i;});
+show(clamp(start|0,0,3),false);progress();
+
+window.addEventListener('resize',function(){SIMS[cur].S.fit();drawHero();});
+var last=performance.now();
+function loop(t){var dt=Math.min(0.05,(t-last)/1000);last=t;if(!document.hidden)SIMS[cur].frame(dt);requestAnimationFrame(loop);}
+requestAnimationFrame(loop);
+
+/* ---------- Kopfbild: berechnete Handaufnahme ---------- */
+var heroOff=document.createElement('canvas');heroOff.width=FW;heroOff.height=FH;
+(function(){var x=heroOff.getContext('2d'),im=x.createImageData(FW,FH);filmTo(im,'hand',58,6,false);
+  for(var i=0;i<im.data.length;i+=4){var v=im.data[i];im.data[i]=Math.round(v*0.72);im.data[i+1]=Math.round(v*0.78);im.data[i+2]=Math.min(255,Math.round(v*1.02+10));}x.putImageData(im,0,0);})();
+function drawHero(){var cv=$('#heroCv'),r=cv.getBoundingClientRect(),c=cv.getContext('2d');cv.width=Math.round(r.width*DPR);cv.height=Math.round(r.height*DPR);
+  c.setTransform(DPR,0,0,DPR,0,0);c.fillStyle='#04060c';c.fillRect(0,0,r.width,r.height);
+  var h2=r.height*1.25,w2=h2*0.8,x0=r.width-w2*0.92;c.globalAlpha=0.9;c.imageSmoothingEnabled=true;c.drawImage(heroOff,x0,-r.height*0.12,w2,h2);c.globalAlpha=1;}
+drawHero();
+})();
+</script>

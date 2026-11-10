@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>Mindmap Elektrische Felder</title>
+<style>
+  @page { size: A4 portrait; margin: 0; }
+  html, body { margin: 0; padding: 0; background: #d9dde3; }
+  svg text { white-space: pre; }
+  svg { display: block; margin: 0 auto; background: #fff; width: 210mm; height: 297mm; box-shadow: 0 0 6px rgba(0,0,0,.3); }
+  @media print {
+    html, body { background: #fff; }
+    svg { box-shadow: none; margin: 0; }
+  }
+</style>
+</head>
+<body>
+<svg id="s" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 210 297" style="font-family:'Segoe UI',Arial,sans-serif"></svg>
+<script>
+const INK = '#1a202c';
+// ^{..} = hoch, _{..} = tief
+const M = s => s.replace(/\^\{([^}]*)\}/g, '<tspan baseline-shift="super" font-size="70%">$1</tspan>')
+                .replace(/_\{([^}]*)\}/g, '<tspan baseline-shift="sub" font-size="70%">$1</tspan>');
+const T = (x, y, s, o = {}) =>
+  `<text x="${x}" y="${y}" font-size="${o.size || 3}" fill="${o.fill || INK}" font-weight="${o.w || 400}" text-anchor="${o.anchor || 'start'}"${o.italic ? ' font-style="italic"' : ''}${o.halo ? ' stroke="#fff" stroke-width="1.1" paint-order="stroke"' : ''}>${M(s)}</text>`;
+const L = (x, y, arr, step, o = {}) => arr.map((s, i) => T(x, y + i * step, s, o)).join('');
+const line = (x1, y1, x2, y2, o = {}) =>
+  `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${o.c || '#333'}" stroke-width="${o.w || 0.45}"${o.dash ? ` stroke-dasharray="${o.dash}"` : ''}${o.end ? ' marker-end="url(#ar)"' : ''}${o.both ? ' marker-start="url(#ar)" marker-end="url(#ar)"' : ''}/>`;
+const path = (d, o = {}) =>
+  `<path d="${d}" fill="none" stroke="${o.c || '#333'}" stroke-width="${o.w || 0.45}"${o.end === false ? '' : ' marker-end="url(#ar)"'}/>`;
+
+function box(x, y, w, h, c, f, title) {
+  return `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="3" fill="${f}" stroke="${c}" stroke-width="0.6"/>` +
+         `<rect x="${x}" y="${y}" width="${w}" height="7.5" rx="3" fill="${c}"/>` +
+         `<rect x="${x}" y="${y + 3.5}" width="${w}" height="4" fill="${c}"/>` +
+         T(x + 4, y + 5.4, title, { size: 3.9, w: 700, fill: '#fff' });
+}
+function charge(cx, cy, plus) {
+  return `<circle cx="${cx}" cy="${cy}" r="3" fill="${plus ? '#e53e3e' : '#3182ce'}"/>` +
+         T(cx, cy + 1.3, plus ? '+' : '−', { size: 4, fill: '#fff', anchor: 'middle', w: 700 });
+}
+
+// ---------- Graph (Zeitachse 0 ... 5 τ) ----------
+function graph(ox, oy, o) {
+  const W = 30, H = 30, s = o.neg ? 1 : -1;
+  const X = t => ox + W * t / 5, Y = v => oy + s * H * v;
+  const pts = [];
+  for (let t = 0; t <= 5.001; t += 0.1) pts.push(X(t).toFixed(2) + ',' + Y(o.f(t)).toFixed(2));
+  let g = '';
+  if (o.shade) g += `<polygon points="${ox},${oy} ${pts.join(' ')} ${X(5)},${oy}" fill="${o.col}" opacity="0.18"/>`;
+  g += line(ox, oy, ox + W + 4, oy, { c: INK, w: 0.4, end: true });
+  g += line(ox, oy, ox, oy + s * (H + 5), { c: INK, w: 0.4, end: true });
+  g += line(ox, Y(1), X(5), Y(1), { c: '#718096', w: 0.3, dash: '1,1' });
+  g += T(ox - 1.5, Y(1) + 1, o.lvl, { size: 2.8, anchor: 'end' });
+  const fy = Y(o.f(1));
+  g += line(X(1), oy, X(1), fy, { c: '#718096', w: 0.3, dash: '1,1' });
+  g += T(X(1), o.neg ? oy - 1.5 : oy + 4, 'τ', { size: 2.9, anchor: 'middle' });
+  g += `<polyline points="${pts.join(' ')}" fill="none" stroke="${o.col}" stroke-width="0.8"/>`;
+  g += `<circle cx="${X(1)}" cy="${fy}" r="0.9" fill="${o.col}"/>`;
+  g += T(X(1) + 2, fy + o.pdy, o.pct, { size: 2.6, fill: o.col, w: 600 });
+  g += T(ox + W + 5, oy + 1, 't', { size: 3, italic: true });
+  g += T(ox + 1.5, o.neg ? oy + H + 9 : oy - H - 6, o.ylab, { size: 3.2, w: 700, fill: o.col });
+  if (o.area) g += T(ox + 1.5, o.neg ? oy + 5.5 : oy - 3, o.area, { size: 2.5, fill: o.col, italic: true });
+  return g;
+}
+
+let out = `<defs><marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#333"/></marker></defs>`;
+
+// ---------- Layout ----------
+const LX = 8, RX = 112, BW = 90;
+const R1 = [30, 68], R2 = [102, 40], R3 = [146, 44], R4 = [194, 96];
+
+// Stamm + Zentrum
+out += line(105, 24, 105, 290, { c: '#718096', w: 1.2 });
+[R1, R2, R3, R4].forEach(r => {
+  out += line(98, r[0] + 3.75, 112, r[0] + 3.75, { c: '#718096', w: 1.2 });
+  out += `<circle cx="105" cy="${r[0] + 3.75}" r="1.7" fill="#4a5568"/>`;
+});
+out += `<ellipse cx="105" cy="15" rx="38" ry="9.5" fill="${INK}"/>` +
+       T(105, 17, 'Elektrische Felder', { size: 5.2, w: 700, fill: '#fff', anchor: 'middle' });
+
+// ---------- Zeile 1: homogen / inhomogen ----------
+out += box(LX, R1[0], BW, R1[1], '#2b6cb0', '#ebf4ff', 'Homogenes Feld');
+{
+  const y = R1[0];
+  out += `<rect x="22" y="42" width="52" height="2.2" fill="#e53e3e"/><rect x="22" y="66" width="52" height="2.2" fill="#3182ce"/>`;
+  out += T(19.5, 44.2, '+', { size: 4, anchor: 'middle', fill: '#e53e3e', w: 700 }) +
+         T(19.5, 69, '−', { size: 4, anchor: 'middle', fill: '#3182ce', w: 700 });
+  for (let i = 0; i < 8; i++) out += line(26 + i * 6.1, 44.4, 26 + i * 6.1, 65.6, { end: true });
+  out += path('M22,45 C15.5,50 15.5,61 22,65.5') + path('M74,45 C80.5,50 80.5,61 74,65.5');
+  out += T(49, 57.5, 'E', { size: 4, italic: true, w: 600, anchor: 'middle', halo: true });
+  out += line(88, 44.4, 88, 66, { both: true }) + T(90, 56.5, 'd', { size: 3.2, italic: true });
+  out += T(53, 75, 'Plattenkondensator', { size: 2.8, italic: true, anchor: 'middle', fill: '#4a5568' });
+  out += L(LX + 4, 80, [
+    '• Feldlinien parallel, gleicher Abstand',
+    '• E überall gleich (Betrag und Richtung)',
+    '• Beispiel: Plattenkondensator, E = U/d',
+    '• Kraft auf Ladung q überall gleich: F = q·E'], 4.4);
+}
+out += box(RX, R1[0], BW, R1[1], '#0987a0', '#e6f7fa', 'Inhomogenes Feld');
+{
+  // Punktladung
+  const cx = 133, cy = 57;
+  for (let a = 0; a < 360; a += 30) {
+    const r = a * Math.PI / 180;
+    out += line((cx + 3.6 * Math.cos(r)).toFixed(2), (cy + 3.6 * Math.sin(r)).toFixed(2),
+                (cx + 14 * Math.cos(r)).toFixed(2), (cy + 14 * Math.sin(r)).toFixed(2), { end: true });
+  }
+  out += charge(cx, cy, true);
+  // Dipol
+  const ax = 166, bx = 190;
+  out += line(ax + 3.5, 57, bx - 3.5, 57, { end: true });
+  [[2.5, 6.5, 48.5], [3.5, 12, 41], [4.5, 18.5, 34]].forEach(([dx, , top]) => {
+    const yu = 57 - (57 - top) * 0.0; // Platzhalter
+  });
+  out += path(`M${ax + 3},54.5 C${ax + 6},48 ${bx - 6},48 ${bx - 3},54.5`) + path(`M${ax + 3},59.5 C${ax + 6},66 ${bx - 6},66 ${bx - 3},59.5`);
+  out += path(`M${ax + 2},52.5 C${ax + 4},41 ${bx - 4},41 ${bx - 2},52.5`) + path(`M${ax + 2},61.5 C${ax + 4},73 ${bx - 4},73 ${bx - 2},61.5`);
+  out += path(`M${ax},50.5 C${ax},34.5 ${bx},34.5 ${bx},50.5`) + path(`M${ax},63.5 C${ax},79.5 ${bx},79.5 ${bx},63.5`);
+  out += charge(ax, 57, true) + charge(bx, 57, false);
+  out += T(133, 75, 'Punktladung', { size: 2.8, italic: true, anchor: 'middle', fill: '#4a5568' });
+  out += T(178, 80, '', {}); // (Platzhalter)
+  out += L(RX + 4, 80, [
+    '• Feldlinien nicht parallel (Dichte ändert sich)',
+    '• E hängt vom Ort ab: dichter = stärker',
+    '• Punktladung: E = Q / (4π·ε_{0}·r^{2}),  E ~ 1/r^{2}',
+    '• Dipol: Feldlinien von + nach −, kreuzen nie'], 4.4);
+  out += T(178, 78.2, '', {});
+}
+
+// ---------- Zeile 2: Kraft / Feldstärke ----------
+out += box(LX, R2[0], BW, R2[1], '#c05621', '#fdf1e7', 'Elektrische Kraft');
+out += L(LX + 4, R2[0] + 13, [
+  'Coulomb:  F = 1/(4π·ε_{0}) · Q·q / r^{2}',
+  'ε_{0} = 8,85·10^{−12} As/(V·m)',
+  'gleichnamig: Abstoßung, ungleichnamig: Anziehung',
+  'Kraft im Feld:  F = q·E        [F] = N',
+  'q > 0: F in Richtung E;  q < 0: entgegen E',
+  'Arbeit im homogenen Feld:  W = F·s = q·E·s'], 4.6);
+out += box(RX, R2[0], BW, R2[1], '#b7791f', '#fdf7e3', 'Elektrische Feldstärke');
+out += L(RX + 4, R2[0] + 13, [
+  'Definition:  E = F / q        [E] = N/C = V/m',
+  'Vektor; Richtung = Kraft auf pos. Probeladung',
+  'Punktladung:  E = Q / (4π·ε_{0}·r^{2})',
+  'Plattenkondensator:  E = U/d = Q / (ε_{0}·A)',
+  'Überlagerung:  E = E_{1} + E_{2}  (vektoriell)',
+  'Feldlinien: von + nach −, schneiden sich nie'], 4.6);
+
+// ---------- Zeile 3: Kapazität / Äquipotenziallinien ----------
+out += box(LX, R3[0], BW, R3[1], '#6b46c1', '#f1ecfb', 'Kapazität');
+{
+  const y = R3[0], x = LX;
+  out += L(x + 4, y + 13, [
+    'C = Q / U      [C] = 1 F = 1 As/V',
+    'Plattenkondensator:',
+    '   C = ε_{0}·ε_{r}·A / d',
+    'Energie:  W = ½·C·U^{2} = ½·Q·U',
+    'Dielektrikum (ε_{r} > 1): C wird größer',
+    'A = Plattenfläche,  d = Plattenabstand'], 4.5);
+  out += `<rect x="${x + 66}" y="${y + 17}" width="16" height="1.6" fill="#e53e3e"/><rect x="${x + 66}" y="${y + 32}" width="16" height="1.6" fill="#3182ce"/>`;
+  for (let i = 0; i < 4; i++) out += line(x + 69 + i * 3.5, y + 19, x + 69 + i * 3.5, y + 31.6, { w: 0.4, end: true });
+  out += line(x + 85, y + 17.8, x + 85, y + 32.8, { w: 0.35, both: true }) + T(x + 86.7, y + 26, 'd', { size: 2.8, italic: true });
+  out += T(x + 74, y + 15, 'A', { size: 2.8, italic: true, anchor: 'middle' });
+  out += T(x + 64.5, y + 19, '+Q', { size: 2.8, anchor: 'end', fill: '#e53e3e', w: 700 });
+  out += T(x + 64.5, y + 34, '−Q', { size: 2.8, anchor: 'end', fill: '#3182ce', w: 700 });
+}
+out += box(RX, R3[0], BW, R3[1], '#b83280', '#fcebf4', 'Äquipotenziallinien');
+{
+  const y = R3[0], x = RX;
+  out += L(x + 4, y + 13, [
+    'Plattenkondensator:',
+    'negative Platte = Erde:  φ_{0} = 0',
+    'Linien ∥ Platten:  φ_{1}, φ_{2}, φ_{3} …',
+    'senkrecht zu den Feldlinien',
+    'Bewegung längs der Linie: W = 0',
+    'Spannung:  U = Δφ = E·d'], 4.6);
+  out += `<rect x="${x + 62}" y="${y + 13}" width="20" height="1.6" fill="#e53e3e"/><rect x="${x + 62}" y="${y + 37}" width="20" height="1.6" fill="#3182ce"/>`;
+  for (let i = 0; i < 5; i++) out += line(x + 65 + i * 3.5, y + 15, x + 65 + i * 3.5, y + 36.6, { c: '#718096', w: 0.35, end: true });
+  [19, 25, 31].forEach(dy => out += `<line x1="${x + 61}" y1="${y + dy}" x2="${x + 83}" y2="${y + dy}" stroke="#b83280" stroke-width="0.5" stroke-dasharray="1.4,0.9"/>`);
+  out += T(x + 84, y + 19.8, 'φ₃', { size: 2.6, fill: '#b83280' }) + T(x + 84, y + 25.8, 'φ₂', { size: 2.6, fill: '#b83280' }) + T(x + 84, y + 31.8, 'φ₁', { size: 2.6, fill: '#b83280' });
+  out += T(x + 72, y + 11.8, 'φ = U (positive Platte)', { size: 2.5, anchor: 'middle', fill: '#c53030', w: 600 });
+  out += T(x + 72, y + 42,'φ₀ = 0 (Erde)', { size: 2.5, anchor: 'middle', fill: '#2b6cb0', w: 600 });
+}
+
+// ---------- Zeile 4: Aufladen / Entladen ----------
+const e = t => Math.exp(-t);
+out += box(LX, R4[0], BW, R4[1], '#2f855a', '#e9f7ef', 'Aufladen eines Kondensators');
+out += L(LX + 4, R4[0] + 14, [
+  'Zeitkonstante:  τ = R·C',
+  'Q(t) = Q_{0}·(1 − e^{−t/τ})   mit  Q_{0} = C·U_{0}',
+  'I(t) = I_{0}·e^{−t/τ}   mit  I_{0} = U_{0} / R',
+  'Q = ∫ I dt  = Fläche unter dem I(t)-Graphen'], 4.8);
+out += graph(LX + 10, 268, { f: t => 1 - e(t), col: '#2f855a', ylab: 'Q(t)', lvl: 'Q₀', pct: '63 %', pdy: 4 });
+out += graph(LX + 54, 268, { f: e, col: '#2f855a', ylab: 'I(t)', lvl: 'I₀', pct: '37 %', pdy: -1.5, shade: true, area: 'Fläche ≙ Q' });
+out += T(LX + 4, 281.5, 'Nach t = τ:  Q = 63 % von Q₀,  I = 37 % von I₀', { size: 2.8, fill: '#276749' });
+out += T(LX + 4, 286, 'Nach ≈ 5τ ist der Kondensator praktisch voll.', { size: 2.8, fill: '#276749' });
+
+out += box(RX, R4[0], BW, R4[1], '#c53030', '#fdecec', 'Entladen eines Kondensators');
+out += L(RX + 4, R4[0] + 14, [
+  'Zeitkonstante:  τ = R·C',
+  'Q(t) = Q_{0}·e^{−t/τ}',
+  'I(t) = −I_{0}·e^{−t/τ}   mit  I_{0} = U_{0} / R',
+  'Strom fließt entgegen der Laderichtung (I < 0)'], 4.8);
+out += graph(RX + 10, 268, { f: e, col: '#c53030', ylab: 'Q(t)', lvl: 'Q₀', pct: '37 %', pdy: -1.5 });
+out += graph(RX + 54, 238, { f: e, col: '#c53030', ylab: 'I(t)', lvl: '−I₀', pct: '37 %', pdy: 3.5, neg: true, shade: true, area: 'Fläche ≙ Q₀' });
+out += T(RX + 4, 281.5, 'Nach t = τ:  Q = I = 37 % des Anfangswerts', { size: 2.8, fill: '#9b2c2c' });
+out += T(RX + 4, 286, 'Nach ≈ 5τ ist der Kondensator praktisch leer.', { size: 2.8, fill: '#9b2c2c' });
+
+document.getElementById('s').innerHTML = out;
+</script>
+</body>
+</html>

@@ -1,0 +1,1133 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Grammatik-Werkstatt Deutsch</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&display=swap" rel="stylesheet">
+<style>
+:root{
+  /* Idee: Werkstatt mit festem Farbcode. Genus (der/die/das/Plural) und Satzrollen (Verb, Konnektor)
+     haben überall dieselbe Farbe; Satzfelder erscheinen als getönte Bänder. Ruhige Fläche, große Lesetype. */
+  --bg:#ECEFF3; --paper:#FFFFFF; --ink:#17202B; --ink2:#4B5667; --line:#D2D8E1;
+  --accent:#0D6B70; --accent-soft:#DDF0F0; --on-accent:#FFFFFF;
+  --m:#2160C4; --f:#C92A4B; --n:#12844F; --pl:#8546C2; --v:#C4520F; --k:#56627A;
+  --ok:#13703F; --okbg:#E3F4EA; --bad:#B0233F; --badbg:#FBE7EA; --half:#875800; --halfbg:#FFF2D4;
+  --vf:#FFF0CC; --kl:#FFE1CF; --mf:#DFE9FA; --nf:#ECE2F8;
+  --display:"Bricolage Grotesque","Segoe UI",system-ui,sans-serif;
+  --body:"Atkinson Hyperlegible","Segoe UI",system-ui,sans-serif;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#11151C; --paper:#1A2029; --ink:#E7EBF1; --ink2:#A4AEBC; --line:#2D3644;
+    --accent:#45C3C8; --accent-soft:#183539; --on-accent:#0B1A1C;
+    --m:#73A6FF; --f:#FF7590; --n:#45CD8E; --pl:#C394FF; --v:#FF9257; --k:#9AA6BC;
+    --ok:#5FD596; --okbg:#173324; --bad:#FF8199; --badbg:#3A1820; --half:#F2C35B; --halfbg:#3A2D10;
+    --vf:#3A3016; --kl:#40261A; --mf:#1C2C45; --nf:#2E2342;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#11151C; --paper:#1A2029; --ink:#E7EBF1; --ink2:#A4AEBC; --line:#2D3644;
+  --accent:#45C3C8; --accent-soft:#183539; --on-accent:#0B1A1C;
+  --m:#73A6FF; --f:#FF7590; --n:#45CD8E; --pl:#C394FF; --v:#FF9257; --k:#9AA6BC;
+  --ok:#5FD596; --okbg:#173324; --bad:#FF8199; --badbg:#3A1820; --half:#F2C35B; --halfbg:#3A2D10;
+  --vf:#3A3016; --kl:#40261A; --mf:#1C2C45; --nf:#2E2342;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.55}
+h1,h2,h3,h4{font-family:var(--display);line-height:1.15;text-wrap:balance;margin:0}
+h1{font-size:clamp(30px,6vw,46px);font-weight:800;letter-spacing:-.01em}
+h2{font-size:clamp(24px,4.4vw,32px);font-weight:800}
+h3{font-size:21px;font-weight:600}
+h4{font-size:17px;font-weight:600}
+p{margin:0}
+a{color:var(--accent)}
+button{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.wrap{max-width:980px;margin:0 auto;padding:0 16px}
+.small{font-size:15px;color:var(--ink2)}
+
+/* Kopfleiste */
+.bar{position:sticky;top:0;z-index:20;background:var(--paper);border-bottom:1px solid var(--line)}
+.bar .wrap{display:flex;gap:10px;align-items:center;min-height:56px;flex-wrap:wrap;padding-top:6px;padding-bottom:6px}
+.brand{font-family:var(--display);font-weight:800;font-size:18px;text-decoration:none;color:var(--ink);margin-right:auto;display:flex;align-items:center;gap:8px}
+.brand .logo{width:26px;height:26px;border-radius:7px;background:var(--accent);color:var(--on-accent);display:grid;place-items:center;font-size:14px}
+.bar select{font:inherit;font-size:15px;padding:7px 10px;border-radius:9px;border:1px solid var(--line);background:var(--bg);color:var(--ink);max-width:230px}
+.pill{border:1px solid var(--line);background:var(--bg);border-radius:999px;padding:6px 14px;font-size:15px;cursor:pointer;text-decoration:none;color:var(--ink)}
+.pill.on,.pill:hover{border-color:var(--accent);color:var(--accent)}
+
+/* Ansichten */
+.view{display:none;padding:28px 0 40px}
+.view.on{display:block}
+.stack{display:flex;flex-direction:column;gap:22px}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:20px}
+.card > * + *{margin-top:12px}
+
+/* Start */
+.hero{display:grid;gap:14px}
+.hero .lead{font-size:19px;max-width:62ch;color:var(--ink2)}
+.legend{display:flex;flex-wrap:wrap;gap:8px}
+.legend span{border:1px solid var(--line);border-radius:8px;padding:3px 10px;background:var(--paper);font-size:15px}
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.steps div{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:14px;font-size:15px}
+.steps b{display:block;font-family:var(--display);font-size:16px;margin-bottom:4px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:14px}
+.mcard{display:flex;flex-direction:column;gap:8px;text-decoration:none;color:var(--ink);background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:16px;transition:border-color .15s}
+.mcard:hover{border-color:var(--accent)}
+.mcard .top{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.nr{font-family:var(--display);font-weight:800;color:var(--accent);font-size:15px}
+.lvl{font-size:13px;border:1px solid var(--line);border-radius:6px;padding:1px 7px;color:var(--ink2);font-variant-numeric:tabular-nums}
+.mcard h3{font-size:19px}
+.mcard p{font-size:15px;color:var(--ink2)}
+.prog{height:6px;border-radius:3px;background:var(--line);overflow:hidden;margin-top:auto}
+.prog i{display:block;height:100%;background:var(--accent);width:0}
+.progtxt{font-size:13px;color:var(--ink2);font-variant-numeric:tabular-nums}
+
+/* Modulseite */
+.mhead{display:grid;gap:8px}
+.mhead .goal{font-size:18px;color:var(--ink2);max-width:64ch}
+.sec-t{font-family:var(--display);font-weight:800;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent)}
+.prose{max-width:68ch}
+.prose > * + *{margin-top:12px}
+.prose ul,.prose ol{margin:0;padding-left:22px}
+.prose li + li{margin-top:6px}
+.merk{border-left:5px solid var(--accent);background:var(--accent-soft);border-radius:0 12px 12px 0;padding:14px 16px}
+.merk > * + *{margin-top:8px}
+.merk ol,.merk ul{margin:0;padding-left:22px}
+.merk li + li{margin-top:5px}
+.ex{display:flex;align-items:center;gap:10px;justify-content:space-between;background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:8px 8px 8px 14px;font-size:18px}
+.exs{display:flex;flex-direction:column;gap:6px}
+.say{flex:none;width:36px;height:36px;border-radius:50%;border:1px solid var(--line);background:var(--bg);cursor:pointer;display:grid;place-items:center;padding:0}
+.say:hover{border-color:var(--accent)}
+.say svg{width:18px;height:18px;fill:none;stroke:var(--accent);stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.errs{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:8px}
+.errs li{background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:10px 14px;font-size:16px}
+.errs s{color:var(--bad);text-decoration-thickness:2px}
+.errs b.r{color:var(--ok)}
+.tbl{overflow-x:auto}
+table{border-collapse:collapse;font-size:16px;min-width:100%}
+th,td{border:1px solid var(--line);padding:6px 10px;text-align:left;vertical-align:top}
+th{background:var(--bg);font-weight:700}
+td.hi{background:var(--accent-soft);outline:2px solid var(--accent);outline-offset:-2px}
+
+/* Farbcode */
+.m{color:var(--m);font-weight:700}.f{color:var(--f);font-weight:700}.n{color:var(--n);font-weight:700}.pl{color:var(--pl);font-weight:700}
+.v{color:var(--v);font-weight:700}.k{color:var(--k);font-weight:700;font-style:italic}
+.sig{text-decoration:underline;text-decoration-thickness:3px;text-underline-offset:4px}
+.end{color:var(--v);font-weight:700}
+
+/* Werkstatt */
+.werk{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:18px;display:flex;flex-direction:column;gap:14px}
+.werk .row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.werk .lab{font-size:14px;color:var(--ink2);min-width:92px}
+.seg{display:flex;flex-wrap:wrap;gap:6px}
+.seg button{border:1px solid var(--line);background:var(--bg);border-radius:9px;padding:6px 12px;cursor:pointer;font-size:15px}
+.seg button[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+.out{font-size:clamp(20px,4vw,26px);font-weight:700;display:flex;align-items:center;gap:12px;justify-content:space-between;flex-wrap:wrap;background:var(--bg);border-radius:12px;padding:12px 14px}
+.out .say{background:var(--paper)}
+.why{background:var(--bg);border-radius:10px;padding:12px 14px;font-size:16px}
+.why > * + *{margin-top:6px}
+.fields{display:grid;grid-template-columns:auto auto 1fr auto auto;gap:4px;font-size:17px}
+.fields .fh{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink2);padding:0 8px}
+.fields .fc{padding:10px;border-radius:8px;min-height:44px}
+.fc.vf{background:var(--vf)}.fc.lk{background:var(--kl)}.fc.mf{background:var(--mf)}.fc.rk{background:var(--kl)}.fc.nf{background:var(--nf)}
+.fields .fc:empty::after{content:"–";color:var(--ink2)}
+.toks{font-size:clamp(19px,3.6vw,23px);line-height:1.8}
+.tok{padding:1px 4px;border-radius:5px}
+.tok.fin{background:var(--kl);color:var(--v);font-weight:700}
+.tok.vend{color:var(--v);font-weight:700;box-shadow:inset 0 -2px 0 var(--v)}
+.tok.kon{color:var(--k);font-weight:700;font-style:italic;background:var(--nf)}
+.tok.sub{color:var(--m)}
+.stepbox{display:flex;flex-direction:column;gap:8px}
+.stepbox .st{background:var(--bg);border-radius:10px;padding:10px 14px}
+.stepbox .st b.no{font-family:var(--display);color:var(--accent);margin-right:6px}
+
+/* Aufgaben */
+.tasks{display:flex;flex-direction:column;gap:12px}
+.task{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:12px}
+.task.done{border-color:var(--ok)}
+.tq{display:flex;gap:10px;align-items:flex-start}
+.tno{flex:none;font-family:var(--display);font-weight:800;font-size:14px;color:var(--accent);min-width:28px;padding-top:2px}
+.tno.ok{color:var(--ok)}
+.tmeta{font-size:13px;color:var(--ink2)}
+.sent{font-size:19px;line-height:2}
+.sent input{font:inherit;font-size:18px;border:none;border-bottom:2px solid var(--accent);background:var(--accent-soft);border-radius:6px 6px 0 0;padding:0 6px;color:var(--ink);min-width:3ch}
+.sent input:focus{outline:none;background:var(--paper);box-shadow:0 0 0 2px var(--accent)}
+.opts{display:flex;flex-direction:column;gap:8px}
+.opt{text-align:left;border:1px solid var(--line);background:var(--bg);border-radius:10px;padding:10px 14px;cursor:pointer;font-size:17px}
+.opt:hover{border-color:var(--accent)}
+.opt.sel{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent)}
+.opt.r{border-color:var(--ok);background:var(--okbg)}
+.opt.w{border-color:var(--bad);background:var(--badbg)}
+.chips{display:flex;flex-wrap:wrap;gap:8px;min-height:44px}
+.chip{border:1px solid var(--line);background:var(--bg);border-radius:9px;padding:7px 12px;cursor:pointer;font-size:17px}
+.chip:hover{border-color:var(--accent)}
+.line{display:flex;flex-wrap:wrap;gap:8px;align-items:center;min-height:52px;border:2px dashed var(--line);border-radius:12px;padding:8px}
+.line .pre{color:var(--ink2);font-size:17px;padding:0 4px}
+.line .chip{background:var(--accent-soft);border-color:var(--accent)}
+.line .ph{color:var(--ink2);font-size:15px}
+.acts{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.btn{border:1px solid var(--accent);background:var(--accent);color:var(--on-accent);border-radius:10px;padding:8px 16px;cursor:pointer;font-weight:700;font-size:15px}
+.btn.ghost{background:transparent;color:var(--accent)}
+.btn:disabled{opacity:.45;cursor:default}
+.uml{display:flex;gap:4px;margin-left:auto}
+.uml button{width:36px;height:36px;border:1px solid var(--line);background:var(--bg);border-radius:8px;cursor:pointer;font-size:16px}
+.fb{border-radius:10px;padding:10px 14px;font-size:16px;display:none}
+.fb.show{display:block}
+.fb.ok{background:var(--okbg);color:var(--ok)}
+.fb.bad{background:var(--badbg);color:var(--bad)}
+.fb.half{background:var(--halfbg);color:var(--half)}
+.fb .sol{display:block;margin-top:6px;color:var(--ink)}
+.pager{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.sum{display:grid;gap:8px}
+.sumrow{display:flex;justify-content:space-between;gap:10px;align-items:center;background:var(--bg);border-radius:10px;padding:8px 12px;font-size:16px}
+.badge{font-variant-numeric:tabular-nums;font-weight:700}
+.badge.ok{color:var(--ok)}.badge.bad{color:var(--bad)}
+
+/* Fußzeile */
+.foot{border-top:1px solid var(--line);background:var(--paper);padding:18px 0;margin-top:20px}
+.foot .wrap{display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+.btz{font-family:var(--display);font-weight:800;border:2px solid var(--ink);border-radius:8px;padding:3px 10px;font-size:15px}
+.foot-txt{display:flex;flex-direction:column;font-size:14px;color:var(--ink2)}
+.foot-copy{font-weight:700;color:var(--ink)}
+
+@media (max-width:700px){
+  .steps{grid-template-columns:1fr 1fr}
+  .fields{grid-template-columns:110px 1fr}
+  .fields .fh{display:none}
+  .fields .fc::before{content:attr(data-l);display:block;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink2);margin-bottom:2px}
+  .fields .fc{grid-column:1 / -1}
+  .bar select{max-width:none;flex:1;min-width:0}
+  .brand{flex-basis:100%}
+  .pill{padding:6px 10px;font-size:14px}
+}
+@media (max-width:420px){ .steps{grid-template-columns:1fr} .uml{margin-left:0} }
+@media (prefers-reduced-motion: reduce){ *{transition:none!important;scroll-behavior:auto!important} }
+</style>
+</head>
+<body>
+
+<header class="bar">
+  <div class="wrap">
+    <a class="brand" href="#start"><span class="logo" aria-hidden="true">G</span>Grammatik-Werkstatt</a>
+    <label class="small" for="jump" style="position:absolute;left:-9999px">Thema wählen</label>
+    <select id="jump"></select>
+    <a class="pill" href="#training" id="nav-training">Training</a>
+    <a class="pill" href="#test" id="nav-test">Selbsttest</a>
+  </div>
+</header>
+
+<main class="wrap" id="app">
+  <section class="view on" id="v-start">
+    <div class="stack">
+      <div class="hero">
+        <span class="sec-t">Deutsch als Zweitsprache · Niveau B2/C1</span>
+        <h1>Grammatik-Werkstatt Deutsch</h1>
+        <p class="lead">Zehn Themen, die auch nach Jahren mit Deutsch noch Fehler machen: Adjektivendungen, Genitiv, Satzbau, Passiv, Konjunktiv und Nominalstil. Jedes Thema erklärt die Regel kurz, lässt dich in der Werkstatt ausprobieren und sagt dir bei jeder Übung, <b>warum</b> etwas falsch ist.</p>
+      </div>
+      <div class="steps">
+        <div><b>1 · Verstehen</b>Kurze Regel mit Beispielen. Tippe auf den Lautsprecher, um den Satz zu hören.</div>
+        <div><b>2 · Ausprobieren</b>In der Werkstatt veränderst du Kasus, Zeit oder Wortstellung und siehst sofort die Wirkung.</div>
+        <div><b>3 · Üben</b>Jede Antwort bekommt eine Rückmeldung mit Fehlerdiagnose. Nach zwei Versuchen kannst du die Lösung ansehen.</div>
+        <div><b>4 · Prüfen</b>Training mischt alle Themen. Der Selbsttest zeigt dir am Ende, welche Themen du wiederholen solltest.</div>
+      </div>
+      <div class="card">
+        <h3>Der Farbcode gilt auf der ganzen Plattform</h3>
+        <div class="legend">
+          <span><b class="m">der</b> maskulin</span><span><b class="f">die</b> feminin</span><span><b class="n">das</b> neutral</span><span><b class="pl">die</b> Plural</span>
+          <span><b class="v">Verb</b> konjugiert</span><span><span class="tok vend">Verb</span> rechte Satzklammer</span><span><b class="k">Konnektor</b></span>
+        </div>
+      </div>
+      <div class="grid" id="mgrid"></div>
+      <div class="acts">
+        <button class="btn ghost" id="reset">Fortschritt zurücksetzen</button>
+        <span class="small" id="resetmsg"></span>
+      </div>
+    </div>
+  </section>
+
+  <section class="view" id="v-training">
+    <div class="stack">
+      <div class="mhead">
+        <span class="sec-t">Training</span>
+        <h2>Gemischtes Training</h2>
+        <p class="goal">Zufällige Aufgaben mit sofortiger Rückmeldung. Aufgaben, die du schon gelöst hast, kommen seltener.</p>
+      </div>
+      <div class="row acts">
+        <label for="trsel" class="small">Thema</label>
+        <select id="trsel" style="font:inherit;padding:7px 10px;border-radius:9px;border:1px solid var(--line);background:var(--paper);color:var(--ink)"></select>
+        <button class="btn" id="trnext">Nächste Aufgabe</button>
+        <span class="progtxt" id="trstat"></span>
+      </div>
+      <div id="trhost" class="tasks"></div>
+    </div>
+  </section>
+
+  <section class="view" id="v-test">
+    <div class="stack">
+      <div class="mhead">
+        <span class="sec-t">Selbsttest</span>
+        <h2>Wo stehe ich?</h2>
+        <p class="goal">Zwölf Aufgaben aus allen Themen. Du bekommst erst am Ende eine Rückmeldung, wie in einer Prüfung. Danach siehst du, welche Themen du wiederholen solltest.</p>
+      </div>
+      <div class="acts"><button class="btn" id="tstart">Neuen Test starten</button></div>
+      <div id="thost" class="tasks"></div>
+      <div class="acts" id="tacts" style="display:none"><button class="btn" id="teval">Auswerten</button></div>
+      <div id="tsum"></div>
+    </div>
+  </section>
+</main>
+
+<footer class="foot">
+  <div class="wrap">
+    <span class="btz">BTZ</span>
+    <div class="foot-txt">
+      <span>Grammatik-Werkstatt Deutsch · Deutsch als Zweitsprache B2/C1</span>
+      <span class="foot-copy">© BTZ · Schuljahr 2026/27 · Nur für den Unterricht. Weitergabe und Veröffentlichung nicht gestattet.</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+"use strict";
+/* ---------- Hilfen ---------- */
+const $=(s,r=document)=>r.querySelector(s);
+const strip=h=>h.replace(/<[^>]+>/g,'').replace(/\s+/g,' ').trim();
+const esc=s=>String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');
+const cap=s=>s.charAt(0).toUpperCase()+s.slice(1);
+const SPK='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9H4z"/><path d="M16 9a4 4 0 0 1 0 6M18.5 6.5a8 8 0 0 1 0 11"/></svg>';
+function sayBtn(t){return `<button class="say" data-say="${esc(strip(t))}" aria-label="Vorlesen: ${esc(strip(t))}">${SPK}</button>`;}
+function X(h){return `<div class="ex"><span>${h}</span>${sayBtn(h)}</div>`;}
+function say(t){try{const s=window.speechSynthesis;if(!s)return;s.cancel();const u=new SpeechSynthesisUtterance(t);u.lang='de-DE';u.rate=.92;const v=s.getVoices().find(v=>v.lang&&v.lang.toLowerCase().startsWith('de'));if(v)u.voice=v;s.speak(u);}catch(e){}}
+document.addEventListener('click',e=>{const b=e.target.closest('.say');if(b)say(b.dataset.say);});
+function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+function segH(key,opts,cur){return `<div class="seg" role="group">${opts.map(([v,l])=>`<button type="button" data-k="${key}" data-v="${v}" aria-pressed="${String(v)===String(cur)}">${l}</button>`).join('')}</div>`;}
+function bindSeg(el,st,draw){el.querySelectorAll('[data-k]').forEach(b=>b.addEventListener('click',()=>{st[b.dataset.k]=b.dataset.v;draw();}));}
+
+/* ---------- Speicher (nur Komfort) ---------- */
+const KEY='btz_grammatik_werkstatt_v1';
+let solved={};
+try{solved=JSON.parse(localStorage.getItem(KEY)||'{}')||{};}catch(e){solved={};}
+function saveSolved(){try{localStorage.setItem(KEY,JSON.stringify(solved));}catch(e){}}
+
+/* ---------- Grammatik-Tabellen ---------- */
+const KN={nom:'Nominativ',akk:'Akkusativ',dat:'Dativ',gen:'Genitiv'};
+const GN={m:'maskulin',f:'feminin',n:'neutral',pl:'Plural'};
+const DEF={nom:{m:'der',f:'die',n:'das',pl:'die'},akk:{m:'den',f:'die',n:'das',pl:'die'},dat:{m:'dem',f:'der',n:'dem',pl:'den'},gen:{m:'des',f:'der',n:'des',pl:'der'}};
+const IND={nom:{m:'ein',f:'eine',n:'ein',pl:'keine'},akk:{m:'einen',f:'eine',n:'ein',pl:'keine'},dat:{m:'einem',f:'einer',n:'einem',pl:'keinen'},gen:{m:'eines',f:'einer',n:'eines',pl:'keiner'}};
+const E={
+  def:{nom:{m:'e',f:'e',n:'e',pl:'en'},akk:{m:'en',f:'e',n:'e',pl:'en'},dat:{m:'en',f:'en',n:'en',pl:'en'},gen:{m:'en',f:'en',n:'en',pl:'en'}},
+  indef:{nom:{m:'er',f:'e',n:'es',pl:'en'},akk:{m:'en',f:'e',n:'es',pl:'en'},dat:{m:'en',f:'en',n:'en',pl:'en'},gen:{m:'en',f:'en',n:'en',pl:'en'}},
+  none:{nom:{m:'er',f:'e',n:'es',pl:'e'},akk:{m:'en',f:'e',n:'es',pl:'e'},dat:{m:'em',f:'er',n:'em',pl:'en'},gen:{m:'en',f:'er',n:'en',pl:'er'}}
+};
+function adjDiag(d,u){
+  const c=E[d.art][d.k][d.g];
+  if(!['e','en','er','es','em'].includes(u)) return 'Adjektivendungen sind immer -e, -en, -er, -es oder -em. Schreibe nur die Endung.';
+  if(d.art==='none'&&d.k==='gen'&&(d.g==='m'||d.g==='n')&&u==='es') return `Fast logisch gedacht, aber hier gilt der Sonderfall: Das Nomen „${d.noun}“ zeigt den Genitiv schon mit -s. Darum bekommt das Adjektiv nur -en.`;
+  const strong=E.none[d.k][d.g];
+  const carrier=d.art==='def'||(d.art==='indef'&&!(c==='er'||c==='es'));
+  if(carrier&&u===strong&&u!==c) return `Doppeltes Signal: „${d.aw}“ zeigt ${KN[d.k]} ${GN[d.g]} schon (Signal -${d.aw.slice(-1)}). Dann reicht beim Adjektiv -${c}.`;
+  if(!carrier&&(u==='e'||u==='en')&&c!==u&&!(d.art==='none'&&Object.values(E.none).some(r=>r[d.g]===u))) return `${d.art==='none'?'Hier steht kein Artikel':'„'+d.aw+'“ hat hier keine Endung'} – also zeigt niemand Genus und Kasus. Das Adjektiv übernimmt das Signal des bestimmten Artikels (${DEF[d.k][d.g]} → -${c}).`;
+  for(const k of ['nom','akk','dat','gen']) if(k!==d.k&&E[d.art][k][d.g]===u) return `-${u} wäre richtig im ${KN[k]}. Hier brauchst du den ${KN[d.k]}: ${d.why}`;
+  for(const g of ['m','f','n','pl']) if(g!==d.g&&E[d.art][d.k][g]===u) return `-${u} passt zu ${g==='pl'?'Plural':GN[g]+'en Nomen'}. „${d.noun}“ ist aber ${d.g==='pl'?'Plural':GN[d.g]}. ${d.why}`;
+  return null;
+}
+
+/* ---------- Module ---------- */
+const MODS=[
+{id:'m1',lvl:'B2–C1',title:'Adjektivdeklination',goal:'Du bildest Adjektivendungen sicher – mit einer einzigen Frage statt mit drei Tabellen: Wer zeigt das Signal?',
+body:`<div class="prose"><p>Ob ein Adjektiv auf -e, -en, -er, -es oder -em endet, hängt von Genus, Kasus und dem Wort davor ab. Muttersprachler lernen keine Tabellen. Sie hören, ob die Nominalgruppe „vollständig“ klingt. Dieses Gefühl kannst du mit dem Signal-Prinzip nachbauen.</p></div>
+<div class="merk"><h4>Das Signal-Prinzip</h4>
+<p>In jeder Nominalgruppe wird Genus und Kasus <b>einmal</b> deutlich gezeigt. Das Signal ist der letzte Buchstabe des bestimmten Artikels: de<b>r</b> · di<b>e</b> · da<b>s</b> · de<b>n</b> · de<b>m</b> · de<b>s</b>.</p>
+<ol><li><b>Der Artikel trägt das Signal</b> (der, die, das, dem, einem, meinen …) → das Adjektiv bekommt nur <b>-e</b> oder <b>-en</b>. -e steht nur im Nominativ Singular und im Akkusativ Singular feminin/neutral, sonst immer -en.</li>
+<li><b>Niemand trägt das Signal</b> (kein Artikel oder <i>ein, kein, mein …</i> ohne Endung) → das Adjektiv übernimmt das Signal: -er, -es, -em, -en, -e.</li></ol>
+<p class="small">Sonderfall: Genitiv maskulin/neutral ohne Artikel → -en, weil das Nomen den Genitiv schon mit -s zeigt: <i>trotz starken Regens</i>.</p></div>
+<div class="merk"><h4>Für B2/C1: Wörter, die wie ein Artikel wirken</h4><ul>
+<li><b>alle, beide, solche, sämtliche</b> tragen das Signal wie <i>die</i> → Adjektiv -en: alle neu<b>en</b> Mitarbeiter</li>
+<li><b>einige, viele, mehrere, wenige, zwei, drei …</b> tragen kein Signal → Adjektiv wie ohne Artikel: viele neu<b>e</b> Mitarbeiter</li>
+<li><b>Nominalisierte Adjektive</b> behalten die Endung: der Bekannt<b>e</b>, ein Bekannt<b>er</b>, mit einem Bekannt<b>en</b> · etwas Neu<b>es</b>, nichts Gut<b>es</b></li></ul></div>
+<div class="exs">${X('<span class="m">der</span> frisch<span class="end">e</span> Kaffee · frisch<span class="end">er</span> Kaffee')}${X('mit <span class="f">der</span> warm<span class="end">en</span> Milch · mit warm<span class="end">er</span> Milch')}${X('<span class="n">ein</span> neu<span class="end">es</span> Handy · <span class="n">das</span> neu<span class="end">e</span> Handy')}</div>`,
+errs:[['mit einem altem Freund','mit einem alten Freund','„einem“ zeigt den Dativ schon (-m).'],['ein großer Problem','ein großes Problem','Problem ist neutral: das → -es.'],['mit kaltes Wasser','mit kaltem Wasser','mit + Dativ, kein Artikel: dem → -em.']],
+ex:'adj',gi:'Ergänze die Adjektivendung (nur die Endung).',
+tasks:[
+{t:'gap',q:'Wir wohnen in einem alt___ Haus.',a:['en'],ending:1,adj:{art:'indef',g:'n',k:'dat',aw:'einem',noun:'Haus',why:'„in“ antwortet hier auf „Wo?“ → Dativ.'}},
+{t:'gap',q:'Der neu___ Kollege kommt aus Lyon.',a:['e'],ending:1,adj:{art:'def',g:'m',k:'nom',aw:'der',noun:'Kollege',why:'Der Kollege ist das Subjekt → Nominativ.'}},
+{t:'gap',q:'Ich trinke morgens heiß___ Tee.',a:['en'],ending:1,adj:{art:'none',g:'m',k:'akk',aw:'',noun:'Tee',why:'„trinken“ braucht ein Akkusativobjekt.'}},
+{t:'gap',q:'Das ist ein spannend___ Buch.',a:['es'],ending:1,adj:{art:'indef',g:'n',k:'nom',aw:'ein',noun:'Buch',why:'Nach „sein“ steht der Nominativ.'}},
+{t:'gap',q:'Mit frisch___ Milch schmeckt der Kaffee besser.',a:['er'],ending:1,adj:{art:'none',g:'f',k:'dat',aw:'',noun:'Milch',why:'„mit“ verlangt immer den Dativ.'}},
+{t:'gap',q:'Sie hat einen interessant___ Vorschlag gemacht.',a:['en'],ending:1,adj:{art:'indef',g:'m',k:'akk',aw:'einen',noun:'Vorschlag',why:'„etwas machen“ → Akkusativ.'}},
+{t:'gap',q:'Trotz stark___ Regens fand das Spiel statt.',a:['en'],ending:1,adj:{art:'none',g:'m',k:'gen',aw:'',noun:'Regens',why:'„trotz“ verlangt den Genitiv.'}},
+{t:'gap',q:'Wir suchen eine Wohnung mit groß___ Fenstern.',a:['en'],ending:1,adj:{art:'none',g:'pl',k:'dat',aw:'',noun:'Fenstern',why:'„mit“ verlangt den Dativ.'}},
+{t:'gap',q:'Gut___ Freunde helfen einander.',a:['e'],ending:1,adj:{art:'none',g:'pl',k:'nom',aw:'',noun:'Freunde',why:'„Freunde“ ist das Subjekt → Nominativ.'}},
+{t:'gap',q:'Kennst du den Titel des neu___ Films?',a:['en'],ending:1,adj:{art:'def',g:'m',k:'gen',aw:'des',noun:'Films',why:'„der Titel des Films“ ist ein Genitivattribut.'}},
+{t:'gap',q:'Alle neu___ Mitarbeiter bekommen einen Laptop.',a:['en'],ending:1,ok:'Richtig! „alle“ trägt das Signal wie der bestimmte Artikel „die“: alle neuen Mitarbeiter.',wr:{'e':'„alle“ zeigt das Signal schon, wie der Artikel „die“. Dann bekommt das Adjektiv nur -en: alle neuen Mitarbeiter.','er':'„alle“ trägt das Signal schon (wie „die“). Das Adjektiv bekommt nur -en.'}},
+{t:'gap',q:'Mehrere erfahren___ Kolleginnen haben sich beworben.',a:['e'],ending:1,ok:'Richtig! Nach einige, viele, mehrere, wenige steht das Adjektiv wie ohne Artikel: mehrere erfahrene Kolleginnen.',wr:{'en':'„mehrere“ (auch einige, viele, wenige) trägt kein Signal. Das Adjektiv trägt es selbst wie ohne Artikel: (die →) erfahrene Kolleginnen.','er':'-er wäre Genitiv oder Dativ. Die Kolleginnen sind hier das Subjekt → Nominativ Plural ohne Signal davor: -e.'}},
+{t:'gap',i:'Ergänze die Endung des nominalisierten Adjektivs.',q:'Ein Bekannt___ von mir arbeitet bei einer Bank.',a:['er'],ending:1,ok:'Richtig! Nominalisierte Adjektive behalten die Adjektivendung: ein Bekannter, der Bekannte, mit einem Bekannten.',wr:{'e':'Ein nominalisiertes Adjektiv wird wie ein Adjektiv dekliniert. „ein“ zeigt kein Signal → -er (wie: ein bekannter Mann).','en':'„ein“ hat im Nominativ maskulin keine Endung. Das Adjektiv trägt das Signal: ein Bekannter.','-':'Das nominalisierte Adjektiv braucht eine Endung: ein Bekannter.'}},
+{t:'gap',i:'Ergänze die Endung.',q:'Gibt es etwas Neu___ aus der Redaktion?',a:['es'],ending:1,ok:'Richtig! Nach etwas, nichts, viel, wenig wird das Adjektiv großgeschrieben und bekommt -es (neutral, ohne Artikel).',wr:{'e':'Nach „etwas“ steht kein Artikel. Das nominalisierte Adjektiv trägt das Signal neutral: (das →) etwas Neues.','en':'Nach „etwas“ steht kein Artikel. Das nominalisierte Adjektiv trägt das Signal neutral: (das →) etwas Neues.','er':'Nach „etwas“ ist das Adjektiv neutral: etwas Neues.'}}
+]},
+
+{id:'m2',lvl:'B2',title:'Genitiv und n-Deklination',goal:'Du verwendest den Genitiv in Texten richtig und erkennst Nomen der n-Deklination.',
+body:`<div class="prose"><p>Im Gespräch hört man oft <i>das Auto von meinem Bruder</i> oder <i>wegen dem Wetter</i>. In Texten, Prüfungen und formellen Situationen erwartet man den <b>Genitiv</b>.</p></div>
+<div class="merk"><h4>Genitiv</h4><ul>
+<li><b>Zugehörigkeit:</b> das Auto <span class="f">meiner</span> Schwester · die Meinung <span class="m">des</span> Lehrer<b>s</b> · der Preis <span class="n">des</span> Haus<b>es</b></li>
+<li><b>Präpositionen:</b> wegen, trotz, während, innerhalb, außerhalb, aufgrund, (an)statt</li>
+<li><b>Maskulin und neutral:</b> Das Nomen bekommt -s oder -es (einsilbige Nomen meist -es: des Tages, des Hauses).</li></ul></div>
+<div class="merk"><h4>n-Deklination</h4><p>Einige maskuline Nomen bekommen in <b>allen Kasus außer im Nominativ Singular</b> die Endung -(e)n:</p>
+<ul><li>Nomen auf <b>-e</b>: der Kollege, der Junge, der Kunde, der Experte, der Löwe</li>
+<li>Fremdwörter auf <b>-ent, -ant, -ist, -at, -oge</b>: der Student, der Praktikant, der Polizist, der Soldat, der Biologe</li>
+<li>einige weitere: der Mensch, der Herr (den Herr<b>n</b>, Plural die Herr<b>en</b>), der Nachbar, der Bauer</li>
+<li>Sonderfall: der Name → des Name<b>ns</b> (auch: der Gedanke, der Glaube)</li></ul></div>
+<div class="exs">${X('Wegen <span class="m">des</span> starken Verkehr<b>s</b> kam ich zu spät.')}${X('Ich habe <span class="m">den</span> Praktikant<b>en</b> nach seinem Namen gefragt.')}</div>`,
+errs:[['Ich spreche mit dem Student.','Ich spreche mit dem Studenten.','Student gehört zur n-Deklination.'],['die Meinung des Experte','die Meinung des Experten','n-Deklination: Genitiv mit -n, nicht mit -s.'],['während dem Urlaub (in Texten)','während des Urlaubs','Schriftsprache: während + Genitiv.']],
+ex:'ndekl',gi:'',
+tasks:[
+{t:'mc',q:'___ des schlechten Wetters fand das Konzert statt.',o:[['Trotz',1,'Richtig: Es gibt einen Gegensatz (schlechtes Wetter – Konzert findet trotzdem statt). trotz + Genitiv.'],['Wegen',0,'„wegen“ nennt einen Grund. Das schlechte Wetter ist aber kein Grund dafür, dass das Konzert stattfindet.'],['Obwohl',0,'„obwohl“ ist ein Konnektor und leitet einen Nebensatz mit Verb ein. Vor einer Nominalgruppe steht eine Präposition: trotz.'],['Während',0,'„während“ ist zeitlich. Hier geht es um einen Gegensatz.']]},
+{t:'gap',i:'Ergänze die Endung (oder nichts? Dann schreibe „-“).',q:'Wir sprechen mit dem neuen Student___.',a:['en'],ending:1,wr:{'':'Student gehört zur n-Deklination (-ent): außer im Nominativ Singular immer -en.','-':'Student gehört zur n-Deklination (-ent): außer im Nominativ Singular immer -en.','n':'Student endet nicht auf -e, deshalb -en.','s':'-s ist die Genitivendung normaler Nomen. Hier steht Dativ (mit), und Student gehört zur n-Deklination: -en.'}},
+{t:'gap',i:'Ergänze die Endung.',q:'Kennst du den Name___ des Hotels?',a:['n'],ending:1,wr:{'-':'„der Name“ gehört zur n-Deklination: Akkusativ den Namen.','en':'Name endet schon auf -e, deshalb nur -n.','ns':'-ns steht nur im Genitiv (des Namens). Hier: den … → Akkusativ.'}},
+{t:'mc',q:'Welcher Satz ist richtig?',o:[['Ich habe den Herrn gefragt.',1,'Richtig: n-Deklination, Akkusativ Singular: den Herrn.'],['Ich habe den Herr gefragt.',0,'„Herr“ gehört zur n-Deklination: Im Akkusativ braucht es -n.'],['Ich habe den Herren gefragt.',0,'„Herren“ ist der Plural. Im Singular heißt es den Herrn.'],['Ich habe dem Herrn gefragt.',0,'„fragen“ verlangt den Akkusativ: den Herrn.']]},
+{t:'gap',i:'Ergänze die Endung des Artikels.',q:'Innerhalb ein___ Woche müssen Sie antworten.',a:['er'],ending:1,wr:{'e':'„innerhalb“ verlangt den Genitiv. Woche ist feminin: einer (wie der).','es':'-es ist Genitiv maskulin/neutral. Woche ist feminin: einer.','em':'-em wäre Dativ. „innerhalb“ verlangt den Genitiv: einer.'}},
+{t:'gap',i:'Ergänze die Endung.',q:'Die Meinung des Experte___ war eindeutig.',a:['n'],ending:1,wr:{'s':'Bei der n-Deklination heißt der Genitiv -n, nicht -s: des Experten.','ns':'-ns gibt es nur bei wenigen Nomen wie des Namens. Richtig: des Experten.','-':'Experte gehört zur n-Deklination: des Experten.','en':'Experte endet schon auf -e, deshalb nur -n.'}},
+{t:'mc',q:'Formeller Text: „Die Rede ___ Präsidenten wurde live übertragen.“',o:[['des',1,'Richtig: Genitivattribut, maskulin. Präsident gehört zur n-Deklination: des Präsidenten.'],['dem',0,'„dem“ ist Dativ. Für die Zugehörigkeit braucht man den Genitiv: des.'],['der',0,'„der“ wäre Genitiv feminin oder Plural. Präsident ist maskulin Singular.'],['den',0,'„den“ wäre Akkusativ. Hier braucht man den Genitiv.']]}
+]},
+
+{id:'m3',lvl:'B2',title:'Verben mit Präpositionen',goal:'Du kennst wichtige Verben mit fester Präposition und fragst und antwortest mit wo(r)- und da(r)-.',
+body:`<div class="merk"><h4>Feste Präpositionen lernt man mit dem Verb</h4>
+<div class="tbl"><table><tr><th>+ Akkusativ</th><th>+ Dativ</th></tr>
+<tr><td>sich freuen <b>auf</b> (Zukunft) / <b>über</b> (schon da)<br>warten <b>auf</b> · denken <b>an</b> · sich erinnern <b>an</b><br>sich interessieren <b>für</b> · sich ärgern <b>über</b><br>sich kümmern <b>um</b> · sprechen <b>über</b></td>
+<td>Angst haben <b>vor</b> · teilnehmen <b>an</b><br>sich beschäftigen <b>mit</b> · träumen <b>von</b><br>abhängen <b>von</b> · fragen <b>nach</b><br>sich verabschieden <b>von</b></td></tr></table></div></div>
+<div class="merk"><h4>Fragen und Antworten</h4><ul>
+<li><b>Sache:</b> wo(r) + Präposition / da(r) + Präposition. Ein <b>-r-</b> kommt nur vor Vokal: wo<b>r</b>auf, da<b>r</b>über – aber wofür, davon.</li>
+<li><b>Person:</b> Präposition + wen/wem / Präposition + Pronomen: Auf wen wartest du? – Auf ihn.</li>
+<li><b>Korrelat:</b> Folgt ein dass-Satz oder ein zu-Infinitiv, steht oft da(r)- im Hauptsatz: Ich freue mich <b>darauf</b>, dich zu sehen.</li></ul></div>
+<div class="exs">${X('<b>Worauf</b> wartest du? – Ich warte <b>auf</b> den Bus.')}${X('Wir haben lange <b>darüber</b> gesprochen, ob wir umziehen.')}</div>`,
+errs:[['Auf was wartest du? (in Texten)','Worauf wartest du?','„auf was“ ist umgangssprachlich.'],['Ich interessiere mich an Kunst.','Ich interessiere mich für Kunst.','Nomen: das Interesse an, Verb: sich interessieren für.'],['Ich denke oft daran. (an meine Oma)','Ich denke oft an sie.','Bei Personen: Präposition + Pronomen.']],
+ex:'prep',gi:'',
+tasks:[
+{t:'gap',i:'Ergänze die Präposition.',q:'Ich interessiere mich sehr ___ moderne Kunst.',a:['für'],wr:{'an':'Das Nomen heißt „das Interesse an“, das Verb aber „sich interessieren für“.','über':'„über“ passt zu sprechen oder sich ärgern, nicht zu sich interessieren.'}},
+{t:'gap',i:'Ergänze das Fragewort.',q:'___ wartest du? – Auf den Bus.',a:['Worauf'],wr:{'auf was':'Das ist umgangssprachlich. In Texten fragt man nach Sachen mit wo(r)-: Worauf?','woauf':'Vor einem Vokal steht ein -r-: wor-auf.','auf wen':'„Auf wen?“ fragt nach Personen. Der Bus ist eine Sache: Worauf?','wofür':'„warten“ hat die Präposition „auf“: Worauf?'}},
+{t:'gap',i:'Ergänze das Wort mit da(r)-.',q:'Ich freue mich schon ___, dich bald zu sehen.',a:['darauf'],wr:{'dafür':'„sich freuen“ verbindet sich nicht mit „für“. Zukunft: sich freuen auf → darauf.','daauf':'Vor einem Vokal steht ein -r-: dar-auf.','darüber':'„sich freuen über“ passt zu etwas, das schon passiert ist. „dich bald zu sehen“ liegt in der Zukunft → darauf.','auf':'Vor dem zu-Infinitiv steht das Korrelat da(r) + Präposition: darauf.'}},
+{t:'mc',q:'„Denkst du noch an deinen Opa?“ – „Ja, ich denke oft ___.“',o:[['an ihn',1,'Richtig: Bei Personen steht Präposition + Pronomen. denken an + Akkusativ: an ihn.'],['daran',0,'da(r)- steht für Sachen. Der Opa ist eine Person: an ihn.'],['an ihm',0,'„denken an“ verlangt den Akkusativ: an ihn.'],['an es',0,'Der Opa ist maskulin, und „an es“ sagt man nicht. Richtig: an ihn.']]},
+{t:'mc',q:'Sie nimmt ___ Kurs teil.',o:[['am',1,'Richtig: teilnehmen an + Dativ. an dem → am.'],['an den',0,'„teilnehmen an“ verlangt den Dativ: an dem → am.'],['für den',0,'Die Präposition von teilnehmen ist „an“.'],['bei dem',0,'Die Präposition von teilnehmen ist „an“: am Kurs.']]},
+{t:'gap',i:'Ergänze das Wort mit da(r)-.',q:'Wir haben lange ___ diskutiert, ob wir umziehen.',a:['darüber'],wr:{'davon':'„diskutieren“ und „sprechen“ verbinden sich mit „über“: darüber.','über':'Vor dem ob-Satz steht das Korrelat: darüber.','daüber':'Vor einem Vokal steht ein -r-: dar-über.'}},
+{t:'mc',q:'Ich habe Angst ___ der Prüfung.',o:[['vor',1,'Richtig: Angst haben vor + Dativ.'],['von',0,'Die feste Präposition ist „vor“: Angst vor.'],['über',0,'Die feste Präposition ist „vor“: Angst vor.'],['für',0,'Die feste Präposition ist „vor“: Angst vor.']]},
+{t:'gap',i:'Ergänze das Fragewort.',q:'___ hängt das Ergebnis ab?',a:['Wovon'],wr:{'worvon':'Das -r- steht nur vor Vokal. „von“ beginnt mit Konsonant: wovon.','von was':'Das ist umgangssprachlich. In Texten: Wovon?','womit':'„abhängen“ hat die Präposition „von“: Wovon?'}}
+]},
+
+{id:'m4',lvl:'B2',title:'Satzbau: Felder und Satzklammer',goal:'Du verstehst das Feldermodell und ordnest auch lange Sätze sicher – mit Mittelfeld, Satzklammer und Doppelinfinitiv.',
+body:`<div class="prose"><p>Deutsche Sätze haben feste Plätze für Verben und freie Plätze für die anderen Satzglieder. Wer das Feldermodell kennt, muss keine Wortlisten mehr auswendig lernen.</p></div>
+<div class="merk"><h4>Das Feldermodell</h4>
+<div class="tbl"><table><tr><th>Vorfeld</th><th>linke Klammer</th><th>Mittelfeld</th><th>rechte Klammer</th><th>Nachfeld</th></tr>
+<tr><td>genau 1 Satzglied</td><td>konjugiertes Verb<br>(Nebensatz: Konnektor)</td><td>alles andere</td><td>Partizip, Infinitiv, Präfix<br>(Nebensatz: alle Verben)</td><td>Vergleiche, Nebensätze</td></tr></table></div>
+<ul><li>Im Mittelfeld: <b>Pronomen vor Nomen</b>. Zwei Nomen: <b>Dativ vor Akkusativ</b> (meiner Mutter einen Brief). Zwei Pronomen: <b>Akkusativ vor Dativ</b> (es ihr).</li>
+<li>Angaben stehen meist in der Reihenfolge <b>te – ka – mo – lo</b>: temporal (wann?), kausal (warum?), modal (wie?), lokal (wo/wohin?).</li>
+<li><b>nicht</b> steht vor dem Teil, den es verneint, oft direkt vor der rechten Klammer.</li>
+<li><b>Doppelinfinitiv:</b> Im Nebensatz mit zwei Infinitiven steht das konjugierte Verb <b>vor</b> den Infinitiven: …, weil er nicht <b>hat</b> mitfahren dürfen.</li></ul></div>
+<div class="exs">${X('Letztes Jahr <span class="v">sind</span> wir wegen des Streiks mit dem Auto nach Berlin <span class="v">gefahren</span>.')}${X('Er ist größer <span class="v">geworden</span> als sein Bruder.')}</div>`,
+errs:[['Gestern ich habe ihn gesehen.','Gestern habe ich ihn gesehen.','Das Verb steht auf Position 2, das Subjekt rückt ins Mittelfeld.'],['…, weil er nicht mitfahren dürfen hat.','…, weil er nicht hat mitfahren dürfen.','Doppelinfinitiv: konjugiertes Verb vor die Infinitive.'],['Ich gebe ihm es.','Ich gebe es ihm.','Zwei Pronomen: Akkusativ vor Dativ.']],
+ex:'feld',gi:'Tippe die Bausteine in der richtigen Reihenfolge an.',
+tasks:[
+{t:'ord',pre:'Gestern',w:['habe','ich','meiner Mutter','einen Brief','geschrieben'],sol:[[0,1,2,3,4]],type:'V2',fin:0,fp:0,end:[4],mf:'Im Mittelfeld steht das Subjekt vorn, danach gilt bei zwei Nomen: Dativ (meiner Mutter) vor Akkusativ (einen Brief).'},
+{t:'ord',pre:'Gestern',w:['habe','ich','es','ihm','erklärt'],sol:[[0,1,2,3,4]],type:'V2',fin:0,fp:0,end:[4],mf:'Bei zwei Pronomen gilt: Akkusativ (es) vor Dativ (ihm).'},
+{t:'ord',pre:'Morgen',w:['kann','er','wegen der Arbeit','leider','nicht','kommen'],sol:[[0,1,2,3,4,5],[0,1,3,2,4,5]],type:'V2',fin:0,fp:0,end:[5],mf:'„nicht“ verneint hier das Verb und steht direkt vor der rechten Klammer (kommen).'},
+{t:'ord',pre:'Er war traurig,',w:['weil','er','nicht','hat','mitfahren','dürfen'],sol:[[0,1,2,3,4,5]],type:'VLdi',konn:0,fin:3,end:[4,5],mf:'„nicht“ steht im Mittelfeld vor dem Verbkomplex.'},
+{t:'ord',pre:'Ich weiß nicht,',w:['ob','der Zug','heute','pünktlich','ankommt'],sol:[[0,1,2,3,4]],type:'VL',konn:0,fin:4,end:[],mf:'Angaben: erst temporal (heute), dann modal (pünktlich) – te-ka-mo-lo.'},
+{t:'ord',pre:'Am Montag',w:['fängt','der Kurs','um 9 Uhr','an'],sol:[[0,1,2,3]],type:'V2',fin:0,fp:0,end:[3],mf:'Das Subjekt steht direkt nach dem Verb.'},
+{t:'ord',pre:'Letztes Jahr',w:['sind','wir','wegen des Streiks','mit dem Auto','nach Berlin','gefahren'],sol:[[0,1,2,3,4,5]],type:'V2',fin:0,fp:0,end:[5],mf:'Die Angaben folgen der Reihenfolge te-ka-mo-lo: kausal (wegen des Streiks), modal (mit dem Auto), lokal (nach Berlin).'}
+]},
+
+{id:'m5',lvl:'B2',title:'Konnektoren',goal:'Du verbindest Sätze mit Konnektoren und weißt bei jedem, wohin das Verb wandert.',
+body:`<div class="merk"><h4>Drei Gruppen – drei Wortstellungen</h4>
+<div class="tbl"><table><tr><th>Gruppe</th><th>Beispiele</th><th>Verb</th></tr>
+<tr><td>Position 0</td><td><span class="k">und, aber, oder, denn, sondern</span></td><td>normaler Hauptsatz: …, <span class="k">denn</span> ich <span class="v">bin</span> krank.</td></tr>
+<tr><td>Nebensatz</td><td><span class="k">weil, da, obwohl, wenn, als, dass, ob, damit, sodass, nachdem, bevor, während</span></td><td>am Ende: …, <span class="k">weil</span> ich krank <span class="v">bin</span>.</td></tr>
+<tr><td>Adverb (Vorfeld)</td><td><span class="k">deshalb, deswegen, trotzdem, dann, außerdem, sonst, allerdings</span></td><td>direkt danach: <span class="k">Deshalb</span> <span class="v">bleibe</span> ich zu Hause.</td></tr></table></div>
+<p>Steht ein Nebensatz vorn, ist er das Vorfeld: Das Verb des Hauptsatzes folgt sofort. <i>Obwohl es regnet, <span class="v">gehen</span> wir spazieren.</i></p></div>
+<div class="merk"><h4>Zweiteilige Konnektoren</h4><p><span class="k">je … desto/umso</span> · <span class="k">sowohl … als auch</span> · <span class="k">weder … noch</span> · <span class="k">entweder … oder</span> · <span class="k">nicht nur … sondern auch</span> · <span class="k">zwar … aber</span></p>
+<p class="small">Bei je … desto steht nach „je“ ein Nebensatz (Verb am Ende), nach „desto“ das Verb sofort: Je mehr ich lese, desto besser <span class="v">verstehe</span> ich.</p></div>
+<div class="merk"><h4>Präposition, Konnektor oder Adverb?</h4><p>Grund: <b>wegen</b> + Nomen · <b>weil</b> + Nebensatz · <b>deshalb</b> + Folge. Gegensatz: <b>trotz</b> + Nomen · <b>obwohl</b> + Nebensatz · <b>trotzdem</b> + Folge.</p></div>`,
+errs:[['Ich bleibe zu Hause, weil ich bin krank.','…, weil ich krank bin.','weil leitet einen Nebensatz ein: Verb ans Ende.'],['Deshalb ich bleibe zu Hause.','Deshalb bleibe ich zu Hause.','deshalb steht im Vorfeld → Verb sofort danach.'],['Obwohl es regnet, wir gehen spazieren.','Obwohl es regnet, gehen wir spazieren.','Der Nebensatz ist das Vorfeld.']],
+ex:'konn',gi:'',
+tasks:[
+{t:'mc',q:'Ich habe viel gelernt. ___ habe ich die Prüfung nicht bestanden.',o:[['Trotzdem',1,'Richtig: „trotzdem“ nennt einen Gegensatz und steht im Vorfeld – deshalb folgt das Verb „habe“ sofort.'],['Obwohl',0,'„obwohl“ leitet einen Nebensatz ein: Das Verb müsste am Ende stehen. Hier folgt das Verb direkt.'],['Aber',0,'„aber“ steht auf Position 0. Danach käme ein normaler Hauptsatz: Aber ich habe … Hier folgt das Verb direkt.'],['Deshalb',0,'„deshalb“ nennt eine Folge. Viel lernen und nicht bestehen ist aber ein Gegensatz.']]},
+{t:'ord',i:'Tippe die Bausteine in der richtigen Reihenfolge an.',pre:'Ich komme heute nicht,',w:['denn','ich','bin','krank'],sol:[[0,1,2,3]],type:'P0',konn:0,fin:2,end:[],mf:''},
+{t:'ord',i:'Tippe die Bausteine in der richtigen Reihenfolge an.',pre:'Obwohl es regnet,',w:['gehen','wir','spazieren'],sol:[[0,1,2]],type:'V2',fin:0,fp:0,end:[2],mf:''},
+{t:'ord',i:'Tippe die Bausteine in der richtigen Reihenfolge an.',pre:'Der Zug hatte Verspätung.',w:['deshalb','bin','ich','zu spät','gekommen'],sol:[[0,1,2,3,4],[2,1,0,3,4]],type:'V2',fin:1,fp:1,end:[4],mf:''},
+{t:'gap',i:'Ergänze den zweiten Teil des Konnektors.',q:'Je länger ich in Deutschland lebe, ___ besser spreche ich Deutsch.',a:['desto','umso'],wr:{'je':'Der zweite Teil heißt nicht noch einmal „je“, sondern „desto“ oder „umso“.','dann':'„dann“ passt nicht zum Vergleich. Zu „je“ gehört „desto“ oder „umso“.','so':'Zu „je“ gehört „desto“ oder „umso“.'}},
+{t:'mc',q:'Sie hat ___ angerufen ___ eine Nachricht geschrieben. Sie hat sich also gar nicht gemeldet.',o:[['weder … noch',1,'Richtig: weder … noch verneint beide Teile.'],['entweder … oder',0,'entweder … oder bedeutet: eins von beiden. Sie hat sich aber gar nicht gemeldet.'],['sowohl … als auch',0,'sowohl … als auch bedeutet: beides. Sie hat sich aber gar nicht gemeldet.'],['nicht nur … sondern auch',0,'Das bedeutet: beides, mit Betonung auf dem zweiten Teil. Sie hat sich aber gar nicht gemeldet.']]},
+{t:'mc',q:'Er nahm den Job an, ___ das Gehalt niedrig war.',o:[['obwohl',1,'Richtig: Gegensatz + Nebensatz (Verb „war“ am Ende) → obwohl.'],['trotz',0,'„trotz“ ist eine Präposition und braucht ein Nomen: trotz des niedrigen Gehalts.'],['trotzdem',0,'„trotzdem“ ist ein Adverb. Danach folgt kein Nebensatz mit Verb am Ende.'],['weil',0,'Ein niedriges Gehalt ist kein Grund, einen Job anzunehmen. Es ist ein Gegensatz.']]},
+{t:'gap',i:'Ergänze den Konnektor.',q:'Sie lernt jeden Tag, ___ sie die Prüfung besteht.',a:['damit'],wr:{'um':'„um … zu“ steht nur mit Infinitiv: um die Prüfung zu bestehen. Hier steht ein konjugiertes Verb → damit.','dass':'„dass“ nennt keinen Zweck. Für ein Ziel brauchst du „damit“.','weil':'„weil“ nennt einen Grund. Die Prüfung ist hier das Ziel → damit.','sodass':'„sodass“ nennt eine Folge, kein Ziel. Für ein Ziel brauchst du „damit“.'}}
+]},
+
+{id:'m6',lvl:'B2',title:'Passiv',goal:'Du bildest das Passiv in allen Zeiten, auch mit Modalverb, und kennst Alternativen zum Passiv.',
+body:`<div class="prose"><p>Im Passiv steht die <b>Handlung</b> im Mittelpunkt, nicht die Person, die handelt. Deshalb ist es typisch für Nachrichten, Anleitungen und Fachtexte.</p></div>
+<div class="merk"><h4>Vorgangspassiv: werden + Partizip II</h4>
+<div class="tbl"><table><tr><th>Zeit</th><th>Beispiel</th></tr>
+<tr><td>Präsens</td><td>Die Heizung <span class="v">wird</span> <span class="tok vend">repariert</span>.</td></tr>
+<tr><td>Präteritum</td><td>Die Heizung <span class="v">wurde</span> <span class="tok vend">repariert</span>.</td></tr>
+<tr><td>Perfekt</td><td>Die Heizung <span class="v">ist</span> <span class="tok vend">repariert worden</span>. (nicht: geworden)</td></tr>
+<tr><td>Plusquamperfekt</td><td>Die Heizung <span class="v">war</span> <span class="tok vend">repariert worden</span>.</td></tr>
+<tr><td>Futur I</td><td>Die Heizung <span class="v">wird</span> <span class="tok vend">repariert werden</span>.</td></tr>
+<tr><td>mit Modalverb</td><td>Die Heizung <span class="v">muss</span> <span class="tok vend">repariert werden</span>.</td></tr></table></div>
+<ul><li>Wer handelt? <b>von</b> + Dativ (meist Personen) · <b>durch</b> + Akkusativ (Mittel, Ursache): durch einen Sturm.</li>
+<li>Ohne Subjekt: <i>Hier <span class="v">wird</span> nicht geraucht.</i> Das Verb steht dann immer im Singular.</li></ul></div>
+<div class="merk"><h4>Zustandspassiv und Passiv-Ersatz</h4><ul>
+<li><b>Zustand</b> (Ergebnis): sein + Partizip II: Die Tür <span class="v">ist</span> gestrichen.</li>
+<li><b>sich lassen</b> + Infinitiv: Das Problem <span class="v">lässt</span> sich lösen. (= kann gelöst werden)</li>
+<li><b>sein + zu</b> + Infinitiv: Der Antrag <span class="v">ist</span> bis Montag einzureichen. (= muss eingereicht werden)</li>
+<li><b>-bar</b>: Das Problem ist lösbar.</li></ul></div>`,
+errs:[['Der Brief ist geschrieben geworden.','Der Brief ist geschrieben worden.','Passiv-Perfekt: worden ohne ge-.'],['Das muss bis Freitag erledigt worden.','Das muss bis Freitag erledigt werden.','Mit Modalverb: Infinitiv werden.'],['Am Abend werden getanzt.','Am Abend wird getanzt.','Ohne Subjekt immer Singular.']],
+ex:'pass',gi:'',
+tasks:[
+{t:'gap',i:'Ergänze die Form von „werden“ (Präteritum).',q:'Das Rathaus ___ 1910 gebaut.',a:['wurde'],wr:{'wird':'„wird“ ist Präsens. 1910 liegt in der Vergangenheit → Präteritum: wurde.','ist':'„ist gebaut“ wäre Zustandspassiv. Für das Perfekt fehlt „worden“. Gefragt ist das Präteritum: wurde.','war':'„war gebaut“ beschreibt einen Zustand. Für den Vorgang im Präteritum: wurde.','wurden':'Das Subjekt „das Rathaus“ ist Singular: wurde.'}},
+{t:'gap',i:'Ergänze das fehlende Wort (Perfekt Passiv).',q:'Der Brief ist schon abgeschickt ___.',a:['worden'],wr:{'geworden':'Im Passiv-Perfekt heißt es „worden“ (ohne ge-). „geworden“ gibt es nur bei werden als Vollverb: Sie ist Ärztin geworden.','werden':'„werden“ als Infinitiv steht im Futur oder mit Modalverb. Im Perfekt: worden.','wurde':'Im Perfekt steht am Ende „worden“: ist … abgeschickt worden.'}},
+{t:'mc',q:'Forme ins Passiv um: „Man muss die Rechnung bis Freitag bezahlen.“',o:[['Die Rechnung muss bis Freitag bezahlt werden.',1,'Richtig: Modalverb + Partizip II + werden. „man“ fällt im Passiv weg.'],['Die Rechnung muss bis Freitag bezahlt worden.',0,'„worden“ steht nur im Perfekt und Plusquamperfekt. Mit Modalverb steht der Infinitiv „werden“.'],['Die Rechnung muss bis Freitag bezahlen werden.',0,'Im Passiv brauchst du das Partizip II: bezahlt.'],['Die Rechnung wird bis Freitag bezahlen müssen.',0,'Das ist Futur Aktiv – und die Rechnung bezahlt nicht selbst.']]},
+{t:'mc',q:'Montag, 9 Uhr: Der Maler ist da. Die Tür ___ gerade gestrichen. – Dienstag: Alles fertig. Die Tür ___ gestrichen.',o:[['wird / ist',1,'Richtig: Montag läuft der Vorgang (werden), Dienstag beschreibt man das Ergebnis (sein).'],['ist / wird',0,'Umgekehrt: Der Vorgang läuft am Montag (wird), am Dienstag ist das Ergebnis da (ist).'],['wird / wird',0,'Am Dienstag ist die Arbeit fertig. Für den Zustand steht sein: ist gestrichen.'],['ist / ist',0,'Am Montag wird gerade gearbeitet. Für den Vorgang steht werden: wird gestrichen.']]},
+{t:'gap',i:'Ergänze die richtige Form von „lösen“.',q:'Die Aufgabe lässt sich leicht ___.',a:['lösen'],wr:{'gelöst':'Nach „sich lassen“ steht der Infinitiv, nicht das Partizip II: lösen.','zu lösen':'„zu“ gehört zu „sein + zu + Infinitiv“. Nach „sich lassen“ steht der Infinitiv ohne zu.'}},
+{t:'gap',i:'Ergänze „einreichen“ in der richtigen Form.',q:'Der Antrag ist bis Montag ___.',a:['einzureichen'],wr:{'zu einreichen':'Bei trennbaren Verben steht „zu“ zwischen Präfix und Verb: ein-zu-reichen.','eingereicht':'Das wäre Zustandspassiv: Der Antrag liegt schon vor. Gemeint ist eine Pflicht (muss eingereicht werden) → sein + zu + Infinitiv: einzureichen.','einreichen':'Bei „sein + zu + Infinitiv“ fehlt das zu. Trennbares Verb: einzureichen.'}},
+{t:'gap',i:'Ergänze die Form von „werden“.',q:'Auf der Hochzeit ___ bis drei Uhr morgens getanzt.',a:['wurde','wird'],wr:{'wurden':'Der Satz hat kein Subjekt (unpersönliches Passiv). Dann steht das Verb im Singular: wurde.','werden':'Der Satz hat kein Subjekt (unpersönliches Passiv). Dann steht das Verb im Singular: wird oder wurde.'}}
+]},
+
+{id:'m7',lvl:'B2–C1',title:'Konjunktiv II',goal:'Du drückst Wünsche, irreale Bedingungen und höfliche Bitten aus – in der Gegenwart und in der Vergangenheit.',
+body:`<div class="merk"><h4>Formen</h4><ul>
+<li>Meist: <b>würde + Infinitiv</b>: ich würde kommen, wir würden helfen</li>
+<li>Eigene Formen bei sein, haben, Modalverben und wissen: wäre · hätte · könnte · müsste · dürfte · sollte · wollte · wüsste</li>
+<li>Gehoben, aber häufig in Texten: käme, ginge, gäbe, bliebe, ließe</li>
+<li><b>Vergangenheit:</b> hätte/wäre + Partizip II: Ich <span class="v">hätte</span> dich <span class="tok vend">angerufen</span>. Ich <span class="v">wäre</span> <span class="tok vend">gekommen</span>.</li>
+<li>Mit Modalverb (Doppelinfinitiv): Du <span class="v">hättest</span> früher <span class="tok vend">anrufen sollen</span>.</li>
+<li><b>Passiv:</b> Wenn der Fehler früher <span class="tok vend">erkannt worden</span> <span class="v">wäre</span>, … · Das Problem <span class="v">müsste</span> <span class="tok vend">gelöst werden</span>.</li>
+<li><b>Irreal ohne wenn-Satz:</b> Ohne deine Hilfe <span class="v">hätte</span> ich es nie <span class="tok vend">geschafft</span>. · An deiner Stelle <span class="v">würde</span> ich …</li></ul></div>
+<div class="merk"><h4>Wofür?</h4><ul>
+<li><b>Irreale Bedingung:</b> Wenn ich Zeit <span class="v">hätte</span>, <span class="v">würde</span> ich mitkommen. · Ohne wenn: <span class="v">Hätte</span> ich Zeit, …</li>
+<li><b>Wunsch:</b> Wenn ich doch mehr Zeit hätte! · Ich wünschte, ich könnte fliegen.</li>
+<li><b>Vergleich:</b> Er tut so, als ob er alles <span class="v">wüsste</span>.</li>
+<li><b>Höflichkeit und Rat:</b> Könnten Sie mir helfen? · Ich hätte gern … · Du solltest mehr schlafen.</li></ul></div>`,
+errs:[['Wenn ich Zeit habe, würde ich kommen.','Wenn ich Zeit hätte, würde ich kommen.','Beide Teile der irrealen Bedingung im Konjunktiv II.'],['Wenn ich das gewusst hätte, hätte ich gekommen.','…, wäre ich gekommen.','kommen bildet die Vergangenheit mit sein.'],['Ich würde gekommen.','Ich wäre gekommen.','Vergangenheit: hätte/wäre + Partizip II.']],
+ex:'k2',gi:'',
+tasks:[
+{t:'gap',i:'Ergänze „haben“ im Konjunktiv II.',q:'Wenn ich mehr Zeit ___, würde ich öfter lesen.',a:['hätte'],wr:{'habe':'„habe“ ist Indikativ (oder Konjunktiv I). Für eine irreale Bedingung brauchst du den Konjunktiv II: hätte.','hatte':'„hatte“ ist Präteritum. Für den Konjunktiv II fehlt der Umlaut: hätte.','würde haben':'Das versteht man, aber bei haben nimmt man die eigene Form: hätte.'}},
+{t:'gap',i:'Ergänze das Hilfsverb.',q:'Wenn du mich gefragt ___, hätte ich dir geholfen.',a:['hättest'],wr:{'hättet':'„hättet“ gehört zu „ihr“. Zu „du“: hättest.','hast':'„hast“ ist Indikativ. Die Bedingung ist irreal: hättest.','würdest':'Vergangenheit im Konjunktiv II: hätte/wäre + Partizip II. fragen → hättest gefragt.','wärst':'„fragen“ bildet die Vergangenheit mit haben: hättest gefragt.'}},
+{t:'mc',q:'Ich bin zu spät gekommen, weil ich den Bus verpasst habe. Wie lautet der irreale Satz?',o:[['Wenn ich den Bus nicht verpasst hätte, wäre ich nicht zu spät gekommen.',1,'Richtig: Vergangenheit im Konjunktiv II. verpassen → hätte, kommen → wäre.'],['Wenn ich den Bus nicht verpasst hätte, hätte ich nicht zu spät gekommen.',0,'„kommen“ bildet die Vergangenheit mit sein: wäre gekommen.'],['Wenn ich den Bus nicht verpassen würde, würde ich nicht zu spät kommen.',0,'Das ist Gegenwart. Die Situation liegt aber in der Vergangenheit: hätte/wäre + Partizip II.'],['Wenn ich den Bus nicht verpasst habe, wäre ich nicht zu spät gekommen.',0,'„habe“ ist Indikativ. In der irrealen Bedingung brauchst du den Konjunktiv II: hätte.']]},
+{t:'gap',i:'Ergänze „wissen“ in der richtigen Form.',q:'Er tut so, als ob er alles ___.',a:['wüsste'],wr:{'weiß':'Nach „als ob“ steht der Konjunktiv II: wüsste.','wusste':'„wusste“ ist Präteritum. Im Konjunktiv II steht ein Umlaut: wüsste.','würde wissen':'Bei „wissen“ nimmt man die eigene Form: wüsste.'}},
+{t:'gap',i:'Ergänze eine höfliche Form.',q:'___ Sie mir bitte das Salz geben?',a:['Könnten','Würden'],wr:{'können':'Grammatisch richtig, aber weniger höflich. Mit Konjunktiv II klingt es freundlicher: Könnten Sie …?','kannst':'Bei „Sie“ heißt es: Könnten Sie …?','möchten':'„möchten“ passt nicht zu einer Bitte an eine andere Person. Höflich: Könnten oder Würden Sie …?'}},
+{t:'ord',i:'Tippe die Bausteine in der richtigen Reihenfolge an.',pre:'Du',w:['hättest','früher','anrufen','sollen'],sol:[[0,1,2,3]],type:'V2',fin:0,fp:0,end:[2,3],mf:''},
+{t:'mc',q:'___ ich das gewusst, ___ ich nicht gekommen.',o:[['Hätte … wäre',1,'Richtig: Bedingung ohne wenn → konjugiertes Verb nach vorn (Hätte). Im Hauptsatz: kommen → wäre.'],['Hätte … hätte',0,'„kommen“ bildet die Vergangenheit mit sein: wäre gekommen.'],['Würde … wäre',0,'„würde gewusst“ gibt es nicht. Vergangenheit: hätte gewusst.'],['Hatte … war',0,'Das ist Indikativ. Für eine irreale Bedingung brauchst du den Konjunktiv II.']]},
+{t:'gap',i:'Ergänze „können“ im Konjunktiv II.',q:'Ich wünschte, ich ___ besser singen.',a:['könnte'],wr:{'kann':'Nach „Ich wünschte“ steht der Konjunktiv II: könnte.','konnte':'„konnte“ ist Präteritum. Im Konjunktiv II steht ein Umlaut: könnte.','würde können':'Bei Modalverben nimmt man die eigene Form: könnte.'}},
+{t:'gap',i:'Ergänze das Hilfsverb.',q:'Wenn der Fehler früher erkannt worden ___, hätte man ihn leicht beheben können.',a:['wäre'],wr:{'hätte':'Das Passiv bildet die Vergangenheit mit sein: erkannt worden wäre.','würde':'Vergangenheit im Konjunktiv II: wäre/hätte + Partizip. Im Passiv: erkannt worden wäre.','war':'„war“ ist Indikativ. Die Bedingung ist irreal: wäre.','ist':'„ist“ ist Indikativ. Die Bedingung ist irreal: wäre.'}},
+{t:'gap',i:'Ergänze das Hilfsverb.',q:'Ohne deine Hilfe ___ ich die Prüfung nie geschafft.',a:['hätte'],ok:'Richtig! Der Satz ist irreal, obwohl kein wenn-Satz da ist: „ohne deine Hilfe“ bedeutet „wenn du mir nicht geholfen hättest“.',wr:{'habe':'Der Satz ist irreal: Du hast ja geholfen. „ohne deine Hilfe“ = „wenn du nicht geholfen hättest“ → Konjunktiv II: hätte.','wäre':'„schaffen“ bildet das Perfekt mit haben: hätte geschafft.','würde':'Vergangenheit im Konjunktiv II: hätte + Partizip II.','hatte':'„hatte“ ist Indikativ. Der Satz ist irreal: hätte.'}}
+]},
+
+{id:'m8',lvl:'B2–C1',title:'Indirekte Rede',goal:'Du gibst Aussagen anderer neutral wieder – mit Konjunktiv I und der Ersatzregel.',
+body:`<div class="prose"><p>Nachrichten und Berichte zeigen mit dem Konjunktiv I: <i>Das hat jemand gesagt – ich gebe es nur weiter.</i> Im Alltag hört man oft den Indikativ oder würde.</p></div>
+<div class="merk"><h4>Konjunktiv I bilden</h4><p>Infinitivstamm + Endung: -e, -est, -e, -en, -et, -en. Er komm<b>e</b>, sie hab<b>e</b>, er könn<b>e</b>. Sonderform: er <b>sei</b>, sie <b>seien</b>.</p>
+<p><b>Ersatzregel:</b> Ist der Konjunktiv I gleich dem Indikativ (sie haben = sie haben), nimmt man den Konjunktiv II (sie hätten). Ist auch der gleich dem Präteritum (sie arbeiteten), nimmt man würde + Infinitiv.</p></div>
+<div class="merk"><h4>Was sich sonst ändert</h4><ul>
+<li><b>Vergangenheit:</b> habe/sei + Partizip II: Er sagte, er <span class="v">sei</span> gestern <span class="tok vend">angekommen</span>.</li>
+<li><b>Zukunft:</b> werde + Infinitiv: Sie sagte, sie <span class="v">werde</span> <span class="tok vend">kommen</span>.</li>
+<li><b>Fragen:</b> Ja/Nein-Frage → ob; W-Frage → W-Wort. Verb ans Ende.</li>
+<li><b>Bitten und Befehle:</b> sollen / mögen: Er sagte, ich <span class="v">solle</span> warten.</li>
+<li><b>Perspektive:</b> Pronomen und Zeitangaben anpassen: ich → er, morgen → am nächsten Tag, hier → dort.</li></ul></div>`,
+errs:[['Sie sagten, sie haben keine Zeit.','Sie sagten, sie hätten keine Zeit.','Konjunktiv I = Indikativ → Konjunktiv II.'],['Er fragte, dass ich komme.','Er fragte, ob ich käme.','Ja/Nein-Frage → ob.'],['Er sagte, er habe gestern angekommen.','Er sagte, er sei am Vortag angekommen.','ankommen → Perfekt mit sein.']],
+ex:'k1',gi:'',
+tasks:[
+{t:'gap',i:'Ergänze die Form von „sein“.',q:'Der Minister sagte: „Ich bin zufrieden.“ → Der Minister sagte, er ___ zufrieden.',a:['sei'],wr:{'ist':'„ist“ ist Indikativ. In der Berichtssprache steht der Konjunktiv I: sei.','wäre':'Den Konjunktiv II braucht man nur als Ersatz. „sei“ ist eindeutig, also bleibt der Konjunktiv I.','sein':'Das ist der Infinitiv. Konjunktiv I, 3. Person: sei.'}},
+{t:'gap',i:'Ergänze die Form von „haben“.',q:'Die Studierenden sagten: „Wir haben keine Zeit.“ → Die Studierenden sagten, sie ___ keine Zeit.',a:['hätten'],wr:{'haben':'Der Konjunktiv I „sie haben“ ist gleich dem Indikativ. Deshalb weicht man auf den Konjunktiv II aus: hätten.','habe':'„habe“ ist Singular. Das Subjekt „sie“ ist hier Plural.','hätte':'„hätte“ ist Singular. Plural: hätten.'}},
+{t:'gap',i:'Ergänze die Form von „haben“.',q:'Sie sagte: „Ich habe den Termin vergessen.“ → Sie sagte, sie ___ den Termin vergessen.',a:['habe'],wr:{'hätte':'„sie habe“ (Konjunktiv I) unterscheidet sich vom Indikativ „sie hat“. Also bleibt der Konjunktiv I: habe.','hat':'„hat“ ist Indikativ. Für die indirekte Rede: habe.'}},
+{t:'mc',q:'Er fragte mich: „Kommst du morgen?“ Welche indirekte Rede ist richtig?',o:[['Er fragte, ob ich am nächsten Tag kommen würde.',1,'Richtig: Ja/Nein-Frage → ob, Verb ans Ende. „ich komme“ (Konj. I) = Indikativ → Ersatz. morgen → am nächsten Tag.'],['Er fragte, dass ich am nächsten Tag komme.',0,'Bei einer Ja/Nein-Frage steht „ob“, nicht „dass“.'],['Er fragte, ob kommst du am nächsten Tag.',0,'Nach „ob“ ist es ein Nebensatz: Verb ans Ende.'],['Er fragte, wann ich am nächsten Tag komme.',0,'Die Originalfrage hatte kein W-Wort. Ja/Nein-Frage → ob.']]},
+{t:'gap',i:'Ergänze die Form von „sollen“.',q:'Der Arzt sagte zu mir: „Bleiben Sie im Bett!“ → Der Arzt sagte, ich ___ im Bett bleiben.',a:['solle','sollte'],wr:{'soll':'„soll“ ist Indikativ. Konjunktiv I: ich solle.','müsse':'„müssen“ ist stärker als die Bitte des Arztes. Aufforderung → sollen: solle.'}},
+{t:'gap',i:'Ergänze das Hilfsverb.',q:'Er sagte: „Ich bin gestern angekommen.“ → Er sagte, er ___ am Vortag angekommen.',a:['sei'],wr:{'habe':'„ankommen“ bildet das Perfekt mit sein: er sei angekommen.','ist':'„ist“ ist Indikativ. Konjunktiv I: sei.','wäre':'Den Konjunktiv II braucht man nur als Ersatz. „sei“ ist eindeutig.'}},
+{t:'mc',q:'Zeitungsmeldung: „Laut Zeugen sei der Fahrer zu schnell gefahren.“ Was zeigt der Konjunktiv I?',o:[['Die Zeitung gibt eine Aussage wieder, ohne sie als Tatsache zu bestätigen.',1,'Richtig: Der Konjunktiv I markiert die Wiedergabe. Die Zeitung übernimmt keine Verantwortung für den Inhalt.'],['Die Zeitung glaubt den Zeugen nicht.',0,'Der Konjunktiv I ist neutral. Er sagt nicht, dass die Zeitung zweifelt.'],['Der Fahrer ist sicher zu schnell gefahren.',0,'Eine sichere Tatsache würde im Indikativ stehen.'],['Die Situation ist nur ausgedacht.',0,'Für Ausgedachtes (Irreales) steht der Konjunktiv II, nicht der Konjunktiv I.']]}
+]},
+
+{id:'m9',lvl:'B2',title:'Relativsätze',goal:'Du wählst das Relativpronomen in allen Kasus richtig – auch im Genitiv und mit Präposition.',
+body:`<div class="merk"><h4>Zwei Fragen, ein Pronomen</h4><ol>
+<li><b>Genus und Numerus</b> kommen vom Bezugswort: der Mann → maskulin Singular.</li>
+<li><b>Der Kasus</b> kommt aus dem Relativsatz: Welche Rolle spielt das Pronomen dort? Das ist der Mann, <b>dem</b> ich helfe (helfen + Dativ).</li></ol>
+<div class="tbl"><table><tr><th></th><th class="m">m</th><th class="f">f</th><th class="n">n</th><th class="pl">Plural</th></tr>
+<tr><th>Nom.</th><td>der</td><td>die</td><td>das</td><td>die</td></tr>
+<tr><th>Akk.</th><td>den</td><td>die</td><td>das</td><td>die</td></tr>
+<tr><th>Dat.</th><td>dem</td><td>der</td><td>dem</td><td><b>denen</b></td></tr>
+<tr><th>Gen.</th><td><b>dessen</b></td><td><b>deren</b></td><td><b>dessen</b></td><td><b>deren</b></td></tr></table></div>
+<p class="small">Fett: Hier unterscheidet sich das Relativpronomen vom Artikel.</p>
+<ul><li><b>Präposition</b> steht vor dem Pronomen: das Thema, <b>über das</b> wir sprechen.</li>
+<li><b>was</b> nach alles, nichts, etwas, vieles, das Beste und nach einem ganzen Satz: Er kam pünktlich, was mich überraschte.</li>
+<li><b>wo</b> kann für Orte stehen: die Stadt, in der / wo ich geboren bin.</li></ul></div>
+<div class="exs">${X('Kennst du die Frau, <b>deren</b> Auto vor dem Haus steht?')}${X('Das sind die Kinder, mit <b>denen</b> ich Fußball spiele.')}</div>`,
+errs:[['die Kinder, mit den ich spiele','die Kinder, mit denen ich spiele','Dativ Plural: denen.'],['die Frau, dessen Auto …','die Frau, deren Auto …','Frau ist feminin → deren.'],['alles, das ich weiß','alles, was ich weiß','nach alles → was.']],
+ex:'rel',gi:'Ergänze das Relativpronomen.',
+tasks:[
+{t:'gap',q:'Das ist der Kollege, ___ ich gestern geholfen habe.',a:['dem'],wr:{'den':'„helfen“ verlangt den Dativ: dem.','der':'„der“ wäre Nominativ. Das Subjekt im Relativsatz ist „ich“. helfen + Dativ → dem.','dessen':'„dessen“ zeigt Besitz (Genitiv). Hier: helfen + Dativ → dem.'}},
+{t:'gap',q:'Die Leute, ___ wir im Urlaub kennengelernt haben, waren sehr nett.',a:['die'],wr:{'denen':'„denen“ ist Dativ Plural. „kennenlernen“ verlangt den Akkusativ: die.','den':'Bezugswort „die Leute“ ist Plural. Akkusativ Plural: die.'}},
+{t:'gap',q:'Kennst du die Frau, ___ Auto vor unserem Haus steht?',a:['deren'],wr:{'dessen':'„dessen“ steht bei maskulinen und neutralen Bezugswörtern. „die Frau“ ist feminin: deren.','ihr':'Im Relativsatz ersetzt das Relativpronomen im Genitiv den Possessivartikel: deren.','ihre':'Im Relativsatz ersetzt das Relativpronomen im Genitiv den Possessivartikel: deren.','die':'Es geht um Besitz (wessen Auto?) → Genitiv: deren.'}},
+{t:'gap',q:'Das sind die Kinder, mit ___ ich Fußball spiele.',a:['denen'],wr:{'den':'Der Artikel im Dativ Plural heißt „den“, das Relativpronomen aber „denen“.','die':'„mit“ verlangt den Dativ. Dativ Plural: denen.','dem':'„die Kinder“ ist Plural. Dativ Plural: denen.'}},
+{t:'gap',q:'Das ist alles, ___ ich darüber weiß.',a:['was'],wr:{'das':'Nach „alles, nichts, etwas, vieles“ steht „was“.','dass':'„dass“ ist ein Konnektor, kein Relativpronomen. Nach „alles“: was.'}},
+{t:'gap',i:'Ergänze Präposition und Relativpronomen.',q:'Das ist das Problem, ___ wir lange gesprochen haben.',a:['über das','worüber'],wr:{'das':'„sprechen über“: Die Präposition gehört in den Relativsatz, vor das Pronomen: über das.','über dem':'„sprechen über“ verlangt den Akkusativ: über das.','über den':'„das Problem“ ist neutral: über das.','von das':'„von“ verlangt den Dativ, und hier passt „sprechen über“: über das.'}},
+{t:'gap',q:'Der Mann, ___ Sohn in meiner Klasse ist, arbeitet als Arzt.',a:['dessen'],wr:{'deren':'„deren“ steht bei femininen Bezugswörtern und im Plural. „der Mann“ ist maskulin: dessen.','sein':'Im Relativsatz ersetzt das Relativpronomen im Genitiv den Possessivartikel: dessen.','dem':'Es geht um Besitz (wessen Sohn?) → Genitiv: dessen.'}},
+{t:'mc',q:'Die Stadt, ___ ich geboren bin, liegt am Meer.',o:[['in der',1,'Richtig: „Wo bin ich geboren?“ → in + Dativ. Die Stadt ist feminin: in der. Auch möglich: wo.'],['in die',0,'„in die“ antwortet auf „Wohin?“ (Akkusativ). Geboren sein ist ein Ort: Wo? → in der.'],['in dem',0,'„die Stadt“ ist feminin: in der.'],['die',0,'Die Präposition fehlt: Man ist in einer Stadt geboren → in der.']]}
+]},
+
+{id:'m10',lvl:'C1',title:'Infinitivsätze und Nominalstil',goal:'Du verwendest zu-Infinitive richtig und verstehst Partizipialattribute und Nominalisierungen in Fachtexten.',
+body:`<div class="merk"><h4>Infinitivsätze</h4><ul>
+<li><b>zu + Infinitiv</b> nach vielen Verben und Adjektiven: Ich habe vergessen, die Tür abzuschließen. (trennbar: ab<b>zu</b>schließen)</li>
+<li><b>um … zu</b> (Ziel) nur bei gleichem Subjekt, sonst <b>damit</b>: Ich spare, um zu reisen. · Ich spare, damit meine Kinder studieren können.</li>
+<li><b>ohne … zu</b> und <b>(an)statt … zu</b>: Er ging, ohne sich zu verabschieden.</li></ul></div>
+<div class="merk"><h4>Partizipien als Adjektive</h4><ul>
+<li><b>Partizip I</b> (aktiv, gleichzeitig): die lachenden Kinder (= die Kinder, die lachen)</li>
+<li><b>Partizip II</b> (passiv oder abgeschlossen): das reparierte Auto · der angekommene Zug</li>
+<li><b>Erweitert:</b> Alles, was zum Partizip gehört, steht zwischen Artikel und Partizip: das <i>von der Stadt</i> geplante Projekt.</li>
+<li><b>zu + Partizip I</b> (Notwendigkeit): die zu lösenden Aufgaben (= die gelöst werden müssen)</li>
+<li>Partizipien bekommen <b>Adjektivendungen</b> (Modul 1).</li></ul></div>
+<div class="merk"><h4>Verbalstil und Nominalstil</h4>
+<div class="tbl"><table><tr><th>Verbalstil (Gespräch)</th><th>Nominalstil (Fachtext)</th></tr>
+<tr><td>weil die Preise steigen</td><td>wegen des Anstiegs der Preise</td></tr>
+<tr><td>nachdem das Gesetz beschlossen wurde</td><td>nach dem Beschluss des Gesetzes</td></tr>
+<tr><td>wenn man regelmäßig übt</td><td>bei regelmäßigem Üben</td></tr></table></div></div>`,
+errs:[['Ich habe vergessen, zu abschließen.','…, abzuschließen.','trennbar: zu zwischen Präfix und Verb.'],['Ich spare, um meine Kinder studieren können.','…, damit meine Kinder studieren können.','Zwei Subjekte → damit.'],['die im Garten spielende Kinder','die im Garten spielenden Kinder','Adjektivendung: die … Kinder → -en.']],
+ex:'part',gi:'',
+tasks:[
+{t:'gap',i:'Ergänze „zumachen“ in der richtigen Form.',q:'Ich habe vergessen, das Fenster ___.',a:['zuzumachen'],wr:{'zu zumachen':'Bei trennbaren Verben steht „zu“ zwischen Präfix und Verb und wird zusammengeschrieben: zuzumachen.','zumachen':'Nach „vergessen“ braucht der Infinitiv ein zu. Trennbar: zu-zu-machen.','zugemacht':'Nach „vergessen“ steht ein zu-Infinitiv, kein Partizip: zuzumachen.'}},
+{t:'mc',q:'Ich spare Geld, ___ meine Kinder später studieren können.',o:[['damit',1,'Richtig: Ziel mit zwei verschiedenen Subjekten (ich / meine Kinder) → damit + Nebensatz.'],['um',0,'„um … zu“ geht nur, wenn das Subjekt gleich bleibt. Hier: ich spare, meine Kinder studieren → damit.'],['dass',0,'„dass“ nennt kein Ziel. Für ein Ziel: damit.'],['weil',0,'„weil“ nennt einen Grund, keinen Zweck.']]},
+{t:'gap',i:'Ergänze das Partizip mit Endung.',q:'die Kinder, die im Garten lachen → die im Garten ___ Kinder',a:['lachenden'],wr:{'lachende':'Die Endung folgt der Adjektivdeklination: die … Kinder (Nominativ Plural, bestimmter Artikel) → -en.','lachend':'Als Attribut vor dem Nomen braucht das Partizip eine Adjektivendung: lachenden.','gelachten':'Die Kinder lachen selbst (aktiv, gleichzeitig) → Partizip I: lachend + Endung.'}},
+{t:'gap',i:'Ergänze das Partizip mit Endung.',q:'das Auto, das gestern repariert wurde → das gestern ___ Auto',a:['reparierte'],wr:{'reparierende':'Das Auto wird repariert (passiv) → Partizip II: repariert + Endung.','reparierten':'das … Auto ist Nominativ Singular neutral mit bestimmtem Artikel → -e.','repariert':'Als Attribut vor dem Nomen braucht das Partizip eine Adjektivendung: reparierte.'}},
+{t:'mc',q:'Was bedeutet „die zu lösenden Aufgaben“?',o:[['die Aufgaben, die gelöst werden müssen',1,'Richtig: zu + Partizip I drückt eine Notwendigkeit oder Möglichkeit im Passiv aus.'],['die Aufgaben, die gelöst wurden',0,'Das wäre Partizip II: die gelösten Aufgaben.'],['die Aufgaben, die gerade gelöst werden',0,'Ohne zu: die gerade gelöst werdenden Aufgaben – sehr selten. „zu“ zeigt eine Notwendigkeit.'],['die Aufgaben, die schon gelöst sind',0,'Das wäre ein Zustand: die gelösten Aufgaben.']]},
+{t:'gap',i:'Ergänze die Präposition.',q:'Weil es stark regnete, fiel das Spiel aus. → ___ des starken Regens fiel das Spiel aus.',a:['Wegen','Aufgrund'],wr:{'weil':'„weil“ braucht einen Nebensatz mit Verb. Vor einer Nominalgruppe im Genitiv: wegen oder aufgrund.','trotz':'„trotz“ drückt einen Gegensatz aus. Hier ist der Regen der Grund: wegen.','durch':'„durch“ verlangt den Akkusativ. Hier steht Genitiv (des starken Regens): wegen oder aufgrund.'}},
+{t:'mc',q:'Welche Form ersetzt „ein Zug, der gerade angekommen ist“?',o:[['ein gerade angekommener Zug',1,'Richtig: abgeschlossen → Partizip II. „ein“ hat keine Endung, also trägt das Partizip das Signal: -er.'],['ein gerade angekommene Zug',0,'„ein“ zeigt das Genus nicht. Das Partizip muss das Signal tragen: angekommener (wie der).'],['ein gerade ankommender Zug',0,'Partizip I bedeutet gleichzeitig: Der Zug kommt gerade an. Der Relativsatz sagt aber: Er ist schon angekommen.'],['ein angekommener gerade Zug',0,'Die Erweiterung (gerade) steht vor dem Partizip.']]},
+{t:'gap',i:'Ergänze „helfen“ in der richtigen Form.',q:'Statt mir ___, hat er nur zugeschaut.',a:['zu helfen'],wr:{'helfen':'Nach „statt“ folgt ein Infinitiv mit zu: statt mir zu helfen.','zuhelfen':'„helfen“ ist nicht trennbar. Das zu steht getrennt davor: zu helfen.','geholfen':'Nach „statt“ folgt ein Infinitiv mit zu: zu helfen.'}}
+]}
+];
+
+/* ---------- Werkstätten ---------- */
+const EXP={};
+
+EXP.adj=function(el){
+  const N={m:{nom:'Wein',akk:'Wein',dat:'Wein',gen:'Wein<span class="sig">s</span>'},f:{nom:'Suppe',akk:'Suppe',dat:'Suppe',gen:'Suppe'},n:{nom:'Brot',akk:'Brot',dat:'Brot',gen:'Brot<span class="sig">es</span>'},pl:{nom:'Brote',akk:'Brote',dat:'Brote<b>n</b>',gen:'Brote'}};
+  const st={art:'def',g:'m',k:'dat'};
+  function draw(){
+    const c=E[st.art][st.k][st.g];
+    const aw=st.art==='def'?DEF[st.k][st.g]:st.art==='indef'?IND[st.k][st.g]:'';
+    const gc=st.g;
+    let who,txt;
+    if(st.art==='none'&&st.k==='gen'&&(st.g==='m'||st.g==='n')){who='noun';txt=`Kein Artikel – aber das Nomen zeigt den Genitiv schon mit <b>-s</b>. Deshalb bekommt das Adjektiv nur <b>-en</b>. Das ist der einzige Sonderfall.`;}
+    else if(st.art==='def'||(st.art==='indef'&&aw!=='ein')){who='art';txt=`Der Artikel <b class="${gc}">${aw}</b> zeigt Genus und Kasus schon (Signal <b>-${aw.slice(-1)}</b>). Das Adjektiv bekommt nur die schwache Endung <b>-${c}</b>.`;}
+    else{who='adj';txt=`${st.art==='none'?'Es gibt keinen Artikel':`<b class="${gc}">${aw}</b> hat hier keine Endung`} – niemand zeigt Genus und Kasus. Das Adjektiv übernimmt das Signal des bestimmten Artikels: <b class="${gc}">${DEF[st.k][st.g]}</b> → frisch<b>${c}</b>.`;}
+    const artH=aw?(who==='art'?`<span class="${gc}">${aw.slice(0,-1)}<span class="sig">${aw.slice(-1)}</span></span> `:`<span class="${gc}">${aw}</span> `):'';
+    const adjH=`frisch<span class="end ${who==='adj'?'sig':''}">${c}</span>`;
+    const phrase=`${artH}${adjH} <span class="${gc}">${N[st.g][st.k]}</span>`;
+    const rows=['nom','akk','dat','gen'].map(k=>`<tr><th>${KN[k]}</th>${['m','f','n','pl'].map(g=>`<td class="${k===st.k&&g===st.g?'hi':''}" style="cursor:pointer" data-cell="${k},${g}">-${E[st.art][k][g]}</td>`).join('')}</tr>`).join('');
+    el.innerHTML=`<div class="sec-t">Werkstatt: Endungsmaschine</div>
+      <div class="row"><span class="lab">Wort davor</span>${segH('art',[['def','der/die/das'],['indef','ein/kein/mein'],['none','kein Artikel']],st.art)}</div>
+      <div class="row"><span class="lab">Genus</span>${segH('g',[['m','maskulin'],['f','feminin'],['n','neutral'],['pl','Plural']],st.g)}</div>
+      <div class="row"><span class="lab">Kasus</span>${segH('k',[['nom','Nominativ'],['akk','Akkusativ'],['dat','Dativ'],['gen','Genitiv']],st.k)}</div>
+      <div class="out"><span>${phrase}</span>${sayBtn(phrase)}</div>
+      <div class="why"><p><b>Wer zeigt das Signal?</b> ${who==='art'?'Der Artikel.':who==='adj'?'Das Adjektiv.':'Das Nomen.'}</p><p>${txt}</p></div>
+      <div class="tbl"><table><tr><th>${st.art==='def'?'nach der/die/das':st.art==='indef'?'nach ein/kein/mein':'ohne Artikel'}</th><th class="m">m</th><th class="f">f</th><th class="n">n</th><th class="pl">Plural</th></tr>${rows}</table></div>
+      <p class="small">Tippe auf eine Zelle der Tabelle. ${st.art==='indef'?'Im Plural steht hier „keine“ als Beispiel, denn „ein“ hat keinen Plural.':''}</p>`;
+    bindSeg(el,st,draw);
+    el.querySelectorAll('[data-cell]').forEach(td=>td.addEventListener('click',()=>{const [k,g]=td.dataset.cell.split(',');st.k=k;st.g=g;draw();}));
+  }
+  draw();
+};
+
+EXP.ndekl=function(el){
+  const W={
+    Tisch:{t:'normales maskulines Nomen',sg:['der Tisch','den Tisch','dem Tisch','des Tisch|es'],pl:['die Tisch|e','die Tisch|e','den Tisch|en','der Tisch|e'],note:'Nur der Genitiv Singular (-es) und der Dativ Plural (-n) haben Endungen.'},
+    Kollege:{t:'n-Deklination: Nomen auf -e',sg:['der Kollege','den Kollege|n','dem Kollege|n','des Kollege|n'],pl:['die Kollege|n','die Kollege|n','den Kollege|n','der Kollege|n'],note:'Außer im Nominativ Singular immer -n.'},
+    Student:{t:'n-Deklination: Fremdwort auf -ent',sg:['der Student','den Student|en','dem Student|en','des Student|en'],pl:['die Student|en','die Student|en','den Student|en','der Student|en'],note:'Auch: Präsident, Praktikant, Polizist, Soldat, Biologe.'},
+    Mensch:{t:'n-Deklination: Einzelfall',sg:['der Mensch','den Mensch|en','dem Mensch|en','des Mensch|en'],pl:['die Mensch|en','die Mensch|en','den Mensch|en','der Mensch|en'],note:'Auch: Nachbar (den Nachbarn), Bauer.'},
+    Herr:{t:'n-Deklination: Einzelfall',sg:['der Herr','den Herr|n','dem Herr|n','des Herr|n'],pl:['die Herr|en','die Herr|en','den Herr|en','der Herr|en'],note:'Singular -n, Plural -en: Sehr geehrte Herren.'},
+    Name:{t:'n-Deklination mit Genitiv -ns',sg:['der Name','den Name|n','dem Name|n','des Name|ns'],pl:['die Name|n','die Name|n','den Name|n','der Name|n'],note:'Genauso: der Gedanke, der Glaube, der Buchstabe.'}
+  };
+  const st={w:'Student'};
+  const fmt=s=>{const [a,b]=s.split('|');return b?`${a}<span class="end">${b}</span>`:a;};
+  function draw(){
+    const d=W[st.w];
+    const rows=['nom','akk','dat','gen'].map((k,i)=>`<tr><th>${KN[k]}</th><td>${fmt(d.sg[i])}</td><td>${fmt(d.pl[i])}</td></tr>`).join('');
+    el.innerHTML=`<div class="sec-t">Werkstatt: Deklinationstabelle</div>
+      <div class="row"><span class="lab">Nomen</span>${segH('w',Object.keys(W).map(k=>[k,k]),st.w)}</div>
+      <div class="why"><p><b>${d.t}.</b> ${d.note}</p></div>
+      <div class="tbl"><table><tr><th>Kasus</th><th>Singular</th><th>Plural</th></tr>${rows}</table></div>
+      <div class="out"><span>Ich spreche mit ${fmt(d.sg[2])}.</span>${sayBtn('Ich spreche mit '+d.sg[2].replace('|','')+'.')}</div>`;
+    bindSeg(el,st,draw);
+  }
+  draw();
+};
+
+EXP.prep=function(el){
+  const V=[
+    {inf:'sich freuen auf',k:'A',p:'auf',q:'freust du dich',s:['Ich freue mich auf den Urlaub.','Ich freue mich darauf.'],pe:['Ich freue mich auf meine Oma.','Ich freue mich auf sie.']},
+    {inf:'warten auf',k:'A',p:'auf',q:'wartest du',s:['Ich warte auf den Bus.','Ich warte darauf.'],pe:['Ich warte auf meinen Bruder.','Ich warte auf ihn.']},
+    {inf:'denken an',k:'A',p:'an',q:'denkst du',s:['Ich denke an die Prüfung.','Ich denke daran.'],pe:['Ich denke an meine Freundin.','Ich denke an sie.']},
+    {inf:'sich erinnern an',k:'A',p:'an',q:'erinnerst du dich',s:['Ich erinnere mich an den Urlaub.','Ich erinnere mich daran.'],pe:['Ich erinnere mich an meinen Lehrer.','Ich erinnere mich an ihn.']},
+    {inf:'sich interessieren für',k:'A',p:'für',q:'interessierst du dich',s:['Ich interessiere mich für Politik.','Ich interessiere mich dafür.'],pe:['Ich interessiere mich für die neue Kollegin.','Ich interessiere mich für sie.']},
+    {inf:'sich ärgern über',k:'A',p:'über',q:'ärgerst du dich',s:['Ich ärgere mich über den Lärm.','Ich ärgere mich darüber.'],pe:['Ich ärgere mich über meinen Nachbarn.','Ich ärgere mich über ihn.']},
+    {inf:'sich kümmern um',k:'A',p:'um',q:'kümmerst du dich',s:['Ich kümmere mich um den Garten.','Ich kümmere mich darum.'],pe:['Ich kümmere mich um meine Schwester.','Ich kümmere mich um sie.']},
+    {inf:'Angst haben vor',k:'D',p:'vor',q:'hast du Angst',s:['Ich habe Angst vor der Prüfung.','Ich habe Angst davor.'],pe:['Ich habe Angst vor dem Chef.','Ich habe Angst vor ihm.']},
+    {inf:'sich beschäftigen mit',k:'D',p:'mit',q:'beschäftigst du dich',s:['Ich beschäftige mich mit Geschichte.','Ich beschäftige mich damit.'],pe:['Ich beschäftige mich mit den Kindern.','Ich beschäftige mich mit ihnen.']},
+    {inf:'träumen von',k:'D',p:'von',q:'träumst du',s:['Ich träume von einem eigenen Haus.','Ich träume davon.'],pe:['Ich träume von meiner Familie.','Ich träume von ihr.']}
+  ];
+  const st={i:'0',typ:'s'};
+  function draw(){
+    const v=V[+st.i];const vow=/^[aeiouäöü]/.test(v.p);
+    const isS=st.typ==='s';
+    const q=isS?`Wo${vow?'r':''}${v.p}`:`${cap(v.p)} ${v.k==='A'?'wen':'wem'}`;
+    const pair=isS?v.s:v.pe;
+    el.innerHTML=`<div class="sec-t">Werkstatt: Frage und Antwort</div>
+      <div class="row"><span class="lab">Verb</span>${segH('i',V.map((x,j)=>[j,x.inf]),st.i)}</div>
+      <div class="row"><span class="lab">Es geht um</span>${segH('typ',[['s','eine Sache'],['p','eine Person']],st.typ)}</div>
+      <div class="exs">${X(pair[0])}${X(`<b>${q}</b> ${v.q}?`)}${X(pair[1].replace(/(da[a-zäöü]+|\b(?:auf|an|für|über|um|vor|mit|von) (?:ihn|sie|ihm|ihr|ihnen))(?=\.)/,'<b>$1</b>'))}</div>
+      <div class="why"><p><b>${v.inf}</b> + ${v.k==='A'?'Akkusativ':'Dativ'}.</p><p>${isS?`Sache → Frage mit <b>wo(r)-</b>, Antwort mit <b>da(r)-</b>. „${v.p}“ beginnt mit ${vow?'einem Vokal → mit <b>-r-</b>':'einem Konsonanten → ohne -r-'}.`:`Person → Präposition + <b>${v.k==='A'?'wen':'wem'}</b>, in der Antwort Präposition + Pronomen im ${v.k==='A'?'Akkusativ':'Dativ'}.`}</p></div>`;
+    bindSeg(el,st,draw);
+  }
+  draw();
+};
+
+/* Satzglieder-Darstellung */
+function tokH(list){return list.map(t=>t.r==='p'?t.t:`<span class="tok ${t.r}">${t.t}</span>`).join(' ').replace(/ ([,.])/g,'$1');}
+
+EXP.feld=function(el){
+  const S=[
+    {c:[['ich',1],['gestern',1],['meinem Bruder',1],['das Buch',1]],fin:'habe',end:['gegeben']},
+    {c:[['er',1],['morgen',1],['wegen des Termins',1],['leider',1],['nicht',0]],fin:'kann',end:['kommen']},
+    {c:[['sie',1],['das Formular',1],['nicht',0]],fin:'hat',end:['ausfüllen','können'],di:1},
+    {c:[['der Kurs',1],['am Montag',1],['um 9 Uhr',1]],fin:'fängt',end:['an'],sep:1}
+  ];
+  const st={s:'0',vf:'0',mode:'hs'};
+  function draw(){
+    const s=S[+st.s];
+    if(!s.c[+st.vf]||!s.c[+st.vf][1]) st.vf='0';
+    let F;
+    if(st.mode==='hs'){
+      const vf=s.c[+st.vf][0];
+      const mf=s.c.filter((x,i)=>i!==+st.vf).map(x=>x[0]);
+      F={vf:cap(vf),lk:`<span class="tok fin">${s.fin}</span>`,mf:mf.join(' '),rk:s.end.map(e=>`<span class="tok vend">${e}</span>`).join(' ')};
+      F.sent=`${cap(vf)} ${s.fin} ${mf.join(' ')} ${s.end.join(' ')}.`;
+    }else{
+      const mf=s.c.map(x=>x[0]);
+      let rk,rkt;
+      if(s.di){rk=`<span class="tok fin">${s.fin}</span> `+s.end.map(e=>`<span class="tok vend">${e}</span>`).join(' ');rkt=s.fin+' '+s.end.join(' ');}
+      else if(s.sep){rk=`<span class="tok fin">${s.end.join('')}${s.fin}</span>`;rkt=s.end.join('')+s.fin;}
+      else{rk=s.end.map(e=>`<span class="tok vend">${e}</span>`).join(' ')+` <span class="tok fin">${s.fin}</span>`;rkt=s.end.join(' ')+' '+s.fin;}
+      F={vf:'',lk:'<span class="tok kon">weil</span>',mf:mf.join(' '),rk:rk};
+      F.sent=`Das ist so, weil ${mf.join(' ')} ${rkt}.`;
+    }
+    const note=st.mode==='hs'
+      ?`Ins Vorfeld passt genau <b>ein</b> Satzglied. Das konjugierte Verb <b class="v">${s.fin}</b> bleibt immer auf Position 2. ${s.c[+st.vf][0]!==s.c[0][0]?'Das Subjekt rückt dann ins Mittelfeld, direkt hinter das Verb.':''} ${s.sep?'Das Präfix „an“ steht in der rechten Klammer.':''}`
+      :`Im Nebensatz steht der Konnektor in der linken Klammer, das Vorfeld bleibt leer. Alle Verben stehen am Ende, das konjugierte Verb ganz hinten. ${s.di?'<b>Ausnahme Doppelinfinitiv:</b> Bei zwei Infinitiven steht „hat“ vor den Infinitiven.':''} ${s.sep?'Trennbare Verben werden im Nebensatz wieder zusammengeschrieben: anfängt.':''}`;
+    el.innerHTML=`<div class="sec-t">Werkstatt: Feldermodell</div>
+      <div class="row"><span class="lab">Satz</span>${segH('s',S.map((x,i)=>[i,cap(x.c[0][0])+' '+x.fin+' …']),st.s)}</div>
+      <div class="row"><span class="lab">Satzart</span>${segH('mode',[['hs','Hauptsatz'],['ns','Nebensatz mit weil']],st.mode)}</div>
+      ${st.mode==='hs'?`<div class="row"><span class="lab">Ins Vorfeld</span>${segH('vf',s.c.map((x,i)=>[i,x[0]]).filter((x,i)=>s.c[i][1]),st.vf)}</div>`:''}
+      <div class="tbl"><div class="fields">
+        <div class="fh">Vorfeld</div><div class="fh">linke Klammer</div><div class="fh">Mittelfeld</div><div class="fh">rechte Klammer</div><div class="fh">Nachfeld</div>
+        <div class="fc vf" data-l="Vorfeld">${F.vf}</div><div class="fc lk" data-l="linke Klammer">${F.lk}</div><div class="fc mf" data-l="Mittelfeld">${F.mf}</div><div class="fc rk" data-l="rechte Klammer">${F.rk}</div><div class="fc nf" data-l="Nachfeld"></div>
+      </div></div>
+      <div class="out"><span>${F.sent}</span>${sayBtn(F.sent)}</div>
+      <div class="why"><p>${note}</p></div>`;
+    bindSeg(el,st,draw);
+  }
+  draw();
+};
+
+EXP.konn=function(el){
+  const P=[
+    {name:'Gegensatz',g:{s:'es',fin:'regnet',mf:['stark'],end:[]},r:{s:'wir',fin:'machen',mf:['einen Ausflug'],end:[]},
+     K:[['obwohl','vl','g'],['trotzdem','adv','r'],['aber','p0','r']]},
+    {name:'Grund und Folge',g:{s:'der Zug',fin:'hatte',mf:['Verspätung'],end:[]},r:{s:'ich',fin:'bin',mf:['zu spät'],end:['gekommen']},
+     K:[['weil','vl','g'],['da','vl','g'],['denn','p0','g'],['deshalb','adv','r'],['deswegen','adv','r']]}
+  ];
+  const st={p:'1',k:'0'};
+  const T=(t,r)=>({t,r});
+  const v2=c=>[T(c.s,'sub'),T(c.fin,'fin'),...c.mf.map(x=>T(x,'p')),...c.end.map(x=>T(x,'vend'))];
+  const inv=c=>[T(c.fin,'fin'),T(c.s,'sub'),...c.mf.map(x=>T(x,'p')),...c.end.map(x=>T(x,'vend'))];
+  const vl=(k,c)=>[T(k,'kon'),T(c.s,'sub'),...c.mf.map(x=>T(x,'p')),...c.end.map(x=>T(x,'vend')),T(c.fin,'fin')];
+  const capL=l=>{l=l.slice();l[0]={...l[0],t:cap(l[0].t)};return l;};
+  function draw(){
+    const p=P[+st.p]; if(!p.K[+st.k]) st.k='0';
+    const [k,typ,att]=p.K[+st.k];
+    const g=p.g,r=p.r;let V=[],why='';
+    if(typ==='vl'){
+      V.push([...capL(v2(r)),T(',','p'),...vl(k,g),T('.','p')]);
+      V.push([...capL(vl(k,g)),T(',','p'),...inv(r),T('.','p')]);
+      why=`<b>${k}</b> ist ein Nebensatz-Konnektor: Das konjugierte Verb <b class="v">${g.fin}</b> wandert ans Ende. Steht der Nebensatz vorn, ist er das Vorfeld. Dann folgt das Verb des Hauptsatzes (<b class="v">${r.fin}</b>) sofort.`;
+    }else if(typ==='adv'){
+      V.push([...capL(v2(g)),T('.','p'),T(cap(k),'kon'),...inv(r),T('.','p')]);
+      V.push([...capL(v2(g)),T('.','p'),...capL([T(r.s,'sub'),T(r.fin,'fin'),T(k,'kon'),...r.mf.map(x=>T(x,'p')),...r.end.map(x=>T(x,'vend'))]),T('.','p')]);
+      why=`<b>${k}</b> ist ein Adverb und besetzt das Vorfeld. Deshalb steht das Verb <b class="v">${r.fin}</b> direkt danach, das Subjekt rückt dahinter. Variante 2: Das Adverb kann auch im Mittelfeld stehen.`;
+    }else{
+      const first=att==='g'?r:g, second=att==='g'?g:r;
+      V.push([...capL(v2(first)),T(',','p'),T(k,'kon'),...v2(second),T('.','p')]);
+      why=`<b>${k}</b> steht auf Position 0, also außerhalb des Satzes. Danach folgt ein ganz normaler Hauptsatz: Subjekt – <b class="v">${second.fin}</b> – Rest.${k==='denn'?' Achtung: Ein Satz mit denn kann nicht vorn stehen.':''}`;
+    }
+    el.innerHTML=`<div class="sec-t">Werkstatt: Konnektoren</div>
+      <div class="row"><span class="lab">Beziehung</span>${segH('p',P.map((x,i)=>[i,x.name]),st.p)}</div>
+      <div class="row"><span class="lab">Konnektor</span>${segH('k',p.K.map((x,i)=>[i,x[0]]),st.k)}</div>
+      ${V.map((l,i)=>`<div class="out"><span class="toks">${V.length>1?`<span class="small" style="font-weight:400">Variante ${i+1}:</span> `:''}${tokH(l)}</span>${sayBtn(l.map(x=>x.t).join(' ').replace(/ ([,.])/g,'$1'))}</div>`).join('')}
+      <div class="why"><p>${why}</p></div>`;
+    bindSeg(el,st,draw);
+  }
+  draw();
+};
+
+EXP.pass=function(el){
+  const S=[
+    {vf:'Die Heizung',mf:['vom Hausmeister'],pl:0,p2:'repariert',act:{pr:'Der Hausmeister repariert die Heizung.',pt:'Der Hausmeister reparierte die Heizung.',pf:'Der Hausmeister hat die Heizung repariert.',pq:'Der Hausmeister hatte die Heizung repariert.',fu:'Der Hausmeister wird die Heizung reparieren.',mo:'Der Hausmeister muss die Heizung reparieren.'}},
+    {vf:'200 Mitarbeiter',mf:['von der Firma'],pl:1,p2:'entlassen',act:{pr:'Die Firma entlässt 200 Mitarbeiter.',pt:'Die Firma entließ 200 Mitarbeiter.',pf:'Die Firma hat 200 Mitarbeiter entlassen.',pq:'Die Firma hatte 200 Mitarbeiter entlassen.',fu:'Die Firma wird 200 Mitarbeiter entlassen.',mo:'Die Firma muss 200 Mitarbeiter entlassen.'}},
+    {vf:'Hier',mf:['eine neue Schule'],pl:0,p2:'gebaut',man:1,act:{pr:'Man baut hier eine neue Schule.',pt:'Man baute hier eine neue Schule.',pf:'Man hat hier eine neue Schule gebaut.',pq:'Man hatte hier eine neue Schule gebaut.',fu:'Man wird hier eine neue Schule bauen.',mo:'Man muss hier eine neue Schule bauen.'}}
+  ];
+  const TZ={pr:['Präsens',['wird','werden'],[]],pt:['Präteritum',['wurde','wurden'],[]],pf:['Perfekt',['ist','sind'],['worden']],pq:['Plusquamperfekt',['war','waren'],['worden']],fu:['Futur I',['wird','werden'],['werden']],mo:['mit Modalverb',['muss','müssen'],['werden']]};
+  const NOTE={pr:'werden im Präsens + Partizip II.',pt:'werden im Präteritum (wurde) + Partizip II.',pf:'sein + Partizip II + <b>worden</b>. Nicht „geworden“: Das ge- fällt im Passiv weg.',pq:'war + Partizip II + worden.',fu:'werden + Partizip II + werden. Das erste werden zeigt die Zukunft, das zweite das Passiv.',mo:'Modalverb + Partizip II + <b>werden</b> (Infinitiv Passiv).'};
+  const st={s:'0',t:'pf',ag:'1'};
+  function draw(){
+    const s=S[+st.s],tz=TZ[st.t];
+    const fin=tz[1][s.pl];
+    const mf=(st.ag==='1'||s.man)?s.mf:s.mf.filter((x,i)=>i>0||s.man);
+    const toks=[T2(s.vf,'sub'),T2(fin,'fin'),...mf.map(x=>T2(x,'p')),T2(s.p2,'vend'),...tz[2].map(x=>T2(x,'vend')),T2('.','p')];
+    const sent=toks.map(x=>x.t).join(' ').replace(/ \./,'.');
+    el.innerHTML=`<div class="sec-t">Werkstatt: Passiv-Umformer</div>
+      <div class="row"><span class="lab">Satz</span>${segH('s',S.map((x,i)=>[i,x.act.pr.replace('.','')]),st.s)}</div>
+      <div class="row"><span class="lab">Zeit</span>${segH('t',Object.keys(TZ).map(k=>[k,TZ[k][0]]),st.t)}</div>
+      ${s.man?'':`<div class="row"><span class="lab">Wer handelt?</span>${segH('ag',[['1','nennen'],['0','weglassen']],st.ag)}</div>`}
+      <div class="why"><p class="small">Aktiv</p><p style="font-size:19px">${s.act[st.t]}</p></div>
+      <div class="out"><span class="toks"><span class="small" style="font-weight:400">Passiv:</span> ${tokH(toks)}</span>${sayBtn(sent)}</div>
+      <div class="why"><p><b>${tz[0]}:</b> ${NOTE[st.t]}</p><p>${s.man?'„man“ fällt im Passiv weg. Weil das Akkusativobjekt nicht ins Vorfeld muss, steht hier „Hier“ vorn.':s.pl?'Das neue Subjekt „200 Mitarbeiter“ ist Plural – deshalb steht das Verb im Plural.':'Das Akkusativobjekt des Aktivsatzes wird zum Subjekt (Nominativ).'} ${!s.man&&st.ag==='0'?'Ohne „von …“ ist der Satz typisch für Nachrichten: Wichtig ist der Vorgang.':''}</p></div>`;
+    bindSeg(el,st,draw);
+  }
+  function T2(t,r){return {t,r};}
+  draw();
+};
+
+EXP.k2=function(el){
+  const S=[
+    {name:'Zeit',f:{g:'Ich habe keine Zeit. Deshalb komme ich nicht mit.',v:'Ich hatte keine Zeit. Deshalb bin ich nicht mitgekommen.'},
+     w:{g:'Wenn ich Zeit [hätte], [würde] ich [mitkommen].',v:'Wenn ich Zeit [gehabt hätte], [wäre] ich [mitgekommen].'},
+     o:{g:'[Hätte] ich Zeit, [würde] ich [mitkommen].',v:'[Hätte] ich Zeit [gehabt], [wäre] ich [mitgekommen].'},
+     n:{g:'haben → hätte (eigene Form), mitkommen → würde mitkommen.',v:'Vergangenheit: hätte/wäre + Partizip II. haben → hätte gehabt, mitkommen (Bewegung) → wäre mitgekommen.'}},
+    {name:'Wetter',f:{g:'Das Wetter ist schlecht. Wir grillen nicht.',v:'Das Wetter war schlecht. Wir haben nicht gegrillt.'},
+     w:{g:'Wenn das Wetter besser [wäre], [würden] wir [grillen].',v:'Wenn das Wetter besser [gewesen wäre], [hätten] wir [gegrillt].'},
+     o:{g:'[Wäre] das Wetter besser, [würden] wir [grillen].',v:'[Wäre] das Wetter besser [gewesen], [hätten] wir [gegrillt].'},
+     n:{g:'sein → wäre (eigene Form), grillen → würden grillen.',v:'sein → wäre gewesen, grillen → hätten gegrillt.'}},
+    {name:'Führerschein',f:{g:'Ich kann nicht Auto fahren. Ich nehme den Bus.',v:'Ich konnte nicht Auto fahren. Ich habe den Bus genommen.'},
+     w:{g:'Wenn ich Auto fahren [könnte], [würde] ich nicht den Bus [nehmen].',v:'Wenn ich [hätte] Auto [fahren können], [hätte] ich nicht den Bus [genommen].'},
+     o:{g:'[Könnte] ich Auto fahren, [würde] ich nicht den Bus [nehmen].',v:'[Hätte] ich Auto [fahren können], [hätte] ich nicht den Bus [genommen].'},
+     n:{g:'Modalverb → eigene Form: könnte.',v:'Modalverb in der Vergangenheit: hätte + Doppelinfinitiv (fahren können). Im wenn-Satz steht „hätte“ vor den Infinitiven.'}}
+  ];
+  const st={s:'0',z:'g',f:'w'};
+  const mk=s=>s.replace(/\[([^\]]+)\]/g,'<span class="v">$1</span>');
+  function draw(){
+    const s=S[+st.s];const ir=s[st.f][st.z];
+    el.innerHTML=`<div class="sec-t">Werkstatt: Realität und Irrealität</div>
+      <div class="row"><span class="lab">Situation</span>${segH('s',S.map((x,i)=>[i,x.name]),st.s)}</div>
+      <div class="row"><span class="lab">Zeit</span>${segH('z',[['g','Gegenwart'],['v','Vergangenheit']],st.z)}</div>
+      <div class="row"><span class="lab">Form</span>${segH('f',[['w','mit wenn'],['o','ohne wenn']],st.f)}</div>
+      <div class="why"><p class="small">So ist es (Indikativ)</p><p style="font-size:19px">${s.f[st.z]}</p></div>
+      <div class="out"><span><span class="small" style="font-weight:400">So wäre es (Konjunktiv II):</span> ${mk(ir)}</span>${sayBtn(ir.replace(/[\[\]]/g,''))}</div>
+      <div class="why"><p>${s.n[st.z]}</p><p>${st.f==='o'?'Ohne „wenn“ rückt das konjugierte Verb an Position 1. Der Hauptsatz beginnt dann direkt mit dem Verb.':'Im wenn-Satz steht das konjugierte Verb am Ende. Der Nebensatz ist das Vorfeld, also folgt das Verb des Hauptsatzes sofort.'}</p></div>`;
+    bindSeg(el,st,draw);
+  }
+  draw();
+};
+
+EXP.k1=function(el){
+  const P=['ich','du','er/sie/es','wir','ihr','sie/Sie'];
+  const PR=['ich','du','er','wir','ihr','sie'];
+  const WU=['würde','würdest','würde','würden','würdet','würden'];
+  const V={
+    sein:{c:'krank',ind:['bin','bist','ist','sind','seid','sind'],k1:['sei','seist','sei','seien','seiet','seien'],k2:['wäre','wärst','wäre','wären','wärt','wären']},
+    haben:{c:'keine Zeit',ind:['habe','hast','hat','haben','habt','haben'],k1:['habe','habest','habe','haben','habet','haben'],k2:['hätte','hättest','hätte','hätten','hättet','hätten']},
+    werden:{c:'bald fertig',ind:['werde','wirst','wird','werden','werdet','werden'],k1:['werde','werdest','werde','werden','werdet','werden'],k2:['würde','würdest','würde','würden','würdet','würden']},
+    können:{c:'nicht kommen',ind:['kann','kannst','kann','können','könnt','können'],k1:['könne','könnest','könne','können','könnet','können'],k2:['könnte','könntest','könnte','könnten','könntet','könnten']},
+    wissen:{c:'nichts davon',ind:['weiß','weißt','weiß','wissen','wisst','wissen'],k1:['wisse','wissest','wisse','wissen','wisset','wissen'],k2:['wüsste','wüsstest','wüsste','wüssten','wüsstet','wüssten']},
+    kommen:{c:'morgen',ind:['komme','kommst','kommt','kommen','kommt','kommen'],k1:['komme','kommest','komme','kommen','kommet','kommen'],k2:['käme','kämest','käme','kämen','kämet','kämen'],alt:1},
+    geben:{c:'eine Party',ind:['gebe','gibst','gibt','geben','gebt','geben'],k1:['gebe','gebest','gebe','geben','gebet','geben'],k2:['gäbe','gäbest','gäbe','gäben','gäbet','gäben'],alt:1},
+    arbeiten:{c:'heute länger',ind:['arbeite','arbeitest','arbeitet','arbeiten','arbeitet','arbeiten'],k1:['arbeite','arbeitest','arbeite','arbeiten','arbeitet','arbeiten'],k2:['arbeitete','arbeitetest','arbeitete','arbeiteten','arbeitetet','arbeiteten'],prt:1}
+  };
+  const st={v:'haben',p:'5'};
+  function draw(){
+    const v=V[st.v],p=+st.p;
+    const ind=v.ind[p],k1=v.k1[p],k2=v.k2[p];
+    let use,why,sent;
+    if(k1!==ind){use='k1';why=`Der Konjunktiv I <b>${k1}</b> unterscheidet sich vom Indikativ <b>${ind}</b>. Er ist eindeutig – also bleibt er.`;sent=`${PR[p]} ${k1} ${v.c}`;}
+    else if(v.prt){use='wu';why=`Konjunktiv I (<b>${k1}</b>) = Indikativ. Der Konjunktiv II <b>${k2}</b> ist aber gleich dem Präteritum. Deshalb: <b>würde + Infinitiv</b>.`;sent=`${PR[p]} ${WU[p]} ${v.c} ${st.v}`;}
+    else{use='k2';why=`Konjunktiv I (<b>${k1}</b>) = Indikativ (<b>${ind}</b>). Man erkennt die indirekte Rede nicht. Deshalb: Konjunktiv II <b>${k2}</b>.${v.alt?` Gesprochen oft: ${WU[p]} ${st.v}.`:''}`;sent=`${PR[p]} ${k2} ${v.c}`;}
+    if(st.v==='können'||st.v==='werden'){}
+    const extra=(p===1||p===4)&&use==='k1'&&st.v!=='sein'?' <b>Aber:</b> Formen wie „'+k1+'“ sind korrekt, wirken heute sehr altmodisch. In der Praxis nimmt man bei du/ihr meist den Konjunktiv II.':'';
+    const full=`Er sagte, ${sent}.`;
+    const cell=(t,x)=>`<td class="${use===t?'hi':''}">${x}</td>`;
+    el.innerHTML=`<div class="sec-t">Werkstatt: Welche Form in der indirekten Rede?</div>
+      <div class="row"><span class="lab">Verb</span>${segH('v',Object.keys(V).map(k=>[k,k]),st.v)}</div>
+      <div class="row"><span class="lab">Person</span>${segH('p',P.map((x,i)=>[i,x]),st.p)}</div>
+      <div class="tbl"><table><tr><th>Indikativ</th><th>Konjunktiv I</th><th>Konjunktiv II</th><th>würde-Form</th></tr>
+      <tr><td>${PR[p]} ${ind}</td>${cell('k1',PR[p]+' '+k1)}${cell('k2',PR[p]+' '+k2)}${cell('wu',PR[p]+' '+WU[p]+' '+st.v)}</tr></table></div>
+      <div class="out"><span>${full.replace(sent,`<span class="v">${sent}</span>`)}</span>${sayBtn(full)}</div>
+      <div class="why"><p>${why}${extra}</p><p class="small">Am häufigsten brauchst du die 3. Person Singular (er/sie sei, habe, komme): Dort ist der Konjunktiv I fast immer eindeutig.</p></div>`;
+    bindSeg(el,st,draw);
+  }
+  draw();
+};
+
+EXP.rel=function(el){
+  const B={m:['Das ist','der Mann'],f:['Das ist','die Frau'],n:['Das ist','das Kind'],pl:['Das sind','die Nachbarn']};
+  const RP={nom:{m:'der',f:'die',n:'das',pl:'die'},akk:{m:'den',f:'die',n:'das',pl:'die'},dat:{m:'dem',f:'der',n:'dem',pl:'denen'},gen:{m:'dessen',f:'deren',n:'dessen',pl:'deren'}};
+  const R={
+    nom:{k:'nom',pre:'',rest:g=>g==='pl'?'nebenan wohnen':'nebenan wohnt',w:'Das Pronomen ist im Relativsatz das Subjekt (Wer wohnt nebenan?) → Nominativ.'},
+    akk:{k:'akk',pre:'',rest:()=>'ich gut kenne',w:'„kennen“ verlangt den Akkusativ (Wen kenne ich?).'},
+    dat:{k:'dat',pre:'',rest:()=>'ich oft helfe',w:'„helfen“ verlangt den Dativ (Wem helfe ich?).'},
+    gen:{k:'gen',pre:'',rest:()=>'Auto vor dem Haus steht',w:'Es geht um Besitz (Wessen Auto?) → Genitiv. Nach dessen/deren folgt das Nomen ohne Artikel.'},
+    mit:{k:'dat',pre:'mit ',rest:()=>'ich gestern gesprochen habe',w:'„sprechen mit“ + Dativ. Die Präposition steht vor dem Relativpronomen.'},
+    auf:{k:'akk',pre:'auf ',rest:()=>'ich warte',w:'„warten auf“ + Akkusativ. Die Präposition steht vor dem Relativpronomen.'}
+  };
+  const st={g:'pl',r:'mit'};
+  function draw(){
+    const b=B[st.g],r=R[st.r],rp=RP[r.k][st.g];
+    const html=`${b[0]} <span class="${st.g}">${b[1]}</span>, ${r.pre}<b class="${st.g}">${rp}</b> ${r.rest(st.g)}.`;
+    const diff=(rp==='denen'||rp==='dessen'||rp==='deren')?` <b>Achtung:</b> „${rp}“ unterscheidet sich vom Artikel (${r.k==='dat'?'den':st.g==='m'||st.g==='n'?'des':'der'}).`:'';
+    const rows=['nom','akk','dat','gen'].map(k=>`<tr><th>${KN[k]}</th>${['m','f','n','pl'].map(g=>`<td class="${k===r.k&&g===st.g?'hi':''}">${RP[k][g]}</td>`).join('')}</tr>`).join('');
+    el.innerHTML=`<div class="sec-t">Werkstatt: Relativpronomen finden</div>
+      <div class="row"><span class="lab">Bezugswort</span>${segH('g',Object.keys(B).map(g=>[g,B[g][1]]),st.g)}</div>
+      <div class="row"><span class="lab">Im Relativsatz</span>${segH('r',[['nom','… wohnt nebenan'],['akk','ich kenne …'],['dat','ich helfe …'],['gen','… Auto'],['mit','sprechen mit …'],['auf','warten auf …']],st.r)}</div>
+      <div class="out"><span>${html}</span>${sayBtn(html)}</div>
+      <div class="why"><p><b>1. Genus/Numerus</b> vom Bezugswort: ${B[st.g][1]} → ${GN[st.g]}.</p><p><b>2. Kasus</b> aus dem Relativsatz: ${r.w}${diff}</p></div>
+      <div class="tbl"><table><tr><th></th><th class="m">m</th><th class="f">f</th><th class="n">n</th><th class="pl">Plural</th></tr>${rows}</table></div>`;
+    bindSeg(el,st,draw);
+  }
+  draw();
+};
+
+EXP.part=function(el){
+  const X5=[
+    {n:'spielende Kinder',a:'die Kinder, <u>die im Garten spielen</u>',s:['Das Relativpronomen ist das Subjekt. Die Kinder tun etwas selbst, und zwar jetzt: <b>aktiv und gleichzeitig</b>.','Relativpronomen streichen, Verb in den Infinitiv: <i>im Garten spielen</i>','Partizip I bilden: Infinitiv + d → <b>spielend</b>','Alles vor das Nomen und Adjektivendung ergänzen (die … Kinder, Nominativ Plural → -en): die <i>im Garten</i> spielend<span class="end">en</span> Kinder']},
+    {n:'geplantes Projekt',a:'das Projekt, <u>das von der Stadt geplant wurde</u>',s:['Das Projekt tut nichts selbst, es wird geplant: <b>passiv</b>.','Relativpronomen und Hilfsverb streichen: <i>von der Stadt geplant</i>','Partizip II bleibt: <b>geplant</b>','Alles vor das Nomen, Endung ergänzen (das … Projekt, Nominativ Singular → -e): das <i>von der Stadt</i> geplant<span class="end">e</span> Projekt']},
+    {n:'steigende Preise',a:'die Preise, <u>die seit Jahren steigen</u>',s:['Die Preise steigen selbst, der Vorgang läuft noch: <b>aktiv und gleichzeitig</b>.','Relativpronomen streichen, Verb in den Infinitiv: <i>seit Jahren steigen</i>','Partizip I: <b>steigend</b>','Endung ergänzen (die … Preise → -en): die <i>seit Jahren</i> steigend<span class="end">en</span> Preise']},
+    {n:'zu lösende Aufgaben',a:'die Aufgaben, <u>die gelöst werden müssen</u>',s:['Passiv mit „müssen“: Es geht um eine <b>Notwendigkeit</b>.','Relativpronomen, „werden“ und „müssen“ streichen, Verb in den Infinitiv: <i>lösen</i>','zu + Partizip I: <b>zu lösend</b>','Endung ergänzen (die … Aufgaben → -en): die zu lösend<span class="end">en</span> Aufgaben']},
+    {n:'angekommener Zug',a:'ein Zug, <u>der gerade angekommen ist</u>',s:['Perfekt mit sein: Der Vorgang ist <b>abgeschlossen</b>.','Relativpronomen und „ist“ streichen: <i>gerade angekommen</i>','Partizip II bleibt: <b>angekommen</b>','Endung ergänzen: „ein“ zeigt kein Signal → das Partizip trägt es (der → -er): ein <i>gerade</i> angekommen<span class="end">er</span> Zug']}
+  ];
+  const st={x:'0',step:1};
+  function draw(){
+    const x=X5[+st.x];const n=Math.min(+st.step,4);
+    el.innerHTML=`<div class="sec-t">Werkstatt: Vom Relativsatz zum Partizipialattribut</div>
+      <div class="row"><span class="lab">Beispiel</span>${segH('x',X5.map((e,i)=>[i,e.n]),st.x)}</div>
+      <div class="out"><span style="font-weight:400">${x.a}</span>${sayBtn(x.a)}</div>
+      <div class="stepbox">${x.s.slice(0,n).map((t,i)=>`<div class="st"><b class="no">Schritt ${i+1}</b>${t}</div>`).join('')}</div>
+      <div class="acts"><button class="btn" id="pnext" ${n>=4?'disabled':''}>Nächster Schritt</button><button class="btn ghost" id="pall">Alle Schritte</button>${n>=4?sayBtn(strip(x.s[3]).split(': ').pop()):''}</div>`;
+    el.querySelectorAll('[data-k]').forEach(b=>b.addEventListener('click',()=>{st.x=b.dataset.v;st.step=1;draw();}));
+    $('#pnext',el).addEventListener('click',()=>{st.step++;draw();});
+    $('#pall',el).addEventListener('click',()=>{st.step=4;draw();});
+  }
+  draw();
+};
+
+/* ---------- Aufgaben-Engine ---------- */
+const ALL=[];
+MODS.forEach((m,mi)=>m.tasks.forEach((t,ti)=>{t.id=`${m.id}-${ti+1}`;t.mod=m;t.no=ti+1;ALL.push(t);}));
+
+function norm(s){return String(s).replace(/[’`´]/g,"'").replace(/\s+/g,' ').trim().replace(/[.!?;]+$/,'');}
+function deu(x){return x.toLowerCase().replace(/ä/g,'a').replace(/ö/g,'o').replace(/ü/g,'u').replace(/ß/g,'ss');}
+function checkGap(t,v){
+  let u=norm(v);if(t.ending)u=u.replace(/^-+/,'');
+  if(!u&&!(t.wr&&('' in t.wr)))return {s:'bad',m:'Trage zuerst eine Antwort ein.'};
+  if(t.a.includes(u))return {s:'ok',m:t.ok||okText(t)};
+  const lc=u.toLowerCase();
+  if(t.a.some(x=>x.toLowerCase()===lc))return {s:'half',m:'Fast! Achte auf die Groß- und Kleinschreibung. Am Satzanfang schreibt man groß.'};
+  if(t.wr){for(const k in t.wr)if(k.toLowerCase()===lc)return {s:'bad',m:t.wr[k]};}
+  if(t.adj){const d=adjDiag(t.adj,lc);if(d)return {s:'bad',m:d};}
+  if(t.a.some(x=>deu(x)===deu(u)))return {s:'half',m:'Fast! Prüfe die Umlaute (ä, ö, ü) und ß.'};
+  if(t.ending&&u.length>3)return {s:'bad',m:'Schreibe nur die Endung, zum Beispiel „en“.'};
+  return {s:'bad',m:t.hint||'Noch nicht richtig. Lies die Regel im Merkkasten oben noch einmal und probiere es in der Werkstatt aus.'};
+}
+function okText(t){
+  if(t.adj){const d=t.adj,c=E[d.art][d.k][d.g];const carrier=d.art==='def'||(d.art==='indef'&&!(c==='er'||c==='es'));
+    if(d.art==='none'&&d.k==='gen'&&(d.g==='m'||d.g==='n'))return 'Richtig! Sonderfall: Das Nomen zeigt den Genitiv (-s), das Adjektiv bekommt -en.';
+    return carrier?`Richtig! „${d.aw}“ trägt das Signal, das Adjektiv bekommt -${c}.`:`Richtig! Kein Signal davor – das Adjektiv übernimmt es (${DEF[d.k][d.g]} → -${c}).`;}
+  return 'Richtig!';
+}
+function checkMC(t,i){if(i==null)return {s:'bad',m:'Keine Antwort gewählt.'};const o=t.o[i];return {s:o[1]?'ok':'bad',m:o[2]};}
+const capFirst=t=>!t.pre||/[.!?]$/.test(t.pre);
+function ordSentence(t,a){let w=a.map(i=>t.w[i]);if(capFirst(t)&&w.length)w[0]=cap(w[0]);return (t.pre?t.pre+' ':'')+w.join(' ')+'.';}
+function checkOrd(t,a){
+  const W=i=>`„${t.w[i]}“`;
+  if(a.length<t.w.length)return {s:'bad',m:'Benutze alle Bausteine.'};
+  const key=a.join(',');
+  if(t.sol.some(s=>s.join(',')===key))return {s:'ok',m:'Richtig! '+(t.mf&&t.type!=='P0'?t.mf:'')};
+  const pos=i=>a.indexOf(i);const n=a.length;
+  if(t.type==='V2'){
+    if(pos(t.fin)!==t.fp)return {s:'bad',m:t.fp===0?`Das konjugierte Verb ${W(t.fin)} steht im Hauptsatz auf Position 2 – also direkt nach „${t.pre.replace(/[,.]$/,'')}“. ${/,$/.test(t.pre)?'Der Nebensatz davor ist das Vorfeld.':''}`:`Das konjugierte Verb ${W(t.fin)} steht auf Position 2: Vor ihm steht genau ein Satzglied.`};
+    const e=t.end;for(let j=0;j<e.length;j++)if(pos(e[j])!==n-e.length+j)return {s:'bad',m:`${e.map(W).join(' ')} ${e.length>1?'gehören':'gehört'} in die rechte Satzklammer, also ganz ans Ende${e.length>1?' – in dieser Reihenfolge':''}.`};
+    if(t.fp===1&&pos(0)>0&&t.w[0]==='deshalb')return {s:'half',m:'Die Verben stehen richtig. Prüfe die Position von „deshalb“.'};
+  }else if(t.type==='VL'||t.type==='VLdi'){
+    if(pos(t.konn)!==0)return {s:'bad',m:`Der Konnektor ${W(t.konn)} leitet den Nebensatz ein und steht am Anfang.`};
+    if(t.type==='VL'&&pos(t.fin)!==n-1)return {s:'bad',m:`Im Nebensatz steht das konjugierte Verb ${W(t.fin)} ganz am Ende.`};
+    if(t.type==='VLdi'){
+      if(pos(t.fin)===n-1)return {s:'bad',m:`Normalerweise steht das konjugierte Verb im Nebensatz am Ende. Ausnahme Doppelinfinitiv: Bei zwei Infinitiven (${t.end.map(W).join(' ')}) steht ${W(t.fin)} VOR den Infinitiven.`};
+      const e=t.end;for(let j=0;j<e.length;j++)if(pos(e[j])!==n-e.length+j)return {s:'bad',m:`Die Infinitive ${e.map(W).join(' ')} stehen ganz am Ende, ${W(t.fin)} direkt davor.`};
+      if(pos(t.fin)!==n-e.length-1)return {s:'bad',m:`${W(t.fin)} steht direkt vor den Infinitiven.`};
+    }
+  }else if(t.type==='P0'){
+    if(pos(t.konn)!==0)return {s:'bad',m:`${W(t.konn)} verbindet die beiden Hauptsätze und steht am Anfang des zweiten Satzes (Position 0).`};
+    if(pos(t.fin)!==2)return {s:'bad',m:`${W(t.konn)} zählt nicht mit. Danach folgt ein normaler Hauptsatz: Subjekt – Verb ${W(t.fin)} – Rest. Das Verb steht nicht am Ende.`};
+  }
+  return {s:'half',m:'Die Verben stehen richtig! '+(t.mf||'Prüfe die Reihenfolge der übrigen Satzglieder.')};
+}
+function check(t,ans){return t.t==='gap'?checkGap(t,ans):t.t==='mc'?checkMC(t,ans):checkOrd(t,ans);}
+function solText(t){
+  if(t.t==='gap')return t.q.replace('___',`<b>${t.a[0]}</b>`)+(t.a.length>1?` <span class="small">(auch: ${t.a.slice(1).join(', ')})</span>`:'');
+  if(t.t==='mc')return t.o.find(o=>o[1])[0];
+  return ordSentence(t,t.sol[0]);
+}
+
+let uid=0;
+function renderTask(t,host,mode,label){
+  const id='t'+(++uid);
+  const box=document.createElement('div');box.className='task'+(mode==='live'&&solved[t.id]?' done':'');
+  const instr=t.i||t.mod.gi||(t.t==='mc'?'Wähle die richtige Antwort.':t.t==='ord'?'Tippe die Bausteine in der richtigen Reihenfolge an.':'Ergänze die Lücke.');
+  let body='';
+  if(t.t==='gap'){
+    const w=Math.max(4,Math.max(...t.a.map(a=>a.length))+3);
+    body=`<div class="sent">${t.q.replace('___',`<input id="${id}-in" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" style="width:${w}ch" aria-label="Lücke">`)}</div>`;
+  }else if(t.t==='mc'){
+    body=`<div class="sent">${t.q}</div><div class="opts">${shuffle(t.o.map((o,i)=>({o,i}))).map(({o,i})=>`<button type="button" class="opt" data-i="${i}">${o[0]}</button>`).join('')}</div>`;
+  }else{
+    body=`<div class="line" id="${id}-line">${t.pre?`<span class="pre">${t.pre}</span>`:''}<span class="ph">Tippe unten auf die Bausteine …</span></div><div class="chips" id="${id}-pool"></div>`;
+  }
+  box.innerHTML=`<div class="tq"><span class="tno ${mode==='live'&&solved[t.id]?'ok':''}">${label}</span><div><div>${instr}</div>${mode!=='mod'?`<div class="tmeta">${t.mod.title}</div>`:''}</div></div>${body}
+    <div class="acts">${t.t!=='mc'&&mode!=='test'?`<button type="button" class="btn" data-a="check">Prüfen</button>`:''}${t.t==='ord'?`<button type="button" class="btn ghost" data-a="reset">Zurücksetzen</button>`:''}<button type="button" class="btn ghost" data-a="sol" style="display:none">Lösung zeigen</button>${t.t==='gap'?`<span class="uml">${['ä','ö','ü','ß'].map(c=>`<button type="button" data-u="${c}" aria-label="${c} einfügen">${c}</button>`).join('')}</span>`:''}</div>
+    <div class="fb" aria-live="polite"></div>`;
+  if(mode==='mod')box.querySelector('.tmeta')?.remove();
+  host.appendChild(box);
+  const fb=box.querySelector('.fb');let tries=0,mcSel=null,order=[];
+  function show(r){fb.className='fb show '+r.s;fb.innerHTML=r.m;}
+  function after(r){
+    show(r);tries++;
+    if(r.s==='ok'){if(!solved[t.id]){solved[t.id]=1;saveSolved();refreshProgress();}box.classList.add('done');box.querySelector('.tno').classList.add('ok');box.querySelector('[data-a="sol"]').style.display='none';}
+    else if(tries>=2)box.querySelector('[data-a="sol"]').style.display='';
+  }
+  if(t.t==='gap'){
+    const inp=$('#'+id+'-in',box);
+    box.querySelectorAll('[data-u]').forEach(b=>{b.addEventListener('pointerdown',e=>e.preventDefault());b.addEventListener('click',()=>{const s=inp.selectionStart??inp.value.length,e2=inp.selectionEnd??s;inp.value=inp.value.slice(0,s)+b.dataset.u+inp.value.slice(e2);inp.focus();inp.setSelectionRange(s+1,s+1);});});
+    if(mode!=='test')inp.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();after(check(t,inp.value));}});
+  }
+  if(t.t==='mc'){
+    box.querySelectorAll('.opt').forEach(b=>b.addEventListener('click',()=>{
+      const i=+b.dataset.i;
+      if(mode==='test'){mcSel=i;box.querySelectorAll('.opt').forEach(x=>x.classList.toggle('sel',x===b));return;}
+      const r=checkMC(t,i);b.classList.add(r.s==='ok'?'r':'w');after(r);
+    }));
+  }
+  if(t.t==='ord'){
+    const line=$('#'+id+'-line',box),pool=$('#'+id+'-pool',box);
+    const perm=(()=>{let p;let guard=0;do{p=shuffle(t.w.map((_,i)=>i));guard++;}while(guard<20&&t.sol.some(s=>s.join(',')===p.join(',')));return p;})();
+    function drawOrd(){
+      line.querySelectorAll('.chip,.ph').forEach(x=>x.remove());
+      if(!order.length)line.insertAdjacentHTML('beforeend','<span class="ph">Tippe unten auf die Bausteine …</span>');
+      order.forEach((i,j)=>{const b=document.createElement('button');b.type='button';b.className='chip';b.textContent=(j===0&&capFirst(t))?cap(t.w[i]):t.w[i];b.addEventListener('click',()=>{order.splice(j,1);drawOrd();});line.appendChild(b);});
+      pool.innerHTML='';
+      perm.filter(i=>!order.includes(i)).forEach(i=>{const b=document.createElement('button');b.type='button';b.className='chip';b.textContent=t.w[i];b.addEventListener('click',()=>{order.push(i);drawOrd();});pool.appendChild(b);});
+    }
+    drawOrd();
+    box.querySelector('[data-a="reset"]').addEventListener('click',()=>{order=[];drawOrd();fb.className='fb';});
+  }
+  const cb=box.querySelector('[data-a="check"]');
+  if(cb)cb.addEventListener('click',()=>after(check(t,t.t==='gap'?$('#'+id+'-in',box).value:order.slice())));
+  box.querySelector('[data-a="sol"]').addEventListener('click',()=>{fb.className='fb show half';fb.innerHTML=`Lösung: <span class="sol">${solText(t)}</span>`;});
+  return {
+    answer:()=>t.t==='gap'?$('#'+id+'-in',box).value:t.t==='mc'?mcSel:order.slice(),
+    reveal:r=>{show(r);if(r.s!=='ok')fb.innerHTML+=`<span class="sol">Lösung: ${solText(t)}</span>`;box.querySelectorAll('button,input').forEach(x=>{if(!x.classList.contains('say'))x.disabled=true;});}
+  };
+}
+
+/* ---------- Seiten aufbauen ---------- */
+const app=$('#app');
+MODS.forEach((m,i)=>{
+  const sec=document.createElement('section');sec.className='view';sec.id='v-'+m.id;
+  const prev=MODS[i-1],next=MODS[i+1];
+  sec.innerHTML=`<div class="stack">
+    <div class="mhead"><span class="sec-t">Thema ${i+1} von ${MODS.length} · Niveau ${m.lvl}</span><h2>${m.title}</h2><p class="goal">${m.goal}</p></div>
+    <div class="stack" style="gap:12px">${m.body}</div>
+    <div class="werk" id="ex-${m.id}"></div>
+    <div class="stack" style="gap:10px"><div class="sec-t">Typische Fehler</div><ul class="errs">${m.errs.map(e=>`<li><s>${e[0]}</s> → <b class="r">${e[1]}</b><br><span class="small">${e[2]}</span></li>`).join('')}</ul></div>
+    <div class="stack" style="gap:10px"><div class="sec-t">Übungen</div><div class="tasks" id="tk-${m.id}"></div></div>
+    <div class="pager">${prev?`<a class="pill" href="#${prev.id}">← ${prev.title}</a>`:'<span></span>'}${next?`<a class="pill" href="#${next.id}">${next.title} →</a>`:`<a class="pill" href="#test">Zum Selbsttest →</a>`}</div>
+  </div>`;
+  app.appendChild(sec);
+  EXP[m.ex]($('#ex-'+m.id,sec));
+  const host=$('#tk-'+m.id,sec);
+  m.tasks.forEach(t=>renderTask(t,host,'mod',t.no));
+});
+
+/* Übersicht und Navigation */
+const jump=$('#jump');
+jump.innerHTML=`<option value="start">Übersicht</option>`+MODS.map((m,i)=>`<option value="${m.id}">${i+1} · ${m.title}</option>`).join('');
+jump.addEventListener('change',()=>{location.hash=jump.value;});
+function refreshProgress(){
+  $('#mgrid').innerHTML=MODS.map((m,i)=>{const d=m.tasks.filter(t=>solved[t.id]).length,n=m.tasks.length;
+    return `<a class="mcard" href="#${m.id}"><div class="top"><span class="nr">Thema ${i+1}</span><span class="lvl">${m.lvl}</span></div><h3>${m.title}</h3><p>${m.goal}</p><div class="prog"><i style="width:${Math.round(100*d/n)}%"></i></div><span class="progtxt">${d} von ${n} Übungen gelöst</span></a>`;}).join('');
+  const d=ALL.filter(t=>solved[t.id]).length;$('#trstat').textContent=`${d} von ${ALL.length} Aufgaben gelöst`;
+}
+refreshProgress();
+let resetArmed=false;
+$('#reset').addEventListener('click',()=>{
+  if(!resetArmed){resetArmed=true;$('#resetmsg').textContent='Noch einmal tippen, um alle Häkchen zu löschen.';setTimeout(()=>{resetArmed=false;$('#resetmsg').textContent='';},4000);return;}
+  solved={};saveSolved();refreshProgress();resetArmed=false;$('#resetmsg').textContent='Fortschritt gelöscht.';
+  document.querySelectorAll('.task.done').forEach(b=>{b.classList.remove('done');b.querySelector('.tno').classList.remove('ok');});
+});
+
+/* Training */
+const trsel=$('#trsel');
+trsel.innerHTML=`<option value="all">Alle Themen</option>`+MODS.map((m,i)=>`<option value="${m.id}">${i+1} · ${m.title}</option>`).join('');
+let lastTr=null;
+function nextTraining(){
+  const pool=ALL.filter(t=>trsel.value==='all'||t.mod.id===trsel.value);
+  const open=pool.filter(t=>!solved[t.id]&&t!==lastTr);
+  const src=(open.length&&Math.random()<.8)?open:pool.filter(t=>t!==lastTr);
+  const t=src[Math.floor(Math.random()*src.length)]||pool[0];lastTr=t;
+  const host=$('#trhost');host.innerHTML='';renderTask(t,host,'live','▸');
+  const f=host.querySelector('input');if(f&&matchMedia('(pointer:fine)').matches)f.focus();
+}
+$('#trnext').addEventListener('click',nextTraining);
+trsel.addEventListener('change',nextTraining);
+
+/* Selbsttest */
+let testItems=[];
+function startTest(){
+  const pick=[];MODS.forEach(m=>pick.push(shuffle(m.tasks)[0]));
+  shuffle(ALL.filter(t=>!pick.includes(t))).slice(0,2).forEach(t=>pick.push(t));
+  const host=$('#thost');host.innerHTML='';$('#tsum').innerHTML='';
+  testItems=shuffle(pick).map((t,i)=>({t,h:renderTask(t,host,'test',i+1)}));
+  $('#tacts').style.display='';$('#teval').disabled=false;
+}
+$('#tstart').addEventListener('click',startTest);
+$('#teval').addEventListener('click',()=>{
+  const per={};let ok=0;
+  testItems.forEach(({t,h})=>{const r=check(t,h.answer());const good=r.s==='ok';if(good){ok++;if(!solved[t.id]){solved[t.id]=1;}}h.reveal(r.s==='half'?{s:'bad',m:r.m}:r);
+    const p=per[t.mod.id]||(per[t.mod.id]={m:t.mod,ok:0,n:0});p.n++;if(good)p.ok++;});
+  saveSolved();refreshProgress();
+  $('#teval').disabled=true;
+  const weak=Object.values(per).filter(p=>p.ok<p.n);
+  $('#tsum').innerHTML=`<div class="card"><h3>Ergebnis: ${ok} von ${testItems.length} richtig</h3>
+    <p>${ok===testItems.length?'Sehr stark – alle Themen sitzen. Starte einen neuen Test mit anderen Aufgaben.':ok>=9?'Gut! Wiederhole gezielt die Themen mit ✗.':'Arbeite die markierten Themen noch einmal durch: erst die Werkstatt, dann die Übungen.'}</p>
+    <div class="sum">${Object.values(per).map(p=>`<div class="sumrow"><a href="#${p.m.id}">${p.m.title}</a><span class="badge ${p.ok===p.n?'ok':'bad'}">${p.ok===p.n?'✓':'✗'} ${p.ok}/${p.n}</span></div>`).join('')}</div>
+    ${weak.length?`<p class="small">Die Rückmeldung zu jeder Aufgabe steht direkt unter der Aufgabe.</p>`:''}</div>`;
+  $('#tsum').scrollIntoView({behavior:'smooth',block:'start'});
+});
+
+/* Routing */
+function route(){
+  let h=(location.hash||'#start').slice(1);
+  if(!document.getElementById('v-'+h))h='start';
+  document.querySelectorAll('.view').forEach(v=>v.classList.toggle('on',v.id==='v-'+h));
+  jump.value=MODS.some(m=>m.id===h)?h:'start';
+  $('#nav-training').classList.toggle('on',h==='training');$('#nav-test').classList.toggle('on',h==='test');
+  if(h==='training'&&!$('#trhost').children.length)nextTraining();
+  if(h==='test'&&!testItems.length)startTest();
+  window.scrollTo(0,0);
+}
+window.addEventListener('hashchange',route);
+route();
+try{speechSynthesis.getVoices();}catch(e){}
+</script>
+</body>
+</html>

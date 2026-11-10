@@ -1,0 +1,2756 @@
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="dark">
+<title>Feldlabor</title>
+<style>
+:root{
+  --bg:#04060c; --bg2:#070b14; --panel:#0b1220; --panel2:#101a2c; --raise:#16233a;
+  --line:#1b2942; --line2:#27384f;
+  --ink:#e9eff7; --ink2:#94a5bd; --ink3:#5c6c86;
+  --pos:#ff5b4d; --posg:#ff9a4c;
+  --neg:#37b0ff; --negg:#71e2ff;
+  --fl:#cdbcff; --equi:#38d9bc; --probe:#ffd24a; --elec:#7ef7c8;
+  --ok:#5fcb7c; --warn:#ffb648;
+  --acc:#ff9a4c;
+  --font:Arial,"Helvetica Neue",Helvetica,sans-serif;
+  --mono:ui-monospace,"SF Mono","Cascadia Mono",Consolas,"Courier New",monospace;
+  --r:14px;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.001ms !important;transition-duration:.001ms !important}}
+html,body{margin:0;padding:0}
+body{
+  background:
+    radial-gradient(1200px 700px at 78% -8%, rgba(124,90,255,.16), transparent 62%),
+    radial-gradient(900px 600px at 8% 4%, rgba(255,120,60,.10), transparent 60%),
+    var(--bg);
+  background-attachment:fixed;
+  color:var(--ink); font-family:var(--font); line-height:1.55;
+  -webkit-font-smoothing:antialiased; -webkit-text-size-adjust:100%;
+  overflow-x:hidden;
+}
+.shell{max-width:1180px;margin:0 auto;padding:0 18px 90px}
+h1,h2,h3{margin:0;letter-spacing:-.015em}
+p{margin:0 0 .7em}
+p:last-child{margin-bottom:0}
+b,strong{color:#fff;font-weight:700}
+
+/* ---------- Hero ---------- */
+.hero{position:relative;margin:0 -18px 30px;overflow:hidden;border-bottom:1px solid var(--line)}
+.hero canvas{display:block;width:100%;height:300px}
+@media(max-width:720px){.hero canvas{height:236px}}
+.hero-mask{position:absolute;inset:0;z-index:1;pointer-events:none;
+  background:linear-gradient(180deg,rgba(4,6,12,.42) 0%,rgba(4,6,12,.04) 40%,rgba(4,6,12,.88) 90%,var(--bg) 100%)}
+.hero-txt{position:absolute;z-index:2;left:0;right:0;bottom:0;padding:0 18px 22px;
+  max-width:1180px;margin:0 auto;pointer-events:none}
+.eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--acc);margin:0 0 8px}
+.hero h1{font-size:clamp(30px,6.2vw,58px);font-weight:700;line-height:1.02;
+  text-shadow:0 2px 30px rgba(0,0,0,.75)}
+.hero .sub{margin:10px 0 0;max-width:62ch;color:var(--ink2);font-size:15px;
+  text-shadow:0 1px 14px rgba(0,0,0,.85)}
+.kicker{display:flex;gap:7px;align-items:center;margin-top:13px;flex-wrap:wrap}
+.pill{display:inline-block;padding:4px 10px;border:1px solid var(--line2);border-radius:999px;
+  font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--ink2);background:rgba(10,16,28,.62)}
+
+/* ---------- Navigation ---------- */
+nav.modnav{position:sticky;top:0;z-index:40;margin:0 -18px 26px;padding:8px 18px;
+  background:rgba(4,6,12,.86);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);
+  border-bottom:1px solid var(--line);overflow-x:auto;-webkit-overflow-scrolling:touch}
+.navrow{display:flex;gap:6px;max-width:1180px;margin:0 auto;min-width:-webkit-max-content;min-width:max-content}
+.navbtn{flex:0 0 auto;display:flex;align-items:center;gap:9px;
+  padding:9px 14px;border-radius:11px;border:1px solid transparent;background:transparent;
+  color:var(--ink3);font:inherit;font-size:13.5px;cursor:pointer;white-space:nowrap;
+  transition:color .18s,background .18s,border-color .18s}
+.navbtn .num{font-family:var(--mono);font-size:10.5px;
+  width:20px;height:20px;display:-webkit-box;display:grid;place-items:center;border-radius:6px;
+  background:var(--panel2);color:var(--ink3);transition:all .18s;text-align:center;line-height:20px}
+.navbtn[aria-current="true"]{color:var(--ink);background:var(--panel2);border-color:var(--line2)}
+.navbtn[aria-current="true"] .num{background:var(--na);color:#08101c;font-weight:700}
+.navbtn:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+
+/* ---------- Module ---------- */
+.mod{display:none}
+.mod.on{display:block;animation:rise .34s ease both}
+@keyframes rise{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+.modhead{margin:0 0 22px}
+.modhead h2{font-size:clamp(23px,3.4vw,33px);font-weight:700}
+.modhead .lead{margin-top:9px;max-width:76ch;color:var(--ink2);font-size:15px}
+.rule{height:1px;background:linear-gradient(90deg,var(--acc),transparent 72%);margin:14px 0;opacity:.55}
+
+.card{background:linear-gradient(180deg,var(--panel) 0%,rgba(8,13,22,.9) 100%);
+  border:1px solid var(--line);border-radius:var(--r);padding:20px;margin:0 0 20px}
+.card h3{font-size:16px;margin-bottom:8px}
+.card .tag{font-family:var(--mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--acc);display:block;margin-bottom:7px}
+.card.impuls{border-left:3px solid var(--acc)}
+.card.merk{background:linear-gradient(180deg,rgba(56,217,188,.09),rgba(8,13,22,.6));
+  border-color:rgba(56,217,188,.3)}
+.card.merk .tag{color:var(--equi)}
+.card.warnc{background:linear-gradient(180deg,rgba(255,182,72,.08),rgba(8,13,22,.6));
+  border-color:rgba(255,182,72,.28)}
+.card.warnc .tag{color:var(--warn)}
+.merk ul,.warnc ul,.card ul{margin:.4em 0 0;padding-left:1.15em}
+.merk li,.warnc li,.card li{margin-bottom:.4em}
+
+/* ---------- Buehne ---------- */
+.stage{border:1px solid var(--line);border-radius:var(--r);overflow:hidden;
+  background:var(--bg2);margin:0 0 20px;box-shadow:0 24px 60px -30px rgba(0,0,0,.95)}
+.stage-grid{display:grid;grid-template-columns:1fr 270px}
+@media(max-width:900px){.stage-grid{grid-template-columns:1fr}}
+.canvas-wrap{position:relative;background:#03050a;touch-action:none;
+  border-right:1px solid var(--line);min-width:0}
+@media(max-width:900px){.canvas-wrap{border-right:none;border-bottom:1px solid var(--line)}}
+.canvas-wrap canvas{position:absolute;left:0;top:0;width:100%;height:100%;display:block}
+.canvas-wrap .sizer{display:block;width:100%}
+.hint{position:absolute;left:12px;bottom:9px;z-index:6;font-family:var(--mono);font-size:10.5px;
+  letter-spacing:.05em;color:var(--ink3);pointer-events:none;text-transform:uppercase}
+.readout{position:absolute;right:11px;top:11px;z-index:6;display:flex;flex-direction:column;
+  gap:5px;align-items:flex-end;pointer-events:none}
+.rd{background:rgba(6,10,18,.76);border:1px solid var(--line);border-radius:9px;
+  padding:5px 10px;-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);text-align:right;min-width:118px}
+.rd .k{display:block;font-family:var(--mono);font-size:9px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--ink3)}
+.rd .v{display:block;font-family:var(--mono);font-size:15px;color:var(--ink)}
+.rd .v em{font-style:normal;font-size:10px;color:var(--ink2);margin-left:2px}
+.rd.hot .v{color:var(--probe)}
+.rd.cool .v{color:var(--equi)}
+.rd.warn .v{color:var(--warn)}
+
+/* ---------- Bedienfeld ---------- */
+.panel{padding:15px 15px 18px;background:var(--panel);display:flex;flex-direction:column;gap:14px;min-width:0}
+.pgroup{border-top:1px solid var(--line);padding-top:12px}
+.pgroup:first-child{border-top:none;padding-top:0}
+.plabel{font-family:var(--mono);font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--ink3);margin:0 0 9px}
+.ctl{margin-bottom:12px}
+.ctl:last-child{margin-bottom:0}
+.ctl-h{display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin-bottom:4px}
+.ctl-h .nm{font-size:12.5px;color:var(--ink2)}
+.ctl-h .val{font-family:var(--mono);font-size:12.5px;color:var(--ink);white-space:nowrap}
+input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:26px;background:transparent;
+  margin:0;display:block;cursor:pointer}
+input[type=range]::-webkit-slider-runnable-track{height:4px;border-radius:2px;background:var(--line2)}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;
+  width:20px;height:20px;border-radius:50%;background:#fff;margin-top:-8px;
+  box-shadow:0 0 0 3px rgba(0,0,0,.45),0 2px 8px rgba(0,0,0,.6)}
+input[type=range]::-moz-range-track{height:4px;border-radius:2px;background:#27384f}
+input[type=range]::-moz-range-thumb{width:20px;height:20px;border:none;border-radius:50%;background:#fff}
+input[type=range]:focus-visible{outline:2px solid var(--acc);outline-offset:4px;border-radius:4px}
+
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{display:inline-flex;align-items:center;gap:7px;min-height:36px;padding:6px 11px;
+  border-radius:9px;border:1px solid var(--line2);background:var(--panel2);
+  color:var(--ink3);font:inherit;font-size:12px;cursor:pointer;
+  transition:color .16s,border-color .16s,background .16s}
+.chip .dot{width:8px;height:8px;border-radius:50%;background:currentColor;opacity:.4;
+  transition:opacity .16s,box-shadow .16s;flex:0 0 auto}
+.chip[aria-pressed="true"]{color:var(--ink);border-color:var(--cc);background:var(--raise)}
+.chip[aria-pressed="true"] .dot{background:var(--cc);opacity:1;box-shadow:0 0 9px var(--cc)}
+.chip:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+
+.seg{display:flex;border:1px solid var(--line2);border-radius:9px;overflow:hidden;background:var(--panel2)}
+.seg button{flex:1;min-height:36px;padding:6px 4px;border:none;background:transparent;color:var(--ink3);
+  font:inherit;font-size:11.5px;cursor:pointer;transition:all .16s;border-right:1px solid var(--line2)}
+.seg button:last-child{border-right:none}
+.seg button[aria-pressed="true"]{background:var(--raise);color:var(--ink)}
+.seg button:focus-visible{outline:2px solid var(--acc);outline-offset:-2px}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:38px;
+  padding:8px 14px;border-radius:10px;border:1px solid var(--line2);background:var(--panel2);
+  color:var(--ink2);font:inherit;font-size:13px;cursor:pointer;transition:all .16s;width:100%}
+.btn:active{transform:translateY(1px)}
+.btn.primary{background:var(--acc);border-color:var(--acc);color:#07101d;font-weight:700}
+.btn:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+.btnrow{display:flex;gap:8px}
+
+/* ---------- Legende ---------- */
+.legend{display:flex;flex-wrap:wrap;gap:8px 16px;padding:11px 15px;border-top:1px solid var(--line);
+  background:var(--bg2);font-size:11.5px;color:var(--ink3)}
+.legend i{display:inline-flex;align-items:center;gap:6px;font-style:normal}
+.legend .sw{width:13px;height:13px;border-radius:4px;flex:0 0 auto}
+.legend .swl{width:16px;height:3px;border-radius:2px;flex:0 0 auto}
+
+/* ---------- Aufgaben ---------- */
+.tasks{margin-top:26px}
+.task{border:1px solid var(--line);border-left:3px solid var(--line2);border-radius:12px;
+  padding:16px 18px;margin-bottom:12px;background:rgba(11,18,32,.62)}
+.task.s1{border-left-color:#4d8fd6}
+.task.s2{border-left-color:#b98cf0}
+.task.s3{border-left-color:#f0794f}
+.task-h{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:9px}
+.task-n{font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink3)}
+.stars{font-size:13px;letter-spacing:2px;color:var(--probe);white-space:nowrap}
+.task p{font-size:14.5px}
+details.sol{margin-top:11px;border-top:1px dashed var(--line2);padding-top:9px}
+details.sol summary{cursor:pointer;font-family:var(--mono);font-size:11px;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--ink3);list-style:none;padding:5px 0;min-height:30px;
+  display:flex;align-items:center;gap:7px}
+details.sol summary::-webkit-details-marker{display:none}
+details.sol summary::before{content:"\25B8";color:var(--acc);display:inline-block;transition:transform .18s}
+details.sol[open] summary::before{transform:rotate(90deg)}
+details.sol .inner{padding:6px 0 4px 13px;color:var(--ink2);font-size:14px;
+  border-left:2px solid var(--line2);margin-top:4px}
+
+/* ---------- Formeln ---------- */
+.fml{display:block;text-align:center;margin:16px auto;font-family:"Times New Roman",Times,serif;
+  font-size:20px;color:var(--ink)}
+.fml.inl{display:inline-block;margin:0;font-size:17px;vertical-align:-.3em}
+.frac{display:inline-block;vertical-align:-.55em;text-align:center;margin:0 .22em}
+.frac>span{display:block;padding:0 .34em}
+.frac .nu{border-bottom:1.4px solid currentColor;padding-bottom:.08em}
+.frac .de{padding-top:.1em}
+.vec{position:relative;display:inline-block}
+.vec::after{content:"\2192";position:absolute;left:50%;top:-.66em;
+  -webkit-transform:translateX(-50%) scaleX(.8);transform:translateX(-50%) scaleX(.8);
+  font-size:.6em;line-height:1}
+var{font-family:"Times New Roman",Times,serif;font-style:italic}
+.unit{font-family:Arial,Helvetica,sans-serif;font-style:normal;font-size:.8em;margin-left:.18em;color:var(--ink2)}
+
+/* ---------- Diverses ---------- */
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:700px){.grid2{grid-template-columns:1fr}}
+.note{font-size:12.5px;color:var(--ink3);margin-top:9px}
+.foot{margin-top:40px;padding-top:20px;border-top:1px solid var(--line);
+  font-size:12px;color:var(--ink3);display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.mini{width:100%;height:auto;display:block;border-radius:10px;border:1px solid var(--line);background:#03050a}
+</style>
+<header class="hero">
+  <canvas id="heroCv" aria-hidden="true"></canvas>
+  <div class="hero-mask"></div>
+  <div class="hero-txt">
+    <p class="eyebrow">Physik &middot; Grundkurs Jahrgang 12</p>
+    <h1>Feldlabor</h1>
+    <p class="sub">Elektrische Felder sehen, verformen und abschirmen. Fünf Versuchsplätze, an denen du das Feld selbst erzeugst und beobachtest, was es macht.</p>
+    <div class="kicker">
+      <span class="pill">Punktladung</span>
+      <span class="pill">Dipol</span>
+      <span class="pill">Überlagerung</span>
+      <span class="pill">Kondensator</span>
+      <span class="pill">Faradaykäfig</span>
+    </div>
+  </div>
+</header>
+
+<nav class="modnav" aria-label="Module">
+  <div class="navrow" id="navrow"></div>
+</nav>
+
+<div class="shell">
+
+<!-- ============================= MODUL 1 ============================= -->
+<section class="mod" id="m1">
+  <div class="modhead">
+    <p class="eyebrow">Modul 1</p>
+    <h2>Die einzelne Ladung</h2>
+    <div class="rule"></div>
+    <p class="lead">Eine einzige Ladung verändert den Raum um sich herum. Diese Veränderung heißt elektrisches Feld &ndash; und sie ist auch dann vorhanden, wenn gar keine zweite Ladung da ist, die etwas davon merkt.</p>
+  </div>
+
+  <div class="card impuls">
+    <span class="tag">Vorhersagen &rarr; Beobachten &rarr; Erklären</span>
+    <h3>Bevor du einen Regler anfasst</h3>
+    <p><b>Sage voraus</b> und notiere beides schriftlich im Heft:</p>
+    <ul>
+      <li>Wie verändert sich das Feldbild, wenn du den <b>Betrag der Ladung verdoppelst</b>?</li>
+      <li>Wie verändert sich der Betrag der Feldstärke am Ort der Probeladung, wenn du deren <b>Abstand verdoppelst</b>? Halbiert er sich, viertelt er sich, oder bleibt er gleich?</li>
+    </ul>
+    <p class="note">Erst danach experimentieren. Die Abweichung zwischen Vermutung und Beobachtung ist der eigentliche Lerngewinn.</p>
+  </div>
+
+  <div class="stage" data-stage="m1">
+    <div class="stage-grid">
+      <div class="canvas-wrap" data-canvas>
+        <canvas class="cv-base"></canvas>
+        <canvas class="cv-flow"></canvas>
+        <canvas class="cv-ui"></canvas>
+        <div class="readout" data-readout></div>
+        <span class="hint">Ladung und Probeladung ziehen</span>
+      </div>
+      <div class="panel" data-panel></div>
+    </div>
+    <div class="legend" data-legend></div>
+  </div>
+
+  <div class="card merk">
+    <span class="tag">Sicherung</span>
+    <h3>Das musst du behalten</h3>
+    <ul>
+      <li>Das elektrische Feld ordnet <b>jedem Punkt des Raumes</b> einen Vektor <span class="fml inl"><span class="vec"><var>E</var></span></span> zu. Es ist ein eigenständiges physikalisches Objekt, kein Bild.</li>
+      <li>Definition über die Kraft auf eine positive Probeladung <var>q</var>:
+        <span class="fml"><span class="vec"><var>E</var></span> = <span class="frac"><span class="nu"><span class="vec"><var>F</var></span></span><span class="de"><var>q</var></span></span><span class="unit">[E] = 1 N/C = 1 V/m</span></span></li>
+      <li>Feldlinien <b>beginnen</b> bei positiven und <b>enden</b> bei negativen Ladungen. Die Anzahl der Linien ist proportional zum Betrag der Ladung.</li>
+      <li>Die <b>Feldliniendichte</b> ist ein Maß für den Betrag der Feldstärke: eng beieinander bedeutet stark.</li>
+      <li>Für eine Punktladung gilt das quadratische Abstandsgesetz:
+        <span class="fml"><var>E</var>(<var>r</var>) = <span class="frac"><span class="nu">1</span><span class="de">4&pi;&epsilon;<sub>0</sub></span></span> &middot; <span class="frac"><span class="nu"><var>Q</var></span><span class="de"><var>r</var><sup>&thinsp;2</sup></span></span></span>
+        Doppelter Abstand bedeutet also <b>ein Viertel</b> der Feldstärke.</li>
+    </ul>
+  </div>
+
+  <div class="card warnc">
+    <span class="tag">Denkfalle</span>
+    <h3>Drei Sätze, die falsch sind</h3>
+    <ul>
+      <li><s>&bdquo;Feldlinien sind die Bahnen, auf denen sich Ladungen bewegen.&ldquo;</s> Eine losgelassene Ladung wird beschleunigt und verlässt die Linie, sobald sie eine Geschwindigkeit quer dazu hat. In Modul 4 siehst du genau das.</li>
+      <li><s>&bdquo;Zwischen zwei gezeichneten Feldlinien ist kein Feld.&ldquo;</s> Feldlinien sind eine Zeichenhilfe. Das Feld ist überall, wir malen nur endlich viele Linien.</li>
+      <li><s>&bdquo;Ohne Probeladung gibt es kein Feld.&ldquo;</s> Die Probeladung <b>misst</b> das Feld, sie <b>erzeugt</b> es nicht.</li>
+    </ul>
+  </div>
+
+  <div class="tasks">
+    <div class="modhead"><p class="eyebrow">Aufgaben</p><h2>Selbst überprüfen</h2><div class="rule"></div>
+    <p class="lead">Die Sterne geben das Anforderungsniveau an: ★☆☆ Grundlagen, ★★☆ Anwendung, ★★★ Vertiefung. Bearbeite schriftlich und vergleiche erst danach mit der Musterlösung.</p></div>
+
+    <div class="task s1">
+      <div class="task-h"><span class="task-n">Aufgabe 1</span><span class="stars" aria-label="Anforderungsniveau 1 von 3">★☆☆</span></div>
+      <p><b>Beschreibe</b> das Feldbild einer einzelnen positiven Ladung in drei Sätzen. <b>Benenne</b> dabei Richtung der Feldlinien, ihren Verlauf und die Stelle mit der größten Feldstärke.</p>
+      <details class="sol"><summary>Musterlösung</summary><div class="inner">
+        <p>Die Feldlinien verlaufen radial, also strahlenförmig, von der Ladung weg nach außen. Sie beginnen alle auf der Ladung und laufen geradlinig nach allen Seiten. Am dichtesten liegen sie unmittelbar an der Ladung, dort ist die Feldstärke am größten; mit wachsendem Abstand werden die Abstände zwischen den Linien größer und die Feldstärke nimmt ab.</p>
+      </div></details>
+    </div>
+
+    <div class="task s1">
+      <div class="task-h"><span class="task-n">Aufgabe 2</span><span class="stars" aria-label="Anforderungsniveau 1 von 3">★☆☆</span></div>
+      <p>Stelle die Ladung auf <span class="fml inl"><var>Q</var> = &minus;4,0<span class="unit">nC</span></span>. <b>Beschreibe</b>, was sich gegenüber der positiven Ladung ändert und was gleich bleibt. <b>Erkläre</b> mithilfe der Definitionsgleichung, warum sich die Richtung des Kraftpfeils umkehrt.</p>
+      <details class="sol"><summary>Musterlösung</summary><div class="inner">
+        <p>Gleich bleiben die radiale Form des Feldbildes und der Betrag der Feldstärke in gleichem Abstand. Es ändert sich nur die Richtung: Die Feldlinien zeigen jetzt zur Ladung hin, weil Feldlinien auf negativen Ladungen enden.</p>
+        <p>Aus <span class="fml inl"><span class="vec"><var>F</var></span> = <var>q</var> &middot; <span class="vec"><var>E</var></span></span> folgt: Die Feldstärke ist als Kraft auf eine <b>positive</b> Probeladung definiert. Eine positive Probeladung wird von einer negativen Quellladung angezogen, der Kraftpfeil zeigt also zur Quelle hin, und damit tut es auch der Feldstärkevektor.</p>
+      </div></details>
+    </div>
+
+    <div class="task s2">
+      <div class="task-h"><span class="task-n">Aufgabe 3</span><span class="stars" aria-label="Anforderungsniveau 2 von 3">★★☆</span></div>
+      <p>Ziehe die Probeladung auf <span class="fml inl"><var>r</var> = 2,0<span class="unit">cm</span></span> und lies <var>E</var> ab. Ziehe sie dann auf <span class="fml inl"><var>r</var> = 4,0<span class="unit">cm</span></span>. <b>Überprüfe</b> rechnerisch, ob deine beiden Messwerte zum quadratischen Abstandsgesetz passen, und <b>deute</b> das Ergebnis.</p>
+      <details class="sol"><summary>Musterlösung</summary><div class="inner">
+        <p>Bei Verdopplung des Abstands muss die Feldstärke auf ein Viertel sinken, denn <span class="fml inl"><var>E</var> ~ 1/<var>r</var><sup>&thinsp;2</sup></span> und <span class="fml inl">1/2<sup>2</sup> = 1/4</span>. Beispiel für <span class="fml inl"><var>Q</var> = 4,0<span class="unit">nC</span></span>: bei 2,0 cm ergibt sich rund 90 kV/m, bei 4,0 cm rund 22,5 kV/m. Der Quotient der Messwerte ist also etwa 4.</p>
+        <p>Deutung: Die von der Ladung ausgehenden Feldlinien verteilen sich auf eine Kugelfläche <span class="fml inl"><var>A</var> = 4&pi;<var>r</var><sup>&thinsp;2</sup></span>. Wächst <var>r</var> auf das Doppelte, wächst die Fläche auf das Vierfache, also sinkt die Liniendichte und damit die Feldstärke auf ein Viertel.</p>
+      </div></details>
+    </div>
+
+    <div class="task s2">
+      <div class="task-h"><span class="task-n">Aufgabe 4</span><span class="stars" aria-label="Anforderungsniveau 2 von 3">★★☆</span></div>
+      <p>Schalte die Äquipotentiallinien ein. <b>Begründe</b>, warum eine Ladung, die man <b>entlang</b> einer solchen Linie bewegt, dabei keine Arbeit erfordert. <b>Beschreibe</b> die Lage der Äquipotentiallinien gegenüber den Feldlinien.</p>
+      <details class="sol"><summary>Musterlösung</summary><div class="inner">
+        <p>Auf einer Äquipotentiallinie hat das Potential überall denselben Wert. Die verrichtete Arbeit ist <span class="fml inl"><var>W</var> = <var>q</var> &middot; &Delta;&phi;</span>; wegen <span class="fml inl">&Delta;&phi; = 0</span> ist auch <span class="fml inl"><var>W</var> = 0</span>.</p>
+        <p>Anschaulich: Die Kraft steht immer senkrecht auf der Bewegungsrichtung, und eine Kraft senkrecht zum Weg verrichtet keine Arbeit. Deshalb schneiden Äquipotentiallinien die Feldlinien überall im rechten Winkel. Bei der Punktladung sind es konzentrische Kreise um die Ladung.</p>
+      </div></details>
+    </div>
+
+    <div class="task s3">
+      <div class="task-h"><span class="task-n">Aufgabe 5</span><span class="stars" aria-label="Anforderungsniveau 3 von 3">★★★</span></div>
+      <p>Ein Schüler behauptet: &bdquo;Wenn ich die Ladung verdopple, wird das Feld doppelt so groß, also muss ich die Probeladung nur doppelt so weit weg schieben, damit sie wieder dieselbe Kraft spürt.&ldquo; <b>Überprüfe</b> diese Behauptung rechnerisch und <b>bewerte</b> sie. <b>Gib</b> den korrekten Faktor <b>an</b>.</p>
+      <details class="sol"><summary>Musterlösung</summary><div class="inner">
+        <p>Die Behauptung ist falsch. Gefordert ist <span class="fml inl"><var>E</var><sub>1</sub> = <var>E</var><sub>2</sub></span>, also <span class="fml inl"><var>k</var><var>Q</var>/<var>r</var><sub>1</sub><sup>&thinsp;2</sup> = <var>k</var>&middot;2<var>Q</var>/<var>r</var><sub>2</sub><sup>&thinsp;2</sup></span>. Daraus folgt <span class="fml inl"><var>r</var><sub>2</sub><sup>&thinsp;2</sup> = 2<var>r</var><sub>1</sub><sup>&thinsp;2</sup></span>, also <span class="fml inl"><var>r</var><sub>2</sub> = &radic;2 &middot; <var>r</var><sub>1</sub> &asymp; 1,41 &middot; <var>r</var><sub>1</sub></span>.</p>
+        <p>Der Fehler im Gedankengang: Die Ladung geht <b>linear</b>, der Abstand aber <b>quadratisch</b> in die Feldstärke ein. Bei doppeltem Abstand wäre die Feldstärke nur noch halb so groß wie gefordert. Der richtige Faktor ist &radic;2, nicht 2. Prüfe es im Modell nach: von 2,0 cm auf 2,8 cm.</p>
+      </div></details>
+    </div>
+  </div>
+</section>
+
+<!-- ============================= MODUL 2 ============================= -->
+<section class="mod" id="m2">
+  <div class="modhead">
+    <p class="eyebrow">Modul 2</p>
+    <h2>Der Dipol</h2>
+    <div class="rule"></div>
+    <p class="lead">Zwei Ladungen, ein Feld. Sobald eine zweite Ladung dazukommt, überlagern sich die Einzelfelder an jedem Punkt vektoriell &ndash; und es entsteht ein Muster, das keine der beiden Ladungen allein erzeugen könnte.</p>
+  </div>
+
+  <div class="card impuls">
+    <span class="tag">Vorhersagen &rarr; Beobachten &rarr; Erklären</span>
+    <h3>Bevor du einen Regler anfasst</h3>
+    <p><b>Skizziere</b> in deinem Heft, wie das Feldbild aussieht bei</p>
+    <ul>
+      <li>zwei <b>ungleichnamigen</b> Ladungen (+ und &minus;),</li>
+      <li>zwei <b>gleichnamigen</b> Ladungen (+ und +).</li>
+    </ul>
+    <p><b>Markiere</b> in beiden Skizzen den Punkt genau in der Mitte zwischen den Ladungen und <b>sage voraus</b>, wie groß die Feldstärke dort ist. Danach umschalten und vergleichen.</p>
+  </div>
+
+  <div class="stage" data-stage="m2">
+    <div class="stage-grid">
+      <div class="canvas-wrap" data-canvas>
+        <canvas class="cv-base"></canvas>
+        <canvas class="cv-flow"></canvas>
+        <canvas class="cv-ui"></canvas>
+        <div class="readout" data-readout></div>
+        <span class="hint">Ladungen und Probeladung ziehen</span>
+      </div>
+      <div class="panel" data-panel></div>
+    </div>
+    <div class="legend" data-legend></div>
+  </div>
+
+  <div class="card merk">
+    <span class="tag">Sicherung</span>
+    <h3>Das musst du behalten</h3>
+    <ul>
+      <li><b>Superpositionsprinzip:</b> Das Gesamtfeld ist an jedem Punkt die <b>vektorielle Summe</b> der Einzelfelder.
+        <span class="fml"><span class="vec"><var>E</var></span><sub>ges</sub> = <span class="vec"><var>E</var></span><sub>1</sub> + <span class="vec"><var>E</var></span><sub>2</sub> + &hellip;</span>
+        Beträge dürfen nur addiert werden, wenn die Einzelfelder in dieselbe Richtung zeigen.</li>
+      <li><b>Ungleichnamige Ladungen (Dipol):</b> Die Feldlinien laufen von der positiven zur negativen Ladung. Auf der Verbindungslinie zeigen beide Einzelfelder in dieselbe Richtung, sie addieren sich &ndash; das Feld in der Mitte ist besonders <b>stark</b>.</li>
+      <li><b>Gleichnamige Ladungen:</b> Die Feldlinien weichen einander aus. Genau in der Mitte heben sich die Einzelfelder auf, dort ist <span class="fml inl"><var>E</var> = 0</span>. Dieser Punkt heißt <b>neutraler Punkt</b>.</li>
+      <li><b>Feldlinien schneiden sich nie.</b> An einem Schnittpunkt hätte das Feld zwei Richtungen gleichzeitig &ndash; das ist unmöglich.</li>
+      <li>Auf der <b>Mittelsenkrechten</b> des Dipols zeigt das Feld überall parallel zur Verbindungslinie, von + nach &minus;.</li>
+    </ul>
+  </div>
+
+  <div class="tasks">
+    <div class="modhead"><p class="eyebrow">Aufgaben</p><h2>Selbst überprüfen</h2><div class="rule"></div></div>
+
+    <div class="task s1">
+      <div class="task-h"><span class="task-n">Aufgabe 1</span><span class="stars" aria-label="Anforderungsniveau 1 von 3">★☆☆</span></div>
+      <p><b>Skizziere</b> das Feldbild des Dipols in dein Heft und <b>zeichne</b> mindestens sechs Feldlinien mit Richtungspfeilen <b>ein</b>. <b>Kennzeichne</b> die Stelle mit der größten Feldstärke.</p>
+      <details class="sol"><summary>Musterlösung</summary><div class="inner">
+        <p>Die Linien verlassen die positive Ladung nach allen Seiten, biegen um und münden auf der negativen Ladung. Alle Pfeile zeigen von + nach &minus;. Die größte Feldstärke liegt unmittelbar an den Ladungen selbst; auf der Verbindungslinie zwischen ihnen ist das Feld ebenfalls deutlich verstärkt, weil sich dort beide Einzelfelder addieren.</p>
+      </div></details>
+    </div>
+
+    <div class="task s2">
+      <div class="task-h"><span class="task-n">Aufgabe 2</span><span class="stars" aria-label="Anforderungsniveau 2 von 3">★★☆</span></div>
+      <p>Schalte auf zwei gleichnamige Ladungen um. <b>Begründe</b> mithilfe des Superpositionsprinzips, warum in der Mitte zwischen ihnen <span class="fml inl"><var>E</var> = 0</span> gilt, obwohl dort <b>beide</b> Ladungen ein Feld erzeugen.</p>
+      <details class="sol"><summary>Musterlösung</summary><div class="inner">
+        <p>Beide Ladungen sind betragsgleich, und der Mittelpunkt hat von beiden denselben Abstand. Nach <span class="fml inl"><var>E</var> = <var>kQ</var>/<var>r</var><sup>&thinsp;2</sup></span> sind die beiden Einzelfeldstärken dort also betragsgleich. Weil die Ladungen gleichnamig sind, zeigt jedes Einzelfeld von seiner Ladung weg, die beiden Vektoren zeigen im Mittelpunkt also genau <b>entgegengesetzt</b>. Die vektorielle Summe ist der Nullvektor.</p>
+        <p>Wichtig: Die Einzelfelder sind dort nicht verschwunden, sie kompensieren sich lediglich. Eine Probeladung erfährt dort keine Kraft.</p>
+      </div></details>
+    </div>
+
+    <div class="task s2">
+      <div class="task-h"><span class="task-n">Aufgabe 3</span><span class="stars" aria-label="Anforderungsniveau 2 von 3">★★☆</span></div>
+      <p>Setze <span class="fml inl"><var>Q</var><sub>1</sub> = +6,0<span class="unit">nC</span></span> und <span class="fml inl"><var>Q</var><sub>2</sub> = &minus;2,0<span class="unit">nC</span></span>. <b>Vergleiche</b> die Anzahl der Feldlinien an beiden Ladungen und <b>erkläre</b> den Unterschied. <b>Beschreibe</b>, wohin die überzähligen Linien laufen.</p>
+      <details class="sol"><summary>Musterlösung</summary><div class="inner">
+        <p>An der positiven Ladung starten dreimal so viele Linien, wie an der negativen enden, weil die Linienzahl proportional zum Betrag der Ladung gewählt wird und <span class="fml inl">6,0<span class="unit">nC</span> : 2,0<span class="unit">nC</span> = 3 : 1</span> gilt.</p>
+        <p>Nur ein Drittel der Linien findet auf der negativen Ladung ein Ende. Die übrigen laufen nach außen ins Unendliche. Aus großer Entfernung betrachtet sieht die Anordnung deshalb aus wie eine einzelne Ladung von <span class="fml inl">+4,0<span class="unit">nC</span></span>, also wie die Gesamtladung.</p>
+      </div></details>
+    </div>
+
+    <div class="task s3">
+      <div class="task-h"><span class="task-n">Aufgabe 4</span><span class="stars" aria-label="Anforderungsniveau 3 von 3">★★★</span></div>
+      <p>Zwei gleichnamige Ladungen mit <span class="fml inl"><var>Q</var><sub>1</sub> = +8,0<span class="unit">nC</span></span> und <span class="fml inl"><var>Q</var><sub>2</sub> = +2,0<span class="unit">nC</span></span> haben den Abstand <span class="fml inl"><var>d</var> = 6,0<span class="unit">cm</span></span>. <b>Berechne</b>, in welchem Abstand von <var>Q</var><sub>1</sub> der neutrale Punkt liegt, und <b>überprüfe</b> dein Ergebnis im Modell mit der Probeladung.</p>
+      <details class="sol"><summary>Musterlösung</summary><div class="inner">
+        <p>Ansatz: Der neutrale Punkt liegt zwischen den Ladungen im Abstand <var>x</var> von <var>Q</var><sub>1</sub>. Dort müssen die Beträge gleich sein:</p>
+        <p><span class="fml"><span class="frac"><span class="nu"><var>Q</var><sub>1</sub></span><span class="de"><var>x</var><sup>&thinsp;2</sup></span></span> = <span class="frac"><span class="nu"><var>Q</var><sub>2</sub></span><span class="de">(<var>d</var> &minus; <var>x</var>)<sup>&thinsp;2</sup></span></span></span></p>
+        <p>Wurzelziehen liefert <span class="fml inl">(<var>d</var> &minus; <var>x</var>)/<var>x</var> = &radic;(<var>Q</var><sub>2</sub>/<var>Q</var><sub>1</sub>) = &radic;(2/8) = 0,5</span>, also <span class="fml inl"><var>d</var> = 1,5<var>x</var></span> und damit <span class="fml inl"><var>x</var> = 4,0<span class="unit">cm</span></span>.</p>
+        <p>Der neutrale Punkt liegt also 4,0 cm von der großen und 2,0 cm von der kleinen Ladung entfernt, das heißt <b>näher an der kleineren</b> Ladung. Das ist plausibel: Das schwächere Feld braucht den kürzeren Abstand, um mithalten zu können.</p>
+      </div></details>
+    </div>
+  </div>
+</section>
+<!-- ============================= MODUL 3 ============================= -->
+<section class="mod" id="m3">
+  <div class="modhead">
+    <p class="eyebrow">Modul 3</p>
+    <h2>Überlagerung und Annäherung</h2>
+    <div class="rule"></div>
+    <p class="lead">Hier gehört die Fläche dir. Setze Ladungen, verschiebe sie, ändere Vorzeichen und Betrag &ndash; und beobachte, wie sich das Gesamtfeld in jedem Moment neu aus den Einzelfeldern zusammensetzt. Im Modus <b>Annäherung</b> führst du zwei Ladungen kontrolliert aufeinander zu.</p>
+  </div>
+
+  <div class="card impuls">
+    <span class="tag">Vorhersagen &rarr; Beobachten &rarr; Erklären</span>
+    <h3>Bevor du einen Regler anfasst</h3>
+    <p>Im Modus <b>Annäherung</b> stehen sich zwei ungleichnamige Ladungen gegenüber. Der Aufpunkt <b>P</b> liegt fest auf der Mittelsenkrechten.</p>
+    <p><b>Sage voraus</b>, wie sich beim Verringern des Abstands verändern:</p>
+    <ul>
+      <li>der Betrag der Coulombkraft zwischen den Ladungen,</li>
+      <li>der Betrag der Feldstärke im festen Aufpunkt <b>P</b>.</li>
+    </ul>
+    <p class="note">Achtung: Die beiden Antworten sind nicht dieselbe. <b>Begründe</b> deine Vermutung, bevor du den Regler bewegst.</p>
+  </div>
+
+  <div class="stage" data-stage="m3">
+    <div class="stage-grid">
+      <div class="canvas-wrap" data-canvas>
+        <canvas class="cv-base"></canvas>
+        <canvas class="cv-flow"></canvas>
+        <canvas class="cv-ui"></canvas>
+        <div class="readout" data-readout></div>
+        <span class="hint">Tippen setzt eine Ladung &middot; Ziehen verschiebt</span>
+      </div>
+      <div class="panel" data-panel></div>
+    </div>
+    <div class="legend" data-legend></div>
+  </div>
+
+  <div class="card merk">
+    <span class="tag">Sicherung</span>
+    <h3>Das musst du behalten</h3>
+    <ul>
+      <li>Die Coulombkraft zwischen zwei Ladungen folgt demselben quadratischen Gesetz wie die Feldstärke:
+        <span class="fml"><var>F</var> = <span class="frac"><span class="nu">1</span><span class="de">4&pi;&epsilon;<sub>0</sub></span></span> &middot; <span class="frac"><span class="nu"><var>Q</var><sub>1</sub> &middot; <var>Q</var><sub>2</sub></span><span class="de"><var>r</var><sup>&thinsp;2</sup></span></span></span></li>
+      <li>Beim Annähern <b>wächst</b> die Kraft zwischen den Ladungen stark an, weil ihr gegenseitiger Abstand kleiner wird.</li>
+      <li>Im festen Aufpunkt <b>P</b> auf der Mittelsenkrechten <b>sinkt</b> die Feldstärke dagegen: Je näher die ungleichnamigen Ladungen beieinander liegen, desto vollständiger heben sich ihre Felder in der Ferne auf. Ein sehr enger Dipol wirkt von außen fast neutral.</li>
+      <li>Merksatz dazu: Das Feld eines Dipols nimmt nach außen mit <span class="fml inl">1/<var>r</var><sup>&thinsp;3</sup></span> ab, also deutlich schneller als das einer Einzelladung mit <span class="fml inl">1/<var>r</var><sup>&thinsp;2</sup></span>.</li>
+      <li>Bei mehreren Ladungen gilt die Superposition unverändert: erst jedes Einzelfeld bestimmen, dann <b>vektoriell</b> addieren.</li>
+    </ul>
+  </div>
+
+  <div class="tasks">
+    <div class="modhead"><p class="eyebrow">Aufgaben</p><h2>Selbst überprüfen</h2><div class="rule"></div></div>
+
+    <div class="task s1">
+      <div class="task-h"><span class="task-n">Aufgabe 1</span><span class="stars" aria-label="Anforderungsniveau 1 von 3">★☆☆</span></div>
+      <p>Setze vier gleich große positive Ladungen in die Ecken eines Quadrats. <b>Sage voraus</b> und <b>überprüfe</b> anschließend mit der Probeladung, wie groß die Feldstärke im Mittelpunkt des Quadrats ist. <b>Begründe</b> dein Ergebnis mit einem Symmetrieargument.</p>
+      <details class="sol"><summary>Musterlösung</summary><div class="inner">
+        <p>Im Mittelpunkt ist <span class="fml inl"><var>E</var> = 0</span>. Begründung: Zu jeder Ecke gibt es eine diagonal gegenüberliegende Ecke im gleichen Abstand mit gleicher Ladung. Die beiden zugehörigen Einzelfelder sind betragsgleich und entgegengesetzt gerichtet, heben sich also paarweise auf. Das gilt für beide Diagonalen, damit ist die Gesamtsumme der Nullvektor.</p>
+      </div></details>
+    </div>
+
+    <div class="task s2">
+      <div class="task-h"><span class="task-n">Aufgabe 2</span><span class="stars" aria-label="Anforderungsniveau 2 von 3">★★☆</span></div>
+      <p>Wechsle in den Modus <b>Annäherung</b>. <b>Beschreibe</b>, wie sich Kraft und Feldstärke in <b>P</b> beim Verringern des Abstands verhalten, und <b>erkläre</b> den scheinbaren Widerspruch: Warum wächst die eine Größe, während die andere sinkt?</p>
+      <details class="sol"><summary>Musterlösung</summary><div class="inner">
+        <p>Die Kraft wächst, die Feldstärke in <b>P</b> sinkt. Das ist kein Widerspruch, weil es zwei verschiedene Abstände sind.</p>
+        <p>Für die Kraft ist der Abstand der beiden Ladungen <b>zueinander</b> maßgeblich. Er wird kleiner, also wächst <span class="fml inl"><var>F</var> ~ 1/<var>r</var><sup>&thinsp;2</sup></span>.</p>
+        <p>Für die Feldstärke in <b>P</b> bleibt der Abstand zu beiden Ladungen nahezu gleich, aber die beiden Einzelfelder zeigen dort in immer entgegengesetztere Richtungen und kompensieren sich immer besser. Im Grenzfall <span class="fml inl"><var>r</var> &rarr; 0</span> fallen die Ladungen zusammen, die Gesamtladung ist null und das Feld außen verschwindet.</p>
+      </div></details>
+    </div>
+
+    <div class="task s2">
+      <div class="task-h"><span class="task-n">Aufgabe 3</span><span class="stars" aria-label="Anforderungsniveau 2 von 3">★★☆</span></div>
+      <p><b>Berechne</b> die Kraft zwischen <span class="fml inl"><var>Q</var><sub>1</sub> = +5,0<span class="unit">nC</span></span> und <span class="fml inl"><var>Q</var><sub>2</sub> = &minus;5,0<span class="unit">nC</span></span> im Abstand <span class="fml inl"><var>r</var> = 3,0<span class="unit">cm</span></span>. <b>Vergleiche</b> mit dem angezeigten Wert im Modell und <b>gib an</b>, ob die Kraft anziehend oder abstoßend ist.</p>
+      <details class="sol"><summary>Musterlösung</summary><div class="inner">
+        <p>Mit <span class="fml inl"><var>k</var> = 8,99 &middot; 10<sup>9</sup></span> N&middot;m<sup>2</sup>/C<sup>2</sup>:</p>
+        <p><span class="fml"><var>F</var> = <span class="frac"><span class="nu">8,99&middot;10<sup>9</sup> &middot; 5,0&middot;10<sup>&minus;9</sup> &middot; 5,0&middot;10<sup>&minus;9</sup></span><span class="de">(3,0&middot;10<sup>&minus;2</sup>)<sup>2</sup></span></span> &asymp; 2,5 &middot; 10<sup>&minus;4</sup><span class="unit">N</span></span></p>
+        <p>Das sind etwa 0,25 mN. Da die Ladungen ungleichnamig sind, ist die Kraft <b>anziehend</b>; die Kraftpfeile zeigen aufeinander zu.</p>
+      </div></details>
+    </div>
+
+    <div class="task s3">
+      <div class="task-h"><span class="task-n">Aufgabe 4</span><span class="stars" aria-label="Anforderungsniveau 3 von 3">★★★</span></div>
+      <p>Ein Wassermolekül ist ein permanenter Dipol. <b>Erkläre</b> mithilfe deiner Beobachtungen aus diesem Modul, warum ein geriebener Luftballon einen dünnen Wasserstrahl ablenken kann, obwohl Wasser insgesamt <b>elektrisch neutral</b> ist. <b>Beurteile</b>, welche Rolle der Abstand dabei spielt.</p>
+      <details class="sol"><summary>Musterlösung</summary><div class="inner">
+        <p>Das Wassermolekül ist als Ganzes neutral, seine Ladungsschwerpunkte fallen aber nicht zusammen. Im Feld des geladenen Ballons drehen sich die Moleküle so, dass ihre negative Seite zum Ballon zeigt.</p>
+        <p>Damit ist die anziehende Seite jedes Moleküls dem Ballon <b>näher</b> als die abstoßende. Wegen <span class="fml inl"><var>F</var> ~ 1/<var>r</var><sup>&thinsp;2</sup></span> ist die Anziehung stärker als die Abstoßung, und es bleibt eine resultierende Anziehung übrig.</p>
+        <p>Beurteilung: Der Abstand ist hier der entscheidende Faktor. Weil die Dipolwirkung nach außen mit <span class="fml inl">1/<var>r</var><sup>&thinsp;3</sup></span> abfällt, funktioniert der Versuch nur bei kleinem Abstand zwischen Ballon und Strahl. Aus einem Meter Entfernung passiert nichts mehr.</p>
+      </div></details>
+    </div>
+  </div>
+</section>
+
+<!-- ============================= MODUL 4 ============================= -->
+<section class="mod" id="m4">
+  <div class="modhead">
+    <p class="eyebrow">Modul 4</p>
+    <h2>Der Plattenkondensator</h2>
+    <div class="rule"></div>
+    <p class="lead">Zwei Platten, dazwischen ein Feld, das an jeder Stelle gleich ist: das <b>homogene Feld</b>. Es ist die wichtigste Feldform der Oberstufe, weil man mit ihr rechnen kann. Am Rand allerdings hält sich die Natur nicht ganz an das Ideal.</p>
+  </div>
+
+  <div class="card impuls">
+    <span class="tag">Vorhersagen &rarr; Beobachten &rarr; Erklären</span>
+    <h3>Bevor du einen Regler anfasst</h3>
+    <p><b>Sage voraus</b>, was mit der Feldstärke zwischen den Platten geschieht, wenn du</p>
+    <ul>
+      <li>bei festem Abstand die <b>Spannung verdoppelst</b>,</li>
+      <li>bei fester Spannung den <b>Plattenabstand verdoppelst</b>.</li>
+    </ul>
+    <p>Schieße danach ein Elektron ein und <b>vergleiche</b> seine Bahn mit dem Verlauf der Feldlinien. <b>Notiere</b>, ob beide übereinstimmen.</p>
+  </div>
+
+  <div class="stage" data-stage="m4">
+    <div class="stage-grid">
+      <div class="canvas-wrap" data-canvas>
+        <canvas class="cv-base"></canvas>
+        <canvas class="cv-flow"></canvas>
+        <canvas class="cv-ui"></canvas>
+        <div class="readout" data-readout></div>
+        <span class="hint">Sonde ziehen &middot; Feld wird numerisch berechnet</span>
+      </div>
+      <div class="panel" data-panel></div>
+    </div>
+    <div class="legend" data-legend></div>
+  </div>
+
+  <div class="card merk">
+    <span class="tag">Sicherung</span>
+    <h3>Das musst du behalten</h3>
+    <ul>
+      <li>Im Inneren eines Plattenkondensators ist das Feld <b>homogen</b>: Betrag und Richtung sind überall gleich, die Feldlinien verlaufen parallel, äquidistant und senkrecht auf den Platten.</li>
+      <li>Zusammenhang von Feldstärke, Spannung und Plattenabstand:
+        <span class="fml"><var>E</var> = <span class="frac"><span class="nu"><var>U</var></span><span class="de"><var>d</var></span></span><span class="unit">1 V/m = 1 N/C</span></span>
+        Die Feldstärke ist also <b>proportional</b> zur Spannung und <b>umgekehrt proportional</b> zum Plattenabstand.</li>
+      <li>Die Äquipotentialflächen sind Ebenen <b>parallel zu den Platten</b>. Die Platten selbst sind Äquipotentialflächen.</li>
+      <li><b>Randeffekt:</b> An den Plattenenden wölben sich die Feldlinien nach außen, dort ist das Feld schwächer und nicht mehr homogen. <span class="fml inl"><var>E</var> = <var>U</var>/<var>d</var></span> gilt streng nur im mittleren Bereich. Die Näherung ist umso besser, je kleiner <var>d</var> im Vergleich zur Plattenlänge ist.</li>
+      <li>Ein Elektron im Querfeld beschreibt eine <b>Wurfparabel</b>: gleichförmig längs, gleichmäßig beschleunigt quer &ndash; formal identisch zum waagerechten Wurf, nur mit <span class="fml inl"><var>a</var> = <var>eU</var>/(<var>md</var>)</span> statt <var>g</var>.</li>
+    </ul>
+  </div>
+
+  <div class="card warnc">
+    <span class="tag">Denkfalle</span>
+    <h3>Bahnkurve ist nicht Feldlinie</h3>
+    <p>Vergleiche die grüne Elektronenbahn mit den violetten Feldlinien: Die Feldlinien verlaufen <b>gerade</b> von einer Platte zur anderen, die Bahn des Elektrons ist eine <b>Parabel</b>. Beide fallen nur dann zusammen, wenn das Teilchen aus der Ruhe startet.</p>
+    <p>Der Grund: Die Feldlinie gibt die Richtung der <b>Kraft</b> an, nicht die der Geschwindigkeit. Ein Körper bewegt sich in Richtung der Kraft nur dann, wenn er vorher in Ruhe war &ndash; sonst überlagert sich die Beschleunigung der schon vorhandenen Bewegung.</p>
+  </div>
+
+  <div class="tasks">
+    <div class="modhead"><p class="eyebrow">Aufgaben</p><h2>Selbst überprüfen</h2><div class="rule"></div></div>
+
+    <div class="task s1">
+      <div class="task-h"><span class="task-n">Aufgabe 1</span><span class="stars" aria-label="Anforderungsniveau 1 von 3">★☆☆</span></div>
+      <p>Stelle <span class="fml inl"><var>U</var> = 600<span class="unit">V</span></span> und <span class="fml inl"><var>d</var> = 4,0<span class="unit">cm</span></span> ein. <b>Berechne</b> die Feldstärke und <b>vergleiche</b> deinen Wert mit der Anzeige der Sonde in der Mitte des Kondensators.</p>
+      <details class="sol"><summary>Musterlösung</summary><div class="inner">
+        <p><span class="fml"><var>E</var> = <span class="frac"><span class="nu"><var>U</var></span><span class="de"><var>d</var></span></span> = <span class="frac"><span class="nu">600<span class="unit">V</span></span><span class="de">0,040<span class="unit">m</span></span></span> = 15 000<span class="unit">V/m</span> = 15<span class="unit">kV/m</span></span></p>
+        <p>Die Sonde zeigt in der Mitte praktisch denselben Wert an. Kleine Abweichungen von wenigen Prozent stammen aus der numerischen Berechnung und aus dem Randeffekt.</p>
+      </div></details>
+    </div>
+
+    <div class="task s2">
+      <div class="task-h"><span class="task-n">Aufgabe 2</span><span class="stars" aria-label="Anforderungsniveau 2 von 3">★★☆</span></div>
+      <p>Ziehe die Sonde von der Mitte langsam zum Plattenrand. <b>Beschreibe</b>, wie sich der Messwert verändert, und <b>erkläre</b> die Abweichung von <span class="fml inl"><var>E</var> = <var>U</var>/<var>d</var></span> mit dem Verlauf der Feldlinien.</p>
+      <details class="sol"><summary>Musterlösung</summary><div class="inner">
+        <p>Im mittleren Bereich bleibt der Wert konstant, das Feld ist dort homogen. In der Nähe der Plattenenden sinkt der Messwert und die Feldrichtung dreht sich langsam nach außen.</p>
+        <p>Erklärung: Am Rand wölben sich die Feldlinien in den Außenraum. Dieselbe Zahl von Linien verteilt sich dort auf einen größeren Querschnitt, die Liniendichte nimmt ab und damit auch die Feldstärke. Die Beziehung <span class="fml inl"><var>E</var> = <var>U</var>/<var>d</var></span> ist eine Idealisierung für unendlich ausgedehnte Platten und gilt praktisch nur weit weg vom Rand.</p>
+      </div></details>
+    </div>
+
+    <div class="task s2">
+      <div class="task-h"><span class="task-n">Aufgabe 3</span><span class="stars" aria-label="Anforderungsniveau 2 von 3">★★☆</span></div>
+      <p>Schieße ein Elektron ein und <b>vergleiche</b> seine Bahn mit den Feldlinien. <b>Begründe</b>, warum die beiden nicht übereinstimmen, obwohl die Kraft auf das Elektron entlang der Feldlinien wirkt.</p>
+      <details class="sol"><summary>Musterlösung</summary><div class="inner">
+        <p>Das Elektron tritt mit einer Geschwindigkeit <b>quer</b> zum Feld ein. In dieser Richtung wirkt keine Kraft, also bewegt es sich dort gleichförmig weiter. Senkrecht dazu wirkt die konstante Kraft <span class="fml inl"><var>F</var> = <var>e</var> &middot; <var>E</var></span>, es wird also gleichmäßig beschleunigt.</p>
+        <p>Die Überlagerung von gleichförmiger und gleichmäßig beschleunigter Bewegung ergibt eine Parabel &ndash; genau wie beim waagerechten Wurf. Die Feldlinie beschreibt die Richtung der <b>Beschleunigung</b>, nicht die der Bewegung. Nur ein aus der Ruhe startendes Teilchen läuft entlang einer Feldlinie.</p>
+        <p>Beachte außerdem: Das Elektron ist negativ geladen, seine Beschleunigung zeigt daher <b>entgegen</b> der Feldrichtung, also zur positiven Platte hin.</p>
+      </div></details>
+    </div>
+
+    <div class="task s3">
+      <div class="task-h"><span class="task-n">Aufgabe 4</span><span class="stars" aria-label="Anforderungsniveau 3 von 3">★★★</span></div>
+      <p>Ein Elektron tritt mittig mit <span class="fml inl"><var>v</var><sub>0</sub> = 2,0 &middot; 10<sup>7</sup><span class="unit">m/s</span></span> in einen Kondensator mit <span class="fml inl"><var>U</var> = 500<span class="unit">V</span></span>, <span class="fml inl"><var>d</var> = 5,0<span class="unit">cm</span></span> und Plattenlänge <span class="fml inl"><var>l</var> = 10<span class="unit">cm</span></span> ein. <b>Berechne</b> die Ablenkung beim Verlassen der Platten und <b>entscheide</b>, ob das Elektron auf eine Platte trifft.</p>
+      <details class="sol"><summary>Musterlösung</summary><div class="inner">
+        <p>Feldstärke: <span class="fml inl"><var>E</var> = 500<span class="unit">V</span> / 0,050<span class="unit">m</span> = 10 000<span class="unit">V/m</span></span></p>
+        <p>Beschleunigung: <span class="fml inl"><var>a</var> = <var>eE</var>/<var>m</var> = (1,602&middot;10<sup>&minus;19</sup> &middot; 10<sup>4</sup>) / 9,109&middot;10<sup>&minus;31</sup> &asymp; 1,76 &middot; 10<sup>15</sup><span class="unit">m/s<sup>2</sup></span></span></p>
+        <p>Flugzeit: <span class="fml inl"><var>t</var> = <var>l</var>/<var>v</var><sub>0</sub> = 0,10<span class="unit">m</span> / 2,0&middot;10<sup>7</sup><span class="unit">m/s</span> = 5,0 &middot; 10<sup>&minus;9</sup><span class="unit">s</span></span></p>
+        <p>Ablenkung: <span class="fml inl"><var>y</var> = &frac12;<var>at</var><sup>&thinsp;2</sup> = 0,5 &middot; 1,76&middot;10<sup>15</sup> &middot; (5,0&middot;10<sup>&minus;9</sup>)<sup>2</sup> &asymp; 0,022<span class="unit">m</span> = 2,2<span class="unit">cm</span></span></p>
+        <p>Entscheidung: Vom mittigen Eintritt bis zur Platte stehen nur <span class="fml inl"><var>d</var>/2 = 2,5<span class="unit">cm</span></span> zur Verfügung. Mit 2,2 cm bleibt das Elektron knapp darunter, es verlässt den Kondensator also gerade noch &ndash; allerdings mit sehr geringem Sicherheitsabstand von 3 mm.</p>
+      </div></details>
+    </div>
+  </div>
+</section>
+
+<!-- ============================= MODUL 5 ============================= -->
+<section class="mod" id="m5">
+  <div class="modhead">
+    <p class="eyebrow">Modul 5</p>
+    <h2>Abschirmung und Faradaykäfig</h2>
+    <div class="rule"></div>
+    <p class="lead">Ein Metallgehäuse im elektrischen Feld tut etwas Bemerkenswertes: In seinem Inneren bleibt es feldfrei. Das ist keine Materialeigenschaft, sondern eine <b>Folge der Influenz</b>, die du aus der letzten Stunde kennst &ndash; hier kannst du zusehen, wie sie entsteht.</p>
+  </div>
+
+  <div class="card impuls">
+    <span class="tag">Vorhersagen &rarr; Beobachten &rarr; Erklären</span>
+    <h3>Bevor du einen Regler anfasst</h3>
+    <p>Eine geladene Kugel nähert sich einer geschlossenen Metallhülle. Im Inneren der Hülle sitzt eine Sonde.</p>
+    <ul>
+      <li><b>Sage voraus</b>, welchen Wert die Sonde anzeigt, und <b>begründe</b> deine Vermutung mit dem, was du über Influenz weißt.</li>
+      <li><b>Stelle eine Hypothese auf</b>, ab welcher Maschenweite ein Gitter nicht mehr abschirmt.</li>
+    </ul>
+    <p class="note">Das Feld wird hier nicht gezeichnet, sondern numerisch berechnet (Relaxationsverfahren für die Laplace-Gleichung). Die Feldfreiheit im Inneren ist also ein <b>Ergebnis</b>, keine Vorgabe.</p>
+  </div>
+
+  <div class="stage" data-stage="m5">
+    <div class="stage-grid">
+      <div class="canvas-wrap" data-canvas>
+        <canvas class="cv-base"></canvas>
+        <canvas class="cv-flow"></canvas>
+        <canvas class="cv-ui"></canvas>
+        <div class="readout" data-readout></div>
+        <span class="hint">Kugel und Sonde ziehen</span>
+      </div>
+      <div class="panel" data-panel></div>
+    </div>
+    <div class="legend" data-legend></div>
+  </div>
+
+  <div class="card merk">
+    <span class="tag">Sicherung</span>
+    <h3>Das musst du behalten</h3>
+    <ul>
+      <li>Im <b>statischen</b> Fall ist das Innere eines Leiters <b>feldfrei</b>: <span class="fml inl"><var>E</var><sub>innen</sub> = 0</span>.</li>
+      <li>Begründung über die Influenz: Solange im Metall noch ein Feld herrscht, werden die frei beweglichen Elektronen verschoben. Sie sammeln sich an der Oberfläche und erzeugen ein <b>Gegenfeld</b>. Die Verschiebung hört genau dann auf, wenn sich äußeres Feld und Gegenfeld im Inneren vollständig aufheben.</li>
+      <li>Die influenzierten Ladungen sitzen ausschließlich auf der <b>Oberfläche</b>, nicht im Volumen.</li>
+      <li>Feldlinien treffen <b>senkrecht</b> auf eine Leiteroberfläche. Andernfalls gäbe es eine Komponente längs der Oberfläche, die weiterhin Ladungen verschieben würde.</li>
+      <li>Die gesamte Leiteroberfläche ist eine <b>Äquipotentialfläche</b>, das Innere hat überall dasselbe Potential.</li>
+      <li>Ein <b>Gitter</b> schirmt ebenfalls ab, solange die Maschenweite klein gegen den Abstand zur Störquelle ist. Deshalb funktioniert das Metallgitter in der Mikrowellentür und deshalb schützt ein Auto bei Blitzschlag.</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <span class="tag">Anwendung</span>
+    <h3>Wo das im Alltag steckt</h3>
+    <ul>
+      <li><b>Auto beim Gewitter:</b> Die Karosserie ist der Käfig. Der Blitzstrom fließt außen über das Blech ab, im Innenraum bleibt es feldfrei &ndash; nicht die Gummireifen sind der Grund.</li>
+      <li><b>Mikrowellentür:</b> Das Lochblech hat Maschen von etwa 2 mm, die Mikrowellen haben rund 12 cm Wellenlänge. Sichtbares Licht kommt durch, die Strahlung nicht.</li>
+      <li><b>Handy im Aufzug:</b> Die Metallkabine schirmt ab, der Empfang bricht zusammen.</li>
+      <li><b>Abgeschirmte Kabel:</b> Das Geflecht um die Signalader hält äußere Störfelder vom Innenleiter fern.</li>
+    </ul>
+  </div>
+
+  <div class="tasks">
+    <div class="modhead"><p class="eyebrow">Aufgaben</p><h2>Selbst überprüfen</h2><div class="rule"></div></div>
+
+    <div class="task s1">
+      <div class="task-h"><span class="task-n">Aufgabe 1</span><span class="stars" aria-label="Anforderungsniveau 1 von 3">★☆☆</span></div>
+      <p>Schiebe die geladene Kugel dicht an die geschlossene Hülle. <b>Beschreibe</b>, was mit den influenzierten Ladungen auf der Hülle geschieht und was die Sonde im Inneren anzeigt.</p>
+      <details class="sol"><summary>Musterlösung</summary><div class="inner">
+        <p>Auf der Seite, die der Kugel zugewandt ist, sammeln sich Ladungen mit entgegengesetztem Vorzeichen, auf der abgewandten Seite gleichnamige. Je näher die Kugel kommt, desto stärker ist diese Ladungstrennung.</p>
+        <p>Die Sonde im Inneren zeigt weiterhin <span class="fml inl"><var>E</var> = 0</span> an. Die Hülle bleibt insgesamt neutral, die Ladungen wurden nur verschoben.</p>
+      </div></details>
+    </div>
+
+    <div class="task s2">
+      <div class="task-h"><span class="task-n">Aufgabe 2</span><span class="stars" aria-label="Anforderungsniveau 2 von 3">★★☆</span></div>
+      <p><b>Erkläre</b>, warum das Innere eines Leiters feldfrei sein <b>muss</b>. <b>Führe</b> dazu einen Widerspruchsbeweis: Nimm an, im Inneren herrsche ein Feld, und <b>zeige</b>, dass dieser Zustand nicht von Dauer sein kann.</p>
+      <details class="sol"><summary>Musterlösung</summary><div class="inner">
+        <p>Annahme: Im Inneren des Leiters herrscht ein Feld <span class="fml inl"><var>E</var> &ne; 0</span>.</p>
+        <p>Dann wirkt auf jedes frei bewegliche Elektron die Kraft <span class="fml inl"><var>F</var> = <var>e</var> &middot; <var>E</var> &ne; 0</span>. Die Elektronen werden also verschoben und sammeln sich an der Oberfläche. Diese Oberflächenladungen bauen ein Gegenfeld auf, das dem ursprünglichen Feld entgegengerichtet ist.</p>
+        <p>Die Verschiebung dauert genau so lange an, wie noch ein resultierendes Feld vorhanden ist. Der Zustand ist also nur dann stabil, wenn sich äußeres Feld und Gegenfeld im Inneren vollständig kompensieren, das heißt <span class="fml inl"><var>E</var><sub>innen</sub> = 0</span>. Die Annahme führt damit auf einen Widerspruch zur Voraussetzung des statischen Falls.</p>
+        <p>Zeitlicher Rahmen: Bei Metallen läuft dieser Ausgleich in etwa 10<sup>&minus;18</sup> bis 10<sup>&minus;16</sup> Sekunden ab, praktisch also sofort.</p>
+      </div></details>
+    </div>
+
+    <div class="task s2">
+      <div class="task-h"><span class="task-n">Aufgabe 3</span><span class="stars" aria-label="Anforderungsniveau 2 von 3">★★☆</span></div>
+      <p>Schalte auf <b>Gitter</b> um und vergrößere die Maschenweite schrittweise. <b>Beschreibe</b> deine Beobachtung und <b>formuliere</b> daraus eine Regel, wann ein Gitter noch abschirmt.</p>
+      <details class="sol"><summary>Musterlösung</summary><div class="inner">
+        <p>Bei kleiner Maschenweite bleibt das Innere praktisch feldfrei, die Sonde zeigt nahezu null. Mit wachsender Maschenweite dringen Feldlinien durch die Öffnungen ein; unmittelbar hinter einer Masche wird ein Restfeld messbar, das zur Mitte hin schnell abklingt.</p>
+        <p>Regel: Ein Gitter schirmt gut ab, solange die Maschenweite <b>klein gegenüber dem Abstand zur Störquelle</b> ist. Das durchgreifende Feld nimmt mit dem Abstand von der Öffnung sehr schnell ab, deshalb wirkt die Abschirmung in der Mitte des Käfigs am besten.</p>
+      </div></details>
+    </div>
+
+    <div class="task s3">
+      <div class="task-h"><span class="task-n">Aufgabe 4</span><span class="stars" aria-label="Anforderungsniveau 3 von 3">★★★</span></div>
+      <p>Ein Mitschüler sagt: &bdquo;Im Auto ist man beim Gewitter sicher, weil die Gummireifen isolieren.&ldquo; <b>Bewerte</b> diese Aussage physikalisch und <b>begründe</b> die tatsächliche Ursache. <b>Beurteile</b> außerdem, ob ein Cabrio mit geschlossenem Stoffverdeck denselben Schutz bietet.</p>
+      <details class="sol"><summary>Musterlösung</summary><div class="inner">
+        <p>Die Aussage ist falsch. Ein Blitz hat Spannungen im Bereich von 10<sup>8</sup> V und überbrückt kilometerlange Luftstrecken; die wenigen Zentimeter Gummi eines Reifens sind dagegen kein Hindernis.</p>
+        <p>Die tatsächliche Ursache ist die Abschirmung durch die metallische Karosserie: Sie wirkt als Faradaykäfig. Der Strom fließt außen über das Blech zur Erde ab, im Innenraum bleibt das Feld null.</p>
+        <p>Beurteilung Cabrio: Stoff ist ein Isolator und bildet keine leitende Hülle. Der Käfig ist damit nach oben offen, die Abschirmung ist unvollständig. Ein Cabrio mit Stoffverdeck bietet deutlich weniger Schutz. Ein Metalldach oder ein durchgehender Überrollbügel aus Metall wäre erforderlich.</p>
+      </div></details>
+    </div>
+  </div>
+</section>
+
+<div class="foot">
+  <span>Feldlabor &middot; Elektrische Felder &middot; Physik Grundkurs Jahrgang 12</span>
+  <span>Alle Felder werden live berechnet &middot; offline lauffähig</span>
+</div>
+</div>
+<script>
+/* =====================================================================
+   FELDLABOR - Elektrische Felder
+   Einzeldatei, offline lauffaehig, iPad-tauglich (ES5-Syntax).
+   ===================================================================== */
+(function () {
+"use strict";
+
+/* ------------------------------------------------------------------
+   1. Physikalische Konstanten und Einheiten
+   Weltkoordinaten in cm, Ladungen in nC, Potential in V, Feld in V/m.
+   ------------------------------------------------------------------ */
+var K_E = 89875.5178736818;      /* E [V/m]  = K_E * q[nC] / r[cm]^2   */
+var K_V = 898.755178736818;      /* phi [V]  = K_V * q[nC] / r[cm]     */
+var K_F = 8.98755178736818e-5;   /* F [N]    = K_F * q1*q2 / r[cm]^2   */
+var Q_E = 1.602176634e-19;       /* Elementarladung in C               */
+var M_E = 9.1093837015e-31;      /* Elektronenmasse in kg              */
+
+/* ------------------------------------------------------------------
+   2. Hilfsfunktionen
+   ------------------------------------------------------------------ */
+function clamp(v, a, b) { return v < a ? a : (v > b ? b : v); }
+function lerp(a, b, t) { return a + (b - a) * t; }
+
+/* Deutsche Zahlformatierung mit Dezimalkomma */
+function nf(v, d) {
+  if (!isFinite(v)) return "—";
+  var s = v.toFixed(d);
+  return s.replace(".", ",");
+}
+
+/* Feldstaerke mit passendem Praefix */
+function fmtE(v) {
+  var a = Math.abs(v);
+  if (a >= 1e6) return { n: nf(v / 1e6, 2), u: "MV/m" };
+  if (a >= 1e3) return { n: nf(v / 1e3, 1), u: "kV/m" };
+  return { n: nf(v, 0), u: "V/m" };
+}
+function fmtV(v) {
+  var a = Math.abs(v);
+  if (a >= 1e3) return { n: nf(v / 1e3, 2), u: "kV" };
+  return { n: nf(v, 0), u: "V" };
+}
+function fmtF(v) {
+  var a = Math.abs(v);
+  if (a >= 1e-3) return { n: nf(v * 1e3, 2), u: "mN" };
+  if (a >= 1e-6) return { n: nf(v * 1e6, 1), u: "µN" };
+  return { n: nf(v * 1e9, 1), u: "nN" };
+}
+
+/* ------------------------------------------------------------------
+   3. Farbverlaeufe (Lookup-Tabellen mit 256 Stufen)
+   ------------------------------------------------------------------ */
+function buildLUT(stops) {
+  var lut = new Uint8Array(256 * 3);
+  for (var i = 0; i < 256; i++) {
+    var t = i / 255, k = 0;
+    while (k < stops.length - 2 && t > stops[k + 1][0]) k++;
+    var s0 = stops[k], s1 = stops[k + 1];
+    var f = (t - s0[0]) / Math.max(1e-6, s1[0] - s0[0]);
+    f = clamp(f, 0, 1);
+    lut[i * 3] = lerp(s0[1], s1[1], f) | 0;
+    lut[i * 3 + 1] = lerp(s0[2], s1[2], f) | 0;
+    lut[i * 3 + 2] = lerp(s0[3], s1[3], f) | 0;
+  }
+  return lut;
+}
+
+/* Betrag der Feldstaerke: dunkel -> indigo -> magenta -> orange -> weiss */
+var LUT_E = buildLUT([
+  [0.00, 3, 5, 12], [0.14, 16, 22, 68], [0.31, 62, 30, 138],
+  [0.50, 142, 40, 148], [0.68, 230, 68, 96], [0.85, 255, 158, 60],
+  [1.00, 255, 244, 214]
+]);
+
+/* Potential: blau (negativ) -> dunkel (null) -> rot (positiv) */
+var LUT_V = buildLUT([
+  [0.00, 90, 200, 255], [0.22, 24, 108, 220], [0.40, 10, 40, 96],
+  [0.50, 5, 8, 16], [0.60, 104, 26, 44], [0.78, 224, 66, 60],
+  [1.00, 255, 190, 130]
+]);
+
+function lutRGB(lut, t) {
+  var i = clamp(Math.round(t * 255), 0, 255) * 3;
+  return "rgb(" + lut[i] + "," + lut[i + 1] + "," + lut[i + 2] + ")";
+}
+
+/* ------------------------------------------------------------------
+   4. Analytisches Feld einer Ladungsmenge (Superposition)
+   charges: [{x, y, q}]  x,y in cm, q in nC
+   ------------------------------------------------------------------ */
+function chargeField(cs, x, y, out) {
+  var ex = 0, ey = 0, i, c, dx, dy, r2, inv;
+  for (i = 0; i < cs.length; i++) {
+    c = cs[i];
+    dx = x - c.x; dy = y - c.y;
+    r2 = dx * dx + dy * dy;
+    if (r2 < 0.0121) r2 = 0.0121;          /* Kern bei 1,1 mm abgeschnitten */
+    inv = K_E * c.q / (r2 * Math.sqrt(r2));
+    ex += inv * dx; ey += inv * dy;
+  }
+  out[0] = ex; out[1] = ey;
+  return out;
+}
+
+function chargePot(cs, x, y) {
+  var v = 0, i, c, dx, dy, r;
+  for (i = 0; i < cs.length; i++) {
+    c = cs[i];
+    dx = x - c.x; dy = y - c.y;
+    r = Math.sqrt(dx * dx + dy * dy);
+    if (r < 0.11) r = 0.11;
+    v += K_V * c.q / r;
+  }
+  return v;
+}
+
+/* ------------------------------------------------------------------
+   5. Numerischer Loeser fuer die Laplace-Gleichung
+   Gauss-Seidel mit Ueberrelaxation (SOR).
+   fix[]  = Dirichlet-Randbedingung (fester Potentialwert)
+   cond[] = frei schwebender Leiter (Potential stellt sich selbst ein,
+            Bedingung: Gesamtinfluenzladung null)
+   ------------------------------------------------------------------ */
+function Solver(nx, ny, hcm) {
+  this.nx = nx; this.ny = ny; this.h = hcm;
+  var n = nx * ny;
+  this.V = new Float32Array(n);
+  this.fix = new Uint8Array(n);
+  this.cond = new Uint8Array(n);
+  this.Ex = new Float32Array(n);
+  this.Ey = new Float32Array(n);
+  this.condIdx = [];      /* Zellen des schwebenden Leiters          */
+  this.faceIdx = [];      /* freie Nachbarzellen an dessen Oberflaeche */
+  this.faceOwn = [];      /* zugehoerige Leiterzelle                  */
+  this.vc = 0;
+  this.omega = 1.92;
+  this.settled = 0;
+}
+
+Solver.prototype.clearGeom = function () {
+  this.fix.fill(0); this.cond.fill(0);
+  this.condIdx.length = 0; this.faceIdx.length = 0; this.faceOwn.length = 0;
+  this.settled = 0;
+};
+
+/* Nach dem Setzen von cond[] aufrufen: Oberflaechenzellen indizieren */
+Solver.prototype.buildFaces = function () {
+  var nx = this.nx, ny = this.ny, cond = this.cond, fix = this.fix;
+  var i, j, k, m, off = [-1, 1, -nx, nx];
+  this.condIdx.length = 0; this.faceIdx.length = 0; this.faceOwn.length = 0;
+  for (j = 1; j < ny - 1; j++) {
+    for (i = 1; i < nx - 1; i++) {
+      k = j * nx + i;
+      if (!cond[k]) continue;
+      this.condIdx.push(k);
+      for (m = 0; m < 4; m++) {
+        var nb = k + off[m];
+        if (!cond[nb] && !fix[nb]) { this.faceIdx.push(nb); this.faceOwn.push(k); }
+      }
+    }
+  }
+};
+
+Solver.prototype.sweep = function (times) {
+  var nx = this.nx, ny = this.ny, V = this.V, fix = this.fix, cond = this.cond;
+  var w = this.omega, s, i, j, k, row, nv;
+  for (s = 0; s < times; s++) {
+    for (j = 1; j < ny - 1; j++) {
+      row = j * nx;
+      for (i = 1; i < nx - 1; i++) {
+        k = row + i;
+        if (fix[k] === 1 || cond[k] === 1) continue;
+        nv = 0.25 * (V[k - 1] + V[k + 1] + V[k - nx] + V[k + nx]);
+        V[k] = V[k] + w * (nv - V[k]);
+      }
+    }
+    /* Schwebender Leiter: Potential = Mittel der Nachbarn an der
+       Oberflaeche. Das ist genau die Bedingung "Gesamtladung null". */
+    var fi = this.faceIdx, L = fi.length;
+    if (L) {
+      var sum = 0;
+      for (i = 0; i < L; i++) sum += V[fi[i]];
+      var vc = sum / L;
+      this.vc = vc;
+      var ci = this.condIdx;
+      for (i = 0; i < ci.length; i++) V[ci[i]] = vc;
+    }
+  }
+  this.settled += times;
+};
+
+Solver.prototype.computeE = function () {
+  var nx = this.nx, ny = this.ny, V = this.V, Ex = this.Ex, Ey = this.Ey;
+  var hm = this.h / 100;                 /* Zellweite in Metern */
+  var d2 = 2 * hm, i, j, k, row;
+  for (j = 1; j < ny - 1; j++) {
+    row = j * nx;
+    for (i = 1; i < nx - 1; i++) {
+      k = row + i;
+      Ex[k] = -(V[k + 1] - V[k - 1]) / d2;
+      Ey[k] = -(V[k + nx] - V[k - nx]) / d2;
+    }
+  }
+  /* Raender aus dem Inneren fortsetzen */
+  for (i = 0; i < nx; i++) {
+    Ex[i] = Ex[nx + i]; Ey[i] = Ey[nx + i];
+    k = (ny - 1) * nx + i;
+    Ex[k] = Ex[k - nx]; Ey[k] = Ey[k - nx];
+  }
+  for (j = 0; j < ny; j++) {
+    row = j * nx;
+    Ex[row] = Ex[row + 1]; Ey[row] = Ey[row + 1];
+    Ex[row + nx - 1] = Ex[row + nx - 2]; Ey[row + nx - 1] = Ey[row + nx - 2];
+  }
+};
+
+/* Bilineare Interpolation an Gitterkoordinaten (gx, gy) */
+Solver.prototype.sampleArr = function (arr, gx, gy) {
+  var nx = this.nx, ny = this.ny;
+  gx = clamp(gx, 0, nx - 1.001); gy = clamp(gy, 0, ny - 1.001);
+  var i = gx | 0, j = gy | 0, fx = gx - i, fy = gy - j, k = j * nx + i;
+  var a = arr[k], b = arr[k + 1], c = arr[k + nx], d = arr[k + nx + 1];
+  return lerp(lerp(a, b, fx), lerp(c, d, fx), fy);
+};
+
+/* ------------------------------------------------------------------
+   6. Marching Squares fuer Aequipotentiallinien
+   Liefert Segmente in Gitterkoordinaten: [x1,y1,x2,y2, ...]
+   ------------------------------------------------------------------ */
+var MS_TAB = [
+  [], [3, 0], [0, 1], [3, 1], [1, 2], [3, 0, 1, 2], [0, 2], [3, 2],
+  [2, 3], [2, 0], [0, 3, 1, 2], [2, 1], [1, 3], [1, 0], [0, 3], []
+];
+
+function marchingSquares(V, nx, ny, level, step, out) {
+  var i, j, k, a, b, c, d, code, e, t, tab, m;
+  var px = [0, 0, 0, 0], py = [0, 0, 0, 0];
+  for (j = 0; j < ny - step; j += step) {
+    for (i = 0; i < nx - step; i += step) {
+      k = j * nx + i;
+      a = V[k]; b = V[k + step]; c = V[k + step * nx + step]; d = V[k + step * nx];
+      code = (a > level ? 1 : 0) | (b > level ? 2 : 0) | (c > level ? 4 : 0) | (d > level ? 8 : 0);
+      tab = MS_TAB[code];
+      if (!tab.length) continue;
+      /* Kantenschnittpunkte */
+      t = (level - a) / (b - a); px[0] = i + step * t; py[0] = j;
+      t = (level - b) / (c - b); px[1] = i + step;     py[1] = j + step * t;
+      t = (level - d) / (c - d); px[2] = i + step * t; py[2] = j + step;
+      t = (level - a) / (d - a); px[3] = i;            py[3] = j + step * t;
+      for (m = 0; m < tab.length; m += 2) {
+        e = tab[m];
+        out.push(px[e], py[e]);
+        e = tab[m + 1];
+        out.push(px[e], py[e]);
+      }
+    }
+  }
+  return out;
+}
+
+/* ------------------------------------------------------------------
+   7. Feldlinien-Verfolgung (Runge-Kutta 4. Ordnung auf dem
+   normierten Feldvektor)
+   ------------------------------------------------------------------ */
+function traceLine(fieldFn, x0, y0, dir, hStep, maxSteps, box, stopFn) {
+  var pts = [x0, y0];
+  var e = [0, 0];
+  var x = x0, y = y0, s, m;
+  var k1x, k1y, k2x, k2y, k3x, k3y, k4x, k4y;
+
+  function unit(px, py, o) {
+    fieldFn(px, py, e);
+    var m2 = Math.sqrt(e[0] * e[0] + e[1] * e[1]);
+    if (m2 < 1e-9) { o[0] = 0; o[1] = 0; return 0; }
+    o[0] = dir * e[0] / m2; o[1] = dir * e[1] / m2;
+    return m2;
+  }
+  var u = [0, 0];
+  for (s = 0; s < maxSteps; s++) {
+    m = unit(x, y, u); if (m === 0) break;
+    k1x = u[0]; k1y = u[1];
+    unit(x + hStep * 0.5 * k1x, y + hStep * 0.5 * k1y, u); k2x = u[0]; k2y = u[1];
+    unit(x + hStep * 0.5 * k2x, y + hStep * 0.5 * k2y, u); k3x = u[0]; k3y = u[1];
+    unit(x + hStep * k3x, y + hStep * k3y, u); k4x = u[0]; k4y = u[1];
+    x += hStep * (k1x + 2 * k2x + 2 * k3x + k4x) / 6;
+    y += hStep * (k1y + 2 * k2y + 2 * k3y + k4y) / 6;
+    if (x < box[0] || x > box[2] || y < box[1] || y > box[3]) { pts.push(x, y); break; }
+    pts.push(x, y);
+    if (stopFn && stopFn(x, y)) break;
+  }
+  return pts;
+}
+/* ------------------------------------------------------------------
+   8. Buehne: drei uebereinanderliegende Canvas-Ebenen
+      cv-base  statisch (Farbfeld, Aequipotentiale, Feldlinien)
+      cv-flow  animierte Stroemung mit Nachleuchtspur
+      cv-ui    Ladungen, Sonde, Vektoren, Beschriftung
+   ------------------------------------------------------------------ */
+var DPR = Math.min(window.devicePixelRatio || 1, 2);
+var LOWPOW = (window.innerWidth < 620);
+
+function Stage(root, cfg) {
+  var self = this;
+  this.root = root;
+  this.cfg = cfg;
+  this.wrap = root.querySelector("[data-canvas]");
+  this.panel = root.querySelector("[data-panel]");
+  this.rdBox = root.querySelector("[data-readout]");
+  this.legendBox = root.querySelector("[data-legend]");
+  this.cvB = root.querySelector(".cv-base");
+  this.cvF = root.querySelector(".cv-flow");
+  this.cvU = root.querySelector(".cv-ui");
+  this.ctxB = this.cvB.getContext("2d");
+  this.ctxF = this.cvF.getContext("2d");
+  this.ctxU = this.cvU.getContext("2d");
+
+  this.st = {};
+  var k;
+  for (k in cfg.state) if (cfg.state.hasOwnProperty(k)) this.st[k] = cfg.state[k];
+  this.layers = { lines: true, arrows: false, equi: false, flow: true, map: "E" };
+  for (k in cfg.layers) if (cfg.layers.hasOwnProperty(k)) this.layers[k] = cfg.layers[k];
+
+  this.worldW = cfg.worldW || 24;
+  this.charges = [];
+  this.probe = { x: 4, y: -3 };
+  this.needBase = true;
+  this.frame = 0;
+  this.drag = null;
+  this.evec = [0, 0];
+  this.miniCv = null;
+
+  /* Kleines Offscreen-Bild fuer das Farbfeld */
+  this.off = document.createElement("canvas");
+  this.offCtx = this.off.getContext("2d");
+
+  /* Potentialgitter fuer Aequipotentiallinien (nur Ladungsmodus) */
+  this.pgN = LOWPOW ? 96 : 132;
+
+  if (cfg.kind === "grid") {
+    var gx = cfg.gx || (LOWPOW ? 128 : 176);
+    var gy = cfg.gy || Math.round(gx * 0.66);
+    this.solver = new Solver(gx, gy, this.worldW / (gx - 1));
+  }
+
+  if (cfg.init) cfg.init(this);
+  this.buildPanel();
+  this.buildLegend();
+  this.bindPointer();
+  this.resize();
+
+  window.addEventListener("resize", function () { self.resize(); });
+}
+
+/* ---------- Koordinaten ---------- */
+Stage.prototype.resize = function () {
+  var w = this.wrap.clientWidth || 640;
+  var h = Math.round(clamp(w * 0.63, 250, 460));
+  this.W = w; this.H = h;
+  this.wrap.style.height = h + "px";
+  var cs = [this.cvB, this.cvF, this.cvU], i, c;
+  for (i = 0; i < 3; i++) {
+    c = cs[i];
+    c.width = Math.round(w * DPR); c.height = Math.round(h * DPR);
+  }
+  this.ctxB.setTransform(DPR, 0, 0, DPR, 0, 0);
+  this.ctxF.setTransform(DPR, 0, 0, DPR, 0, 0);
+  this.ctxU.setTransform(DPR, 0, 0, DPR, 0, 0);
+  this.scale = w / this.worldW;                 /* Pixel pro cm */
+  this.worldH = h / this.scale;
+  this.box = [-this.worldW / 2, -this.worldH / 2, this.worldW / 2, this.worldH / 2];
+
+  var mw = LOWPOW ? 104 : 140;
+  this.off.width = mw;
+  this.off.height = Math.max(8, Math.round(mw * h / w));
+  this.img = this.offCtx.createImageData(this.off.width, this.off.height);
+
+  /* Gitter so dimensionieren, dass die Zellen quadratisch sind.
+     Sonst waere der Gradient in y-Richtung falsch skaliert. */
+  if (this.cfg.kind === "grid") {
+    var gx2 = this.cfg.gx || (LOWPOW ? 128 : 176);
+    var gy2 = Math.max(28, Math.round(gx2 * this.worldH / this.worldW));
+    if (!this.solver || this.solver.nx !== gx2 || this.solver.ny !== gy2) {
+      this.solver = new Solver(gx2, gy2, this.worldW / (gx2 - 1));
+    }
+  }
+
+  this.initParticles();
+  this.needBase = true;
+  if (this.solver) this.rebuild();
+  this.drawFlowClear();
+};
+
+Stage.prototype.sx = function (x) { return (x + this.worldW / 2) * this.scale; };
+Stage.prototype.sy = function (y) { return (y + this.worldH / 2) * this.scale; };
+Stage.prototype.wx = function (px) { return px / this.scale - this.worldW / 2; };
+Stage.prototype.wy = function (py) { return py / this.scale - this.worldH / 2; };
+
+/* ---------- Feldzugriff ---------- */
+Stage.prototype.E = function (x, y, out) {
+  if (this.solver) {
+    var s = this.solver;
+    var gx = (x - this.box[0]) / this.worldW * (s.nx - 1);
+    var gy = (y - this.box[1]) / this.worldH * (s.ny - 1);
+    out[0] = s.sampleArr(s.Ex, gx, gy);
+    out[1] = s.sampleArr(s.Ey, gx, gy);
+    return out;
+  }
+  return chargeField(this.charges, x, y, out);
+};
+Stage.prototype.Pot = function (x, y) {
+  if (this.solver) {
+    var s = this.solver;
+    var gx = (x - this.box[0]) / this.worldW * (s.nx - 1);
+    var gy = (y - this.box[1]) / this.worldH * (s.ny - 1);
+    return s.sampleArr(s.V, gx, gy);
+  }
+  return chargePot(this.charges, x, y);
+};
+Stage.prototype.mag = function (x, y) {
+  this.E(x, y, this.evec);
+  return Math.sqrt(this.evec[0] * this.evec[0] + this.evec[1] * this.evec[1]);
+};
+
+/* Logarithmische Normierung des Feldbetrags auf [0,1] */
+Stage.prototype.tE = function (m) {
+  var lo = this.cfg.eLo || 2600, hi = this.cfg.eHi || 420000;
+  return clamp(Math.log(1 + m / lo) / Math.log(1 + hi / lo), 0, 1);
+};
+Stage.prototype.tV = function (v) {
+  var lo = this.cfg.vLo || 25, hi = this.cfg.vHi || 3600;
+  var d = Math.log(1 + Math.abs(v) / lo) / Math.log(1 + hi / lo);
+  return clamp(0.5 + 0.5 * (v < 0 ? -d : d), 0, 1);
+};
+
+/* ---------- Gitterloeser neu aufbauen ---------- */
+Stage.prototype.rebuild = function () {
+  if (!this.solver || !this.cfg.geom) return;
+  var s = this.solver;
+  s.clearGeom();
+  this.cfg.geom(this, s);
+  s.buildFaces();
+  s.settled = 0;
+  this.needBase = true;
+};
+
+/* ---------- Ebene 1: Basisbild ---------- */
+Stage.prototype.drawBase = function () {
+  var c = this.ctxB, W = this.W, H = this.H;
+  c.clearRect(0, 0, W, H);
+  c.fillStyle = "#03050a";
+  c.fillRect(0, 0, W, H);
+
+  if (this.layers.map !== "off") this.drawMap();
+  if (this.layers.equi) this.drawEqui();
+  if (this.layers.lines) this.drawFieldLines();
+  if (this.layers.arrows) this.drawArrows();
+  if (this.cfg.decorBase) this.cfg.decorBase(this, c);
+  this.needBase = false;
+};
+
+Stage.prototype.drawMap = function () {
+  var mw = this.off.width, mh = this.off.height;
+  var d = this.img.data, i, j, p = 0, x, y, t, idx;
+  var isV = (this.layers.map === "V");
+  var lut = isV ? LUT_V : LUT_E;
+  var ev = [0, 0];
+  for (j = 0; j < mh; j++) {
+    y = this.box[1] + (j + 0.5) / mh * this.worldH;
+    for (i = 0; i < mw; i++) {
+      x = this.box[0] + (i + 0.5) / mw * this.worldW;
+      if (isV) {
+        t = this.tV(this.Pot(x, y));
+      } else {
+        this.E(x, y, ev);
+        t = this.tE(Math.sqrt(ev[0] * ev[0] + ev[1] * ev[1]));
+      }
+      idx = (clamp(Math.round(t * 255), 0, 255)) * 3;
+      d[p++] = lut[idx]; d[p++] = lut[idx + 1]; d[p++] = lut[idx + 2]; d[p++] = 255;
+    }
+  }
+  this.offCtx.putImageData(this.img, 0, 0);
+  var c = this.ctxB;
+  c.save();
+  c.imageSmoothingEnabled = true;
+  if (c.webkitImageSmoothingEnabled !== undefined) c.webkitImageSmoothingEnabled = true;
+  c.globalAlpha = 0.88;
+  c.drawImage(this.off, 0, 0, this.W, this.H);
+  c.restore();
+};
+
+Stage.prototype.drawEqui = function () {
+  var c = this.ctxB, self = this;
+  var levels = this.cfg.levels ? this.cfg.levels(this) : [];
+  if (!levels.length) return;
+  var nx, ny, V, toX, toY;
+
+  if (this.solver) {
+    nx = this.solver.nx; ny = this.solver.ny; V = this.solver.V;
+    toX = function (g) { return self.sx(self.box[0] + g / (nx - 1) * self.worldW); };
+    toY = function (g) { return self.sy(self.box[1] + g / (ny - 1) * self.worldH); };
+  } else {
+    nx = this.pgN; ny = Math.max(8, Math.round(nx * this.H / this.W));
+    if (!this.pgrid || this.pgrid.length !== nx * ny) this.pgrid = new Float32Array(nx * ny);
+    V = this.pgrid;
+    var i, j;
+    for (j = 0; j < ny; j++) {
+      var yy = this.box[1] + j / (ny - 1) * this.worldH;
+      for (i = 0; i < nx; i++) {
+        V[j * nx + i] = chargePot(this.charges, this.box[0] + i / (nx - 1) * this.worldW, yy);
+      }
+    }
+    toX = function (g) { return self.sx(self.box[0] + g / (nx - 1) * self.worldW); };
+    toY = function (g) { return self.sy(self.box[1] + g / (ny - 1) * self.worldH); };
+  }
+
+  c.save();
+  c.lineWidth = 1.1;
+  c.strokeStyle = "rgba(56,217,188,.62)";
+  c.setLineDash([5, 4]);
+  var seg = [], m, L;
+  for (m = 0; m < levels.length; m++) {
+    seg.length = 0;
+    marchingSquares(V, nx, ny, levels[m], 1, seg);
+    c.beginPath();
+    for (L = 0; L < seg.length; L += 4) {
+      c.moveTo(toX(seg[L]), toY(seg[L + 1]));
+      c.lineTo(toX(seg[L + 2]), toY(seg[L + 3]));
+    }
+    c.stroke();
+  }
+  c.restore();
+};
+
+Stage.prototype.drawFieldLines = function () {
+  var c = this.ctxB, self = this;
+  var seeds = this.cfg.seeds ? this.cfg.seeds(this) : [];
+  if (!seeds.length) return;
+  var fn = function (x, y, o) { return self.E(x, y, o); };
+  var stop = this.cfg.stopFn ? this.cfg.stopFn(this) : null;
+  var box = [this.box[0] - 0.4, this.box[1] - 0.4, this.box[2] + 0.4, this.box[3] + 0.4];
+  var hStep = this.solver ? 0.22 : 0.19;
+  var maxS = this.drag ? 210 : (LOWPOW ? 300 : 460);
+
+  c.save();
+  c.lineJoin = "round"; c.lineCap = "round";
+  var i, k, pts;
+  for (i = 0; i < seeds.length; i++) {
+    pts = traceLine(fn, seeds[i].x, seeds[i].y, seeds[i].d, hStep, maxS, box, stop);
+    if (pts.length < 6) continue;
+    /* Von negativen Ladungen rueckwaerts verfolgte Linien nur zeichnen,
+       wenn sie aus dem Unendlichen kommen. Endet die Linie auf einer
+       positiven Ladung, wurde sie von dort aus bereits gezeichnet. */
+    if (seeds[i].skipCaptured) {
+      var lx = pts[pts.length - 2], ly = pts[pts.length - 1];
+      if (lx > box[0] && lx < box[2] && ly > box[1] && ly < box[3]) continue;
+    }
+    this.strokeGraded(c, pts);
+    this.arrowsOnPath(c, pts);
+  }
+  c.restore();
+};
+
+/* Die Helligkeit der Feldlinie folgt der oertlichen Feldstaerke.
+   So bleibt sichtbar, dass eine Linie im schwachen Feld auch fuer ein
+   schwaches Feld steht - etwa im Innenraum des Faradaykaefigs. */
+Stage.prototype.strokeGraded = function (c, pts) {
+  var n = pts.length >> 1, i, k, ev = [0, 0], NB = 6;
+  if (n < 3) return;
+  var bs = new Uint8Array(n), t;
+  for (i = 0; i < n; i++) {
+    this.E(pts[i * 2], pts[i * 2 + 1], ev);
+    t = this.tE(Math.sqrt(ev[0] * ev[0] + ev[1] * ev[1]));
+    bs[i] = clamp(Math.floor(t * NB), 0, NB - 1);
+  }
+  var start = 0;
+  for (i = 1; i < n; i++) {
+    if (bs[i] !== bs[start] || i === n - 1) {
+      var a = 0.16 + 0.74 * (bs[start] + 0.5) / NB;
+      c.beginPath();
+      c.moveTo(this.sx(pts[start * 2]), this.sy(pts[start * 2 + 1]));
+      for (k = start + 1; k <= i; k++) c.lineTo(this.sx(pts[k * 2]), this.sy(pts[k * 2 + 1]));
+      c.strokeStyle = "rgba(150,120,255," + (a * 0.22).toFixed(3) + ")";
+      c.lineWidth = 4.6; c.stroke();
+      c.strokeStyle = "rgba(212,197,255," + a.toFixed(3) + ")";
+      c.lineWidth = 1.35; c.stroke();
+      start = i;
+    }
+  }
+};
+
+/* Richtungspfeile in gleichmaessigen Abstaenden auf der Feldlinie */
+Stage.prototype.arrowsOnPath = function (c, pts) {
+  var acc = 0, want = 3.5, k, x0, y0, x1, y1, dx, dy, d;
+  c.fillStyle = "rgba(222,212,255,.78)";
+  for (k = 2; k < pts.length; k += 2) {
+    x0 = pts[k - 2]; y0 = pts[k - 1]; x1 = pts[k]; y1 = pts[k + 1];
+    dx = x1 - x0; dy = y1 - y0; d = Math.sqrt(dx * dx + dy * dy);
+    acc += d;
+    if (acc >= want && d > 1e-6) {
+      acc = 0;
+      var px = this.sx(x1), py = this.sy(y1);
+      var a = Math.atan2(dy, dx), s = 4.6;
+      c.beginPath();
+      c.moveTo(px + Math.cos(a) * s, py + Math.sin(a) * s);
+      c.lineTo(px + Math.cos(a + 2.55) * s, py + Math.sin(a + 2.55) * s);
+      c.lineTo(px + Math.cos(a - 2.55) * s, py + Math.sin(a - 2.55) * s);
+      c.closePath(); c.fill();
+    }
+  }
+};
+
+Stage.prototype.drawArrows = function () {
+  var c = this.ctxB, step = 1.7, ev = [0, 0];
+  var x, y, m, t, len, a;
+  c.save();
+  c.lineCap = "round";
+  for (y = this.box[1] + step * 0.6; y < this.box[3]; y += step) {
+    for (x = this.box[0] + step * 0.6; x < this.box[2]; x += step) {
+      this.E(x, y, ev);
+      m = Math.sqrt(ev[0] * ev[0] + ev[1] * ev[1]);
+      if (m < 1) continue;
+      t = this.tE(m);
+      len = (0.32 + 0.62 * t) * step * this.scale;
+      a = Math.atan2(ev[1], ev[0]);
+      var px = this.sx(x), py = this.sy(y);
+      var ex = px + Math.cos(a) * len, ey = py + Math.sin(a) * len;
+      c.strokeStyle = lutRGB(LUT_E, clamp(0.35 + t * 0.65, 0, 1));
+      c.globalAlpha = 0.42 + 0.5 * t;
+      c.lineWidth = 1.5;
+      c.beginPath();
+      c.moveTo(px - Math.cos(a) * len * 0.5, py - Math.sin(a) * len * 0.5);
+      c.lineTo(ex - Math.cos(a) * len * 0.5, ey - Math.sin(a) * len * 0.5);
+      c.stroke();
+      c.fillStyle = c.strokeStyle;
+      c.beginPath();
+      var hx = ex - Math.cos(a) * len * 0.5, hy = ey - Math.sin(a) * len * 0.5, s = 4.2;
+      c.moveTo(hx + Math.cos(a) * s, hy + Math.sin(a) * s);
+      c.lineTo(hx + Math.cos(a + 2.5) * s, hy + Math.sin(a + 2.5) * s);
+      c.lineTo(hx + Math.cos(a - 2.5) * s, hy + Math.sin(a - 2.5) * s);
+      c.closePath(); c.fill();
+    }
+  }
+  c.restore();
+};
+
+/* ---------- Ebene 2: Stroemung ---------- */
+Stage.prototype.initParticles = function () {
+  var n = LOWPOW ? 220 : 460;
+  this.pn = n;
+  this.px = new Float32Array(n);
+  this.py = new Float32Array(n);
+  this.pl = new Float32Array(n);
+  this.pt = new Float32Array(n);
+  for (var i = 0; i < n; i++) this.respawn(i, true);
+};
+Stage.prototype.respawn = function (i, initial) {
+  this.px[i] = this.box[0] + Math.random() * this.worldW;
+  this.py[i] = this.box[1] + Math.random() * this.worldH;
+  this.pl[i] = 26 + Math.random() * 90;
+  this.pt[i] = initial ? Math.random() * 60 : 0;
+};
+Stage.prototype.drawFlowClear = function () {
+  this.ctxF.clearRect(0, 0, this.W, this.H);
+};
+Stage.prototype.stepFlow = function () {
+  var c = this.ctxF, i, n = this.pn, ev = [0, 0];
+  c.save();
+  c.globalCompositeOperation = "destination-out";
+  c.fillStyle = "rgba(0,0,0,0.115)";
+  c.fillRect(0, 0, this.W, this.H);
+  c.restore();
+
+  if (!this.layers.flow) return;
+  c.save();
+  c.globalCompositeOperation = "lighter";
+  c.lineCap = "round";
+  var minx = this.box[0] - 0.5, maxx = this.box[2] + 0.5;
+  var miny = this.box[1] - 0.5, maxy = this.box[3] + 0.5;
+  for (i = 0; i < n; i++) {
+    var x = this.px[i], y = this.py[i];
+    this.E(x, y, ev);
+    var m = Math.sqrt(ev[0] * ev[0] + ev[1] * ev[1]);
+    this.pt[i]++;
+    if (m < 12 || this.pt[i] > this.pl[i] || x < minx || x > maxx || y < miny || y > maxy) {
+      this.respawn(i, false); continue;
+    }
+    var t = this.tE(m);
+    var sp = (0.055 + 0.30 * t * t);
+    var nx2 = x + ev[0] / m * sp, ny2 = y + ev[1] / m * sp;
+    this.px[i] = nx2; this.py[i] = ny2;
+    var fade = 1;
+    var age = this.pt[i] / this.pl[i];
+    if (age > 0.8) fade = (1 - age) / 0.2;
+    if (age < 0.08) fade = age / 0.08;
+    c.strokeStyle = lutRGB(LUT_E, clamp(0.22 + t * 0.78, 0, 1));
+    c.globalAlpha = clamp(0.12 + 0.74 * t, 0, 1) * fade;
+    c.lineWidth = 0.9 + 1.5 * t;
+    c.beginPath();
+    c.moveTo(this.sx(x), this.sy(y));
+    c.lineTo(this.sx(nx2), this.sy(ny2));
+    c.stroke();
+  }
+  c.restore();
+};
+
+/* ---------- Ebene 3: Objekte ---------- */
+Stage.prototype.drawCharge = function (c, ch) {
+  var px = this.sx(ch.x), py = this.sy(ch.y);
+  var q = Math.abs(ch.q);
+  var r = clamp(7 + Math.sqrt(q) * 3.6, 8, 21);
+  var pos = ch.q >= 0;
+  var col = pos ? "255,105,84" : "70,180,255";
+  var pulse = 1 + 0.10 * Math.sin(this.frame * 0.045 + ch.x);
+
+  var g = c.createRadialGradient(px, py, r * 0.4, px, py, r * 4.2 * pulse);
+  g.addColorStop(0, "rgba(" + col + ",.55)");
+  g.addColorStop(0.35, "rgba(" + col + ",.16)");
+  g.addColorStop(1, "rgba(" + col + ",0)");
+  c.fillStyle = g;
+  c.beginPath(); c.arc(px, py, r * 4.2 * pulse, 0, 6.2832); c.fill();
+
+  var g2 = c.createRadialGradient(px - r * 0.3, py - r * 0.34, r * 0.1, px, py, r);
+  g2.addColorStop(0, "#ffffff");
+  g2.addColorStop(0.4, pos ? "#ff8f78" : "#7fd0ff");
+  g2.addColorStop(1, pos ? "#c22c22" : "#0d69b8");
+  c.fillStyle = g2;
+  c.beginPath(); c.arc(px, py, r, 0, 6.2832); c.fill();
+  c.strokeStyle = "rgba(255,255,255,.5)"; c.lineWidth = 1.1; c.stroke();
+
+  c.strokeStyle = "#fff"; c.lineWidth = 2.4; c.lineCap = "round";
+  var s = r * 0.52;
+  c.beginPath(); c.moveTo(px - s, py); c.lineTo(px + s, py);
+  if (pos) { c.moveTo(px, py - s); c.lineTo(px, py + s); }
+  c.stroke();
+};
+
+Stage.prototype.drawProbe = function (c, showVec) {
+  var px = this.sx(this.probe.x), py = this.sy(this.probe.y);
+  this.E(this.probe.x, this.probe.y, this.evec);
+  var ex = this.evec[0], ey = this.evec[1];
+  var m = Math.sqrt(ex * ex + ey * ey);
+
+  if (showVec !== false && m > 0.5) {
+    var t = this.tE(m);
+    var len = (18 + 96 * t);
+    var a = Math.atan2(ey, ex);
+    var qx = px + Math.cos(a) * len, qy = py + Math.sin(a) * len;
+    c.save();
+    c.shadowColor = "rgba(255,210,74,.9)"; c.shadowBlur = 12;
+    c.strokeStyle = "#ffd24a"; c.lineWidth = 3; c.lineCap = "round";
+    c.beginPath(); c.moveTo(px, py); c.lineTo(qx, qy); c.stroke();
+    c.fillStyle = "#ffd24a";
+    var s = 8.5;
+    c.beginPath();
+    c.moveTo(qx + Math.cos(a) * s, qy + Math.sin(a) * s);
+    c.lineTo(qx + Math.cos(a + 2.5) * s, qy + Math.sin(a + 2.5) * s);
+    c.lineTo(qx + Math.cos(a - 2.5) * s, qy + Math.sin(a - 2.5) * s);
+    c.closePath(); c.fill();
+    c.restore();
+  }
+  c.save();
+  c.fillStyle = "rgba(255,210,74,.16)";
+  c.beginPath(); c.arc(px, py, 13, 0, 6.2832); c.fill();
+  c.strokeStyle = "#ffd24a"; c.lineWidth = 2;
+  c.beginPath(); c.arc(px, py, 8.5, 0, 6.2832); c.stroke();
+  c.fillStyle = "#ffd24a";
+  c.beginPath(); c.arc(px, py, 2.6, 0, 6.2832); c.fill();
+  c.font = "700 10px Arial, sans-serif";
+  c.fillStyle = "rgba(255,210,74,.85)";
+  c.textAlign = "center";
+  c.fillText("P", px, py - 17);
+  c.restore();
+};
+
+Stage.prototype.drawUI = function () {
+  var c = this.ctxU, i;
+  c.clearRect(0, 0, this.W, this.H);
+  if (this.cfg.decorUI) this.cfg.decorUI(this, c);
+  for (i = 0; i < this.charges.length; i++) this.drawCharge(c, this.charges[i]);
+  if (this.cfg.showProbe !== false) this.drawProbe(c, this.cfg.probeVec);
+  if (this.cfg.decorTop) this.cfg.decorTop(this, c);
+};
+
+/* ---------- Anzeigen ---------- */
+Stage.prototype.updateReadout = function () {
+  if (!this.cfg.readouts) return;
+  var rs = this.cfg.readouts(this), i, html = "";
+  for (i = 0; i < rs.length; i++) {
+    html += '<div class="rd ' + (rs[i].c || "") + '"><span class="k">' + rs[i].k +
+      '</span><span class="v">' + rs[i].v + (rs[i].u ? '<em>' + rs[i].u + '</em>' : '') + '</span></div>';
+  }
+  this.rdBox.innerHTML = html;
+};
+
+Stage.prototype.buildLegend = function () {
+  if (!this.legendBox) return;
+  var items = (this.cfg.legend || []).concat([
+    { t: "l", c: "#cdbcff", n: "Feldlinie" },
+    { t: "l", c: "#38d9bc", n: "Äquipotentiallinie" },
+    { t: "s", c: "#ff6954", n: "positive Ladung" },
+    { t: "s", c: "#46b4ff", n: "negative Ladung" },
+    { t: "s", c: "#ffd24a", n: "Probeladung P" }
+  ]);
+  var h = "", i;
+  for (i = 0; i < items.length; i++) {
+    var cl = items[i].t === "l" ? "swl" : "sw";
+    h += '<i><span class="' + cl + '" style="background:' + items[i].c + '"></span>' + items[i].n + "</i>";
+  }
+  this.legendBox.innerHTML = h;
+};
+
+/* ---------- Bedienfeld ---------- */
+Stage.prototype.buildPanel = function () {
+  var self = this, cfg = this.cfg, g, it, i, j;
+  this.panel.innerHTML = "";
+  this._reg = [];
+  for (i = 0; i < cfg.controls.length; i++) {
+    g = cfg.controls[i];
+    var box = document.createElement("div");
+    box.className = "pgroup";
+    if (g.label) box.innerHTML = '<p class="plabel">' + g.label + "</p>";
+    for (j = 0; j < g.items.length; j++) {
+      it = g.items[j];
+      box.appendChild(this.makeControl(it));
+    }
+    this.panel.appendChild(box);
+  }
+};
+
+Stage.prototype.makeControl = function (it) {
+  var self = this, el;
+  if (it.t === "slider") {
+    el = document.createElement("div"); el.className = "ctl";
+    var head = document.createElement("div"); head.className = "ctl-h";
+    var nm = document.createElement("span"); nm.className = "nm"; nm.innerHTML = it.name;
+    var val = document.createElement("span"); val.className = "val";
+    head.appendChild(nm); head.appendChild(val);
+    var inp = document.createElement("input");
+    inp.type = "range"; inp.min = it.min; inp.max = it.max; inp.step = it.step;
+    inp.value = this.st[it.key];
+    inp.setAttribute("aria-label", it.name.replace(/<[^>]+>/g, ""));
+    var upd = function (fire) {
+      var v = parseFloat(inp.value);
+      self.st[it.key] = v;
+      val.innerHTML = it.fmt ? it.fmt(v) : nf(v, 1);
+      var pct = (v - it.min) / (it.max - it.min) * 100;
+      inp.style.background = "linear-gradient(90deg,var(--acc) " + pct + "%,#27384f " + pct + "%)";
+      inp.style.backgroundSize = "100% 4px";
+      inp.style.backgroundPosition = "0 50%";
+      inp.style.backgroundRepeat = "no-repeat";
+      if (fire && it.on) it.on(self, v);
+      if (fire) { if (self.cfg.apply) self.cfg.apply(self); self.needBase = true; }
+    };
+    inp.addEventListener("input", function () { upd(true); });
+    upd(false);
+    el.appendChild(head); el.appendChild(inp);
+    this._reg = this._reg || []; this._reg.push({ el: inp, upd: upd });
+    return el;
+  }
+  if (it.t === "seg") {
+    el = document.createElement("div"); el.className = "ctl";
+    if (it.name) el.innerHTML = '<div class="ctl-h"><span class="nm">' + it.name + "</span></div>";
+    var seg = document.createElement("div"); seg.className = "seg";
+    var mk = function (o) {
+      var b = document.createElement("button");
+      b.type = "button"; b.textContent = o[1];
+      b.setAttribute("aria-pressed", String(self.st[it.key] === o[0]));
+      b.addEventListener("pointerdown", function (e) {
+        e.preventDefault();
+        self.st[it.key] = o[0];
+        var bs = seg.querySelectorAll("button"), q;
+        for (q = 0; q < bs.length; q++) bs[q].setAttribute("aria-pressed", String(bs[q] === b));
+        if (it.on) it.on(self, o[0]);
+        if (self.cfg.apply) self.cfg.apply(self);
+        self.needBase = true;
+      });
+      return b;
+    };
+    for (var m = 0; m < it.opts.length; m++) seg.appendChild(mk(it.opts[m]));
+    el.appendChild(seg);
+    return el;
+  }
+  if (it.t === "layers") {
+    el = document.createElement("div");
+    var defs = [
+      { k: "lines", n: "Feldlinien", c: "#cdbcff" },
+      { k: "flow", n: "Strömung", c: "#ff9a4c" },
+      { k: "equi", n: "Äquipotential", c: "#38d9bc" },
+      { k: "arrows", n: "Vektorpfeile", c: "#7fb2ff" }
+    ];
+    var chips = document.createElement("div"); chips.className = "chips";
+    var mkc = function (d) {
+      var b = document.createElement("button");
+      b.type = "button"; b.className = "chip";
+      b.style.setProperty("--cc", d.c);
+      b.innerHTML = '<span class="dot"></span>' + d.n;
+      b.setAttribute("aria-pressed", String(!!self.layers[d.k]));
+      b.addEventListener("pointerdown", function (e) {
+        e.preventDefault();
+        self.layers[d.k] = !self.layers[d.k];
+        b.setAttribute("aria-pressed", String(!!self.layers[d.k]));
+        if (d.k === "flow" && !self.layers.flow) self.drawFlowClear();
+        self.needBase = true;
+      });
+      return b;
+    };
+    for (var z = 0; z < defs.length; z++) chips.appendChild(mkc(defs[z]));
+    el.appendChild(chips);
+
+    var wrap2 = document.createElement("div"); wrap2.className = "ctl";
+    wrap2.style.marginTop = "10px";
+    wrap2.innerHTML = '<div class="ctl-h"><span class="nm">Hintergrund</span></div>';
+    var seg2 = document.createElement("div"); seg2.className = "seg";
+    var opts = [["E", "Feldstärke"], ["V", "Potential"], ["off", "aus"]];
+    var mk2 = function (o) {
+      var b = document.createElement("button");
+      b.type = "button"; b.textContent = o[1];
+      b.setAttribute("aria-pressed", String(self.layers.map === o[0]));
+      b.addEventListener("pointerdown", function (e) {
+        e.preventDefault();
+        self.layers.map = o[0];
+        var bs = seg2.querySelectorAll("button"), q;
+        for (q = 0; q < bs.length; q++) bs[q].setAttribute("aria-pressed", String(bs[q] === b));
+        self.needBase = true;
+      });
+      return b;
+    };
+    for (var y2 = 0; y2 < opts.length; y2++) seg2.appendChild(mk2(opts[y2]));
+    wrap2.appendChild(seg2);
+    el.appendChild(wrap2);
+    return el;
+  }
+  if (it.t === "btn") {
+    var b2 = document.createElement("button");
+    b2.type = "button";
+    b2.className = "btn" + (it.primary ? " primary" : "");
+    b2.innerHTML = it.name;
+    b2.addEventListener("pointerdown", function (e) { e.preventDefault(); it.act(self, b2); });
+    if (it.id) this["btn_" + it.id] = b2;
+    return b2;
+  }
+  if (it.t === "mini") {
+    var cv = document.createElement("canvas");
+    cv.className = "mini";
+    cv.width = 480; cv.height = it.h || 230;
+    cv.style.height = ((it.h || 230) / 2) + "px";
+    this.miniCv = cv; this.miniDraw = it.draw;
+    return cv;
+  }
+  if (it.t === "text") {
+    var p = document.createElement("p");
+    p.className = "note"; p.style.marginTop = "0"; p.innerHTML = it.html;
+    return p;
+  }
+  el = document.createElement("div");
+  return el;
+};
+
+/* Slider von aussen nachfuehren (z. B. nach Zuruecksetzen) */
+Stage.prototype.syncSliders = function () {
+  if (!this._reg) return;
+  for (var i = 0; i < this._reg.length; i++) {
+    var r = this._reg[i];
+    var key = null, cfg = this.cfg, g, j, k;
+    for (j = 0; j < cfg.controls.length; j++) {
+      for (k = 0; k < cfg.controls[j].items.length; k++) {
+        var it = cfg.controls[j].items[k];
+        if (it.t === "slider" && this._reg[i].el.getAttribute("aria-label") === it.name.replace(/<[^>]+>/g, "")) key = it.key;
+      }
+    }
+    if (key !== null) { r.el.value = this.st[key]; r.upd(false); }
+  }
+};
+
+/* ---------- Zeigereingabe ---------- */
+Stage.prototype.bindPointer = function () {
+  var self = this, wrap = this.wrap;
+  function pos(e) {
+    var r = wrap.getBoundingClientRect();
+    return { x: self.wx(e.clientX - r.left), y: self.wy(e.clientY - r.top) };
+  }
+  wrap.addEventListener("pointerdown", function (e) {
+    e.preventDefault();
+    var p = pos(e);
+    var hs = self.cfg.handles ? self.cfg.handles(self) : [];
+    var best = null, bd = 1e9, i, d;
+    for (i = 0; i < hs.length; i++) {
+      d = Math.sqrt((hs[i].o.x - p.x) * (hs[i].o.x - p.x) + (hs[i].o.y - p.y) * (hs[i].o.y - p.y));
+      if (d < (hs[i].r || 1.4) && d < bd) { bd = d; best = hs[i]; }
+    }
+    if (!best && self.cfg.onTap) { self.cfg.onTap(self, p.x, p.y); return; }
+    if (!best) return;
+    self.drag = best;
+    if (wrap.setPointerCapture) { try { wrap.setPointerCapture(e.pointerId); } catch (er) { } }
+  });
+  wrap.addEventListener("pointermove", function (e) {
+    if (!self.drag) return;
+    e.preventDefault();
+    var p = pos(e);
+    var h = self.drag;
+    if (h.move) h.move(self, p.x, p.y);
+    else {
+      h.o.x = clamp(p.x, self.box[0] + 0.3, self.box[2] - 0.3);
+      h.o.y = clamp(p.y, self.box[1] + 0.3, self.box[3] - 0.3);
+    }
+    if (self.cfg.apply) self.cfg.apply(self);
+    self.needBase = true;
+  });
+  function up(e) {
+    if (!self.drag) return;
+    self.drag = null;
+    if (self.cfg.onDrop) self.cfg.onDrop(self);
+  }
+  wrap.addEventListener("pointerup", up);
+  wrap.addEventListener("pointercancel", up);
+  wrap.addEventListener("pointerleave", up);
+};
+
+/* ---------- Bildschleife ---------- */
+Stage.prototype.tick = function () {
+  this.frame++;
+  if (this.solver && this.solver.settled < (this.cfg.maxIter || 900)) {
+    this.solver.sweep(this.drag ? 16 : (LOWPOW ? 22 : 34));
+    this.solver.computeE();
+    this.needBase = true;
+  }
+  if (this.cfg.tick) this.cfg.tick(this);
+  if (this.needBase) this.drawBase();
+  this.stepFlow();
+  this.drawUI();
+  if (this.frame % 4 === 0) this.updateReadout();
+  if (this.miniCv && this.miniDraw && this.frame % 3 === 0) {
+    /* Bildpuffer an die tatsaechliche Breite anpassen, damit das
+       Diagramm in schmalen wie in breiten Bedienfeldern unverzerrt bleibt. */
+    var cw = Math.max(200, Math.round((this.miniCv.clientWidth || 240) * 2));
+    if (this.miniCv.width !== cw) this.miniCv.width = cw;
+    this.miniDraw(this, this.miniCv.getContext("2d"), this.miniCv.width, this.miniCv.height);
+  }
+};
+/* ------------------------------------------------------------------
+   9. Gemeinsame Bausteine fuer die Ladungsmodule
+   ------------------------------------------------------------------ */
+function seedsFromCharges(s) {
+  var out = [], i, c, n, k, a, r0 = 0.36;
+  var qp = 0, qn = 0;
+  for (i = 0; i < s.charges.length; i++) {
+    if (s.charges[i].q > 0) qp += s.charges[i].q; else qn -= s.charges[i].q;
+  }
+  for (i = 0; i < s.charges.length; i++) {
+    c = s.charges[i];
+    if (Math.abs(c.q) < 0.05) continue;
+    n = clamp(Math.round(Math.abs(c.q) * 3.2) + 5, 6, 34);
+    for (k = 0; k < n; k++) {
+      a = (k + 0.5) / n * 6.283185 + (c.q < 0 ? 0.14 : 0);
+      out.push({
+        x: c.x + Math.cos(a) * r0, y: c.y + Math.sin(a) * r0,
+        d: (c.q > 0 ? 1 : -1),
+        /* Von negativen Ladungen aus nur die Linien zeichnen, die nicht
+           ohnehin schon von einer positiven Ladung aus gezeichnet wurden. */
+        skipCaptured: (c.q < 0 && qp > 0)
+      });
+    }
+  }
+  return out;
+}
+
+function stopNearCharge(s) {
+  var cs = s.charges;
+  return function (x, y) {
+    for (var i = 0; i < cs.length; i++) {
+      var dx = x - cs[i].x, dy = y - cs[i].y;
+      if (dx * dx + dy * dy < 0.105) return true;
+    }
+    return false;
+  };
+}
+
+function logLevels() {
+  var base = [35, 80, 175, 380, 850, 1900, 4200], L = [], i;
+  for (i = 0; i < base.length; i++) { L.push(base[i]); L.push(-base[i]); }
+  return L;
+}
+
+function probeReadouts(s, extra) {
+  var m = s.mag(s.probe.x, s.probe.y);
+  var e = fmtE(m), p = fmtV(s.Pot(s.probe.x, s.probe.y));
+  var out = extra || [];
+  out.push({ k: "Feldstärke in P", v: e.n, u: e.u, c: "hot" });
+  out.push({ k: "Potential in P", v: p.n, u: p.u, c: "cool" });
+  return out;
+}
+
+/* ------------------------------------------------------------------
+   10. Modul 1 - Die einzelne Ladung
+   ------------------------------------------------------------------ */
+var M1 = {
+  kind: "charges", worldW: 22,
+  state: { q: 4 },
+  layers: { lines: true, flow: true, equi: false, arrows: false, map: "E" },
+  init: function (s) {
+    s.charges = [{ x: -1.5, y: 0, q: 4 }];
+    s.probe = { x: 4.5, y: -2.2 };
+  },
+  apply: function (s) { s.charges[0].q = s.st.q; },
+  seeds: seedsFromCharges,
+  stopFn: stopNearCharge,
+  levels: logLevels,
+  handles: function (s) { return [{ o: s.charges[0], r: 1.7 }, { o: s.probe, r: 1.7 }]; },
+  readouts: function (s) {
+    var dx = s.probe.x - s.charges[0].x, dy = s.probe.y - s.charges[0].y;
+    var r = Math.sqrt(dx * dx + dy * dy);
+    return probeReadouts(s, [{ k: "Abstand r", v: nf(r, 2), u: "cm" }]);
+  },
+  controls: [
+    {
+      label: "Quelle", items: [
+        {
+          t: "slider", key: "q", name: "Ladung <var>Q</var>", min: -8, max: 8, step: 0.5,
+          fmt: function (v) { return nf(v, 1) + " nC"; }
+        },
+        { t: "mini", h: 250, draw: function (s, c, W, H) { drawErPlot(s, c, W, H); } },
+        { t: "text", html: "Verlauf von <var>E</var>(<var>r</var>). Der Punkt markiert die aktuelle Lage der Sonde." }
+      ]
+    },
+    { label: "Darstellung", items: [{ t: "layers" }] },
+    {
+      label: "", items: [{
+        t: "btn", name: "Zurücksetzen", act: function (s) {
+          s.st.q = 4; s.charges[0].x = -1.5; s.charges[0].y = 0; s.charges[0].q = 4;
+          s.probe.x = 4.5; s.probe.y = -2.2; s.syncSliders(); s.needBase = true;
+        }
+      }]
+    }
+  ]
+};
+
+/* Kleines Diagramm E(r) im Bedienfeld */
+function drawErPlot(s, c, W, H) {
+  var padL = 46, padR = 12, padT = 14, padB = 26;
+  var q = Math.abs(s.st.q); if (q < 0.05) q = 0.05;
+  var rmin = 1.0, rmax = 11;
+  var Emax = K_E * q / (rmin * rmin);
+  c.clearRect(0, 0, W, H);
+  c.fillStyle = "#03050a"; c.fillRect(0, 0, W, H);
+  var X = function (r) { return padL + (r - rmin) / (rmax - rmin) * (W - padL - padR); };
+  var Y = function (E) { return H - padB - (E / Emax) * (H - padT - padB); };
+  var i, g;
+  c.strokeStyle = "rgba(90,110,140,.28)"; c.lineWidth = 1;
+  for (i = 2; i <= 10; i += 2) { c.beginPath(); c.moveTo(X(i), padT); c.lineTo(X(i), H - padB); c.stroke(); }
+  for (g = 0.25; g < 1.01; g += 0.25) {
+    c.beginPath(); c.moveTo(padL, Y(Emax * g)); c.lineTo(W - padR, Y(Emax * g)); c.stroke();
+  }
+  c.strokeStyle = "rgba(140,165,200,.7)"; c.lineWidth = 1.6;
+  c.beginPath(); c.moveTo(padL, padT); c.lineTo(padL, H - padB); c.lineTo(W - padR, H - padB); c.stroke();
+  /* Kurve */
+  c.beginPath();
+  for (i = 0; i <= 200; i++) {
+    var r = rmin + i / 200 * (rmax - rmin);
+    var E = K_E * q / (r * r);
+    if (i === 0) c.moveTo(X(r), Y(E)); else c.lineTo(X(r), Y(E));
+  }
+  c.strokeStyle = "#ff9a4c"; c.lineWidth = 3.4; c.stroke();
+  /* Marker der Sonde */
+  var dx = s.probe.x - s.charges[0].x, dy = s.probe.y - s.charges[0].y;
+  var rp = clamp(Math.sqrt(dx * dx + dy * dy), rmin, rmax);
+  var Ep = Math.min(K_E * q / (rp * rp), Emax);
+  c.strokeStyle = "rgba(255,210,74,.5)"; c.lineWidth = 2; c.setLineDash([5, 5]);
+  c.beginPath(); c.moveTo(X(rp), H - padB); c.lineTo(X(rp), Y(Ep)); c.stroke();
+  c.setLineDash([]);
+  c.fillStyle = "#ffd24a";
+  c.beginPath(); c.arc(X(rp), Y(Ep), 7, 0, 6.2832); c.fill();
+  c.strokeStyle = "#03050a"; c.lineWidth = 2.5; c.stroke();
+  /* Beschriftung */
+  c.fillStyle = "#7b8ba5"; c.font = "500 18px Arial, sans-serif";
+  c.textAlign = "center";
+  for (i = 2; i <= 8; i += 2) c.fillText(String(i), X(i), H - 7);
+  c.textAlign = "right";
+  c.fillText("r in cm", W - padR, H - 7);
+  c.textAlign = "right"; c.font = "500 16px Arial, sans-serif";
+  c.fillText(nf(Emax / 1000, 0), padL - 6, padT + 14);
+  c.fillText("0", padL - 6, H - padB + 6);
+  c.textAlign = "left"; c.fillStyle = "#9aabc2"; c.font = "500 18px Arial, sans-serif";
+  c.fillText("E in kV/m", padL + 10, padT + 20);
+}
+
+/* ------------------------------------------------------------------
+   11. Modul 2 - Der Dipol
+   ------------------------------------------------------------------ */
+var M2 = {
+  kind: "charges", worldW: 22,
+  state: { q1: 4, q2: -4 },
+  layers: { lines: true, flow: true, equi: false, arrows: false, map: "E" },
+  init: function (s) {
+    s.charges = [{ x: -3.4, y: 0, q: 4 }, { x: 3.4, y: 0, q: -4 }];
+    s.probe = { x: 0, y: -4.2 };
+  },
+  apply: function (s) { s.charges[0].q = s.st.q1; s.charges[1].q = s.st.q2; },
+  seeds: seedsFromCharges,
+  stopFn: stopNearCharge,
+  levels: logLevels,
+  handles: function (s) {
+    return [{ o: s.charges[0], r: 1.7 }, { o: s.charges[1], r: 1.7 }, { o: s.probe, r: 1.7 }];
+  },
+  readouts: function (s) {
+    var a = s.charges[0], b = s.charges[1];
+    var d = Math.sqrt((a.x - b.x) * (a.x - b.x) + (a.y - b.y) * (a.y - b.y));
+    var mx = (a.x + b.x) / 2, my = (a.y + b.y) / 2;
+    var em = fmtE(s.mag(mx, my));
+    return probeReadouts(s, [
+      { k: "Abstand der Ladungen", v: nf(d, 2), u: "cm" },
+      { k: "Feldstärke in der Mitte", v: em.n, u: em.u }
+    ]);
+  },
+  decorUI: function (s, c) {
+    /* Verbindungslinie und Mittelpunkt andeuten */
+    var a = s.charges[0], b = s.charges[1];
+    c.save();
+    c.strokeStyle = "rgba(160,180,210,.28)";
+    c.setLineDash([3, 5]); c.lineWidth = 1;
+    c.beginPath(); c.moveTo(s.sx(a.x), s.sy(a.y)); c.lineTo(s.sx(b.x), s.sy(b.y)); c.stroke();
+    c.setLineDash([]);
+    var mx = s.sx((a.x + b.x) / 2), my = s.sy((a.y + b.y) / 2);
+    c.strokeStyle = "rgba(200,215,240,.6)"; c.lineWidth = 1.4;
+    c.beginPath(); c.moveTo(mx - 5, my - 5); c.lineTo(mx + 5, my + 5);
+    c.moveTo(mx + 5, my - 5); c.lineTo(mx - 5, my + 5); c.stroke();
+    c.restore();
+  },
+  controls: [
+    {
+      label: "Anordnung", items: [
+        {
+          t: "btn", name: "Dipol  + / −", act: function (s) {
+            s.st.q1 = 4; s.st.q2 = -4;
+            s.charges[0].x = -3.4; s.charges[0].y = 0;
+            s.charges[1].x = 3.4; s.charges[1].y = 0;
+            M2.apply(s); s.syncSliders(); s.needBase = true;
+          }
+        },
+        {
+          t: "btn", name: "gleichnamig  + / +", act: function (s) {
+            s.st.q1 = 4; s.st.q2 = 4;
+            s.charges[0].x = -3.4; s.charges[0].y = 0;
+            s.charges[1].x = 3.4; s.charges[1].y = 0;
+            M2.apply(s); s.syncSliders(); s.needBase = true;
+          }
+        },
+        {
+          t: "btn", name: "unsymmetrisch  +6 / −2", act: function (s) {
+            s.st.q1 = 6; s.st.q2 = -2;
+            s.charges[0].x = -3.4; s.charges[0].y = 0;
+            s.charges[1].x = 3.4; s.charges[1].y = 0;
+            M2.apply(s); s.syncSliders(); s.needBase = true;
+          }
+        }
+      ]
+    },
+    {
+      label: "Ladungen", items: [
+        { t: "slider", key: "q1", name: "<var>Q</var><sub>1</sub> (links)", min: -8, max: 8, step: 0.5, fmt: function (v) { return nf(v, 1) + " nC"; } },
+        { t: "slider", key: "q2", name: "<var>Q</var><sub>2</sub> (rechts)", min: -8, max: 8, step: 0.5, fmt: function (v) { return nf(v, 1) + " nC"; } }
+      ]
+    },
+    { label: "Darstellung", items: [{ t: "layers" }] }
+  ]
+};
+
+/* ------------------------------------------------------------------
+   12. Modul 3 - Ueberlagerung und Annaeherung
+   ------------------------------------------------------------------ */
+var M3 = {
+  kind: "charges", worldW: 22,
+  state: { mode: "frei", d: 5, sign: 1, qn: 5 },
+  layers: { lines: true, flow: true, equi: false, arrows: false, map: "E" },
+  init: function (s) {
+    s.charges = [{ x: -4, y: -2, q: 4 }, { x: 4, y: -2, q: -4 }, { x: 0, y: 3.4, q: 3 }];
+    s.probe = { x: -6.5, y: 3.6 };
+    s.fixP = { x: 0, y: 4.0 };
+  },
+  apply: function (s) {
+    if (s.st.mode === "nah") {
+      var d = s.st.d, q = s.st.qn;
+      s.charges = [{ x: -d / 2, y: -1.6, q: q }, { x: d / 2, y: -1.6, q: -q }];
+      s.probe = s.fixP;
+    }
+  },
+  seeds: seedsFromCharges,
+  stopFn: stopNearCharge,
+  levels: logLevels,
+  handles: function (s) {
+    if (s.st.mode === "nah") return [];
+    var h = [], i;
+    for (i = 0; i < s.charges.length; i++) h.push({ o: s.charges[i], r: 1.6 });
+    h.push({ o: s.probe, r: 1.6 });
+    return h;
+  },
+  onTap: function (s, x, y) {
+    if (s.st.mode === "nah") return;
+    if (s.charges.length >= 6) return;
+    s.charges.push({ x: x, y: y, q: 4 * s.st.sign });
+    s.needBase = true;
+  },
+  readouts: function (s) {
+    if (s.st.mode === "nah") {
+      var a = s.charges[0], b = s.charges[1];
+      var r = Math.abs(b.x - a.x);
+      var F = K_F * Math.abs(a.q * b.q) / (r * r);
+      var ff = fmtF(F);
+      var ee = fmtE(s.mag(s.fixP.x, s.fixP.y));
+      return [
+        { k: "Abstand der Ladungen", v: nf(r, 2), u: "cm" },
+        { k: "Kraft zwischen ihnen", v: ff.n, u: ff.u, c: "warn" },
+        { k: "Feldstärke in P", v: ee.n, u: ee.u, c: "hot" }
+      ];
+    }
+    var qs = 0, i;
+    for (i = 0; i < s.charges.length; i++) qs += s.charges[i].q;
+    return probeReadouts(s, [
+      { k: "Anzahl Ladungen", v: String(s.charges.length), u: "" },
+      { k: "Gesamtladung", v: nf(qs, 1), u: "nC" }
+    ]);
+  },
+  decorUI: function (s, c) {
+    if (s.st.mode !== "nah") return;
+    var a = s.charges[0], b = s.charges[1];
+    c.save();
+    c.strokeStyle = "rgba(160,180,210,.25)"; c.setLineDash([3, 5]); c.lineWidth = 1;
+    c.beginPath();
+    c.moveTo(s.sx((a.x + b.x) / 2), s.sy(a.y));
+    c.lineTo(s.sx(s.fixP.x), s.sy(s.fixP.y)); c.stroke();
+    c.restore();
+    /* Kraftpfeile auf die beiden Ladungen */
+    var r = Math.abs(b.x - a.x);
+    var F = K_F * Math.abs(a.q * b.q) / (r * r);
+    var L = clamp(12 + Math.log(1 + F / 2e-6) * 12, 12, 70);
+    var att = (a.q * b.q < 0);
+    drawForceArrow(s, c, a.x, a.y, att ? 1 : -1, L);
+    drawForceArrow(s, c, b.x, b.y, att ? -1 : 1, L);
+  },
+  controls: [
+    {
+      label: "Betriebsart", items: [
+        {
+          t: "seg", key: "mode", opts: [["frei", "freie Fläche"], ["nah", "Annäherung"]],
+          on: function (s, v) {
+            if (v === "frei") {
+              s.charges = [{ x: -4, y: -2, q: 4 }, { x: 4, y: -2, q: -4 }, { x: 0, y: 3.4, q: 3 }];
+              s.probe = { x: -6.5, y: 3.6 };
+            } else {
+              s.probe = s.fixP;
+            }
+          }
+        }
+      ]
+    },
+    {
+      label: "Annäherung", items: [
+        { t: "slider", key: "d", name: "Abstand <var>r</var>", min: 0.8, max: 9, step: 0.1, fmt: function (v) { return nf(v, 1) + " cm"; } },
+        { t: "slider", key: "qn", name: "Ladungsbetrag", min: 1, max: 8, step: 0.5, fmt: function (v) { return nf(v, 1) + " nC"; } },
+        { t: "text", html: "Wirkt nur in der Betriebsart <b>Annäherung</b>. Der Aufpunkt <b>P</b> bleibt dabei fest." }
+      ]
+    },
+    {
+      label: "Freie Fläche", items: [
+        { t: "seg", key: "sign", name: "Neue Ladung", opts: [[1, "positiv"], [-1, "negativ"]] },
+        {
+          t: "btn", name: "Letzte entfernen", act: function (s) {
+            if (s.st.mode === "nah") return;
+            if (s.charges.length > 1) { s.charges.pop(); s.needBase = true; }
+          }
+        },
+        {
+          t: "btn", name: "Quadrat aus 4 Ladungen", act: function (s) {
+            s.st.mode = "frei";
+            var q = 4, a = 3.2;
+            s.charges = [{ x: -a, y: -a, q: q }, { x: a, y: -a, q: q }, { x: a, y: a, q: q }, { x: -a, y: a, q: q }];
+            s.probe = { x: 0.01, y: 0.01 };
+            s.needBase = true;
+            var bs = s.panel.querySelectorAll(".seg"), i;
+            if (bs.length) {
+              var bb = bs[0].querySelectorAll("button");
+              for (i = 0; i < bb.length; i++) bb[i].setAttribute("aria-pressed", String(i === 0));
+            }
+          }
+        },
+        { t: "text", html: "Auf die freie Fläche tippen setzt eine weitere Ladung (höchstens sechs)." }
+      ]
+    },
+    { label: "Darstellung", items: [{ t: "layers" }] }
+  ]
+};
+
+function drawForceArrow(s, c, x, y, dir, L) {
+  var px = s.sx(x), py = s.sy(y);
+  var ox = dir > 0 ? 1 : -1;
+  c.save();
+  c.strokeStyle = "#ffb648"; c.lineWidth = 3.2; c.lineCap = "round";
+  c.shadowColor = "rgba(255,182,72,.8)"; c.shadowBlur = 10;
+  var x0 = px + ox * 20, x1 = px + ox * (20 + L);
+  c.beginPath(); c.moveTo(x0, py); c.lineTo(x1, py); c.stroke();
+  c.fillStyle = "#ffb648";
+  c.beginPath();
+  c.moveTo(x1 + ox * 9, py); c.lineTo(x1 - ox * 2, py - 6); c.lineTo(x1 - ox * 2, py + 6);
+  c.closePath(); c.fill();
+  c.restore();
+}
+
+/* ------------------------------------------------------------------
+   13. Modul 4 - Plattenkondensator (numerisch geloest)
+   ------------------------------------------------------------------ */
+var PLATE_L = 13.0;
+
+var M4 = {
+  kind: "grid", worldW: 22, gx: LOWPOW ? 132 : 184,
+  eLo: 1400, eHi: 95000, vLo: 12, vHi: 700, maxIter: 1400,
+  state: { U: 600, d: 4, v0: 2.0 },
+  layers: { lines: true, flow: true, equi: true, arrows: false, map: "E" },
+  legend: [{ t: "l", c: "#7ef7c8", n: "Bahn des Elektrons" }],
+  init: function (s) {
+    s.probe = { x: 0, y: 0 };
+    s.el = null;
+  },
+  geom: function (s, sol) {
+    var U = s.st.U, d = s.st.d, i, t, k;
+    var nx = sol.nx, ny = sol.ny;
+    function gi(x) { return clamp(Math.round((x - s.box[0]) / s.worldW * (nx - 1)), 0, nx - 1); }
+    function gj(y) { return clamp(Math.round((y - s.box[1]) / s.worldH * (ny - 1)), 0, ny - 1); }
+    var i0 = gi(-PLATE_L / 2), i1 = gi(PLATE_L / 2);
+    var jT = gj(-d / 2), jB = gj(d / 2);
+    for (i = i0; i <= i1; i++) {
+      for (t = 0; t < 2; t++) {
+        k = (jT - t) * nx + i; if (k >= 0 && k < nx * ny) { sol.fix[k] = 1; sol.V[k] = U / 2; }
+        k = (jB + t) * nx + i; if (k >= 0 && k < nx * ny) { sol.fix[k] = 1; sol.V[k] = -U / 2; }
+      }
+    }
+    /* Aussenrand geerdet */
+    for (i = 0; i < nx; i++) { sol.V[i] = 0; sol.V[(ny - 1) * nx + i] = 0; }
+    for (i = 0; i < ny; i++) { sol.V[i * nx] = 0; sol.V[i * nx + nx - 1] = 0; }
+    s.plate = { l: PLATE_L, d: d, U: U };
+  },
+  apply: function (s) { s.rebuild(); },
+  seeds: function (s) {
+    var out = [], n = 15, i, x, d = s.st.d, sg = (s.st.U >= 0) ? 1 : -1;
+    for (i = 0; i < n; i++) {
+      x = -PLATE_L / 2 + (i + 0.5) / n * PLATE_L;
+      out.push({ x: x, y: -d / 2 + 0.42 * sg, d: sg });
+    }
+    /* Randlinien ausserhalb der Platten */
+    out.push({ x: -PLATE_L / 2 + 0.3, y: -d / 2 - 0.45, d: sg });
+    out.push({ x: PLATE_L / 2 - 0.3, y: -d / 2 - 0.45, d: sg });
+    out.push({ x: -PLATE_L / 2 - 0.5, y: 0, d: sg });
+    out.push({ x: PLATE_L / 2 + 0.5, y: 0, d: sg });
+    return out;
+  },
+  stopFn: function (s) {
+    var d = s.st.d;
+    return function (x, y) {
+      return (Math.abs(x) < PLATE_L / 2 + 0.15 && Math.abs(y) > d / 2 - 0.34);
+    };
+  },
+  levels: function (s) {
+    var U = s.st.U, L = [], n = 12, i;
+    for (i = 1; i < n; i++) L.push(-U / 2 + i * U / n);
+    return L;
+  },
+  handles: function (s) { return [{ o: s.probe, r: 1.8 }]; },
+  tick: function (s) {
+    var e = s.el;
+    if (!e || !e.alive) return;
+    var sub = 6, dt = 6.2e-12, i, ev = [0, 0];
+    for (i = 0; i < sub; i++) {
+      s.E(e.x, e.y, ev);
+      var ax = -Q_E * ev[0] / M_E, ay = -Q_E * ev[1] / M_E;
+      e.vx += ax * dt; e.vy += ay * dt;
+      e.x += e.vx * dt * 100; e.y += e.vy * dt * 100;
+      if (Math.abs(e.x) < PLATE_L / 2 && Math.abs(e.y) > s.st.d / 2 - 0.12) {
+        e.alive = false; e.hit = true; break;
+      }
+      if (e.x > s.box[2] || e.y < s.box[1] || e.y > s.box[3]) { e.alive = false; break; }
+    }
+    e.path.push(e.x, e.y);
+    if (e.path.length > 1600) e.path.splice(0, 200);
+  },
+  decorUI: function (s, c) {
+    var d = s.st.d, U = s.st.U;
+    var xL = s.sx(-PLATE_L / 2), xR = s.sx(PLATE_L / 2);
+    var yT = s.sy(-d / 2), yB = s.sy(d / 2);
+    var th = 7;
+    c.save();
+    /* Platten */
+    var pt = U >= 0, cT = pt ? "#ff6954" : "#46b4ff", cB = pt ? "#46b4ff" : "#ff6954";
+    c.shadowColor = cT; c.shadowBlur = 16;
+    c.fillStyle = cT; c.fillRect(xL, yT - th, xR - xL, th);
+    c.shadowColor = cB;
+    c.fillStyle = cB; c.fillRect(xL, yB, xR - xL, th);
+    c.shadowBlur = 0;
+    c.fillStyle = "rgba(255,255,255,.9)";
+    c.font = "700 15px Arial, sans-serif"; c.textAlign = "center";
+    c.fillText(pt ? "+" : "−", (xL + xR) / 2, yT - th - 6);
+    c.fillText(pt ? "−" : "+", (xL + xR) / 2, yB + th + 16);
+    /* Massbemassung d */
+    var mx = xR + 16;
+    c.strokeStyle = "rgba(180,200,225,.55)"; c.lineWidth = 1;
+    c.beginPath(); c.moveTo(mx, yT); c.lineTo(mx, yB);
+    c.moveTo(mx - 4, yT); c.lineTo(mx + 4, yT);
+    c.moveTo(mx - 4, yB); c.lineTo(mx + 4, yB); c.stroke();
+    c.fillStyle = "rgba(200,215,235,.85)"; c.font = "600 11px Arial, sans-serif";
+    c.textAlign = "left";
+    c.fillText("d = " + nf(d, 1) + " cm", mx + 7, (yT + yB) / 2 + 4);
+    c.restore();
+
+    /* Elektronenbahn */
+    var e = s.el;
+    if (e && e.path.length > 3) {
+      c.save();
+      c.strokeStyle = "rgba(126,247,200,.28)"; c.lineWidth = 6; c.lineCap = "round"; c.lineJoin = "round";
+      c.beginPath();
+      c.moveTo(s.sx(e.path[0]), s.sy(e.path[1]));
+      for (var k = 2; k < e.path.length; k += 2) c.lineTo(s.sx(e.path[k]), s.sy(e.path[k + 1]));
+      c.stroke();
+      c.strokeStyle = "#7ef7c8"; c.lineWidth = 2; c.stroke();
+      var lx = s.sx(e.x), ly = s.sy(e.y);
+      c.shadowColor = "#7ef7c8"; c.shadowBlur = 14;
+      c.fillStyle = e.alive ? "#dcfff2" : "#ff8a70";
+      c.beginPath(); c.arc(lx, ly, e.alive ? 5.5 : 8, 0, 6.2832); c.fill();
+      c.shadowBlur = 0;
+      c.font = "600 10px Arial, sans-serif"; c.fillStyle = "rgba(126,247,200,.9)";
+      c.textAlign = "left";
+      c.fillText("e⁻", lx + 9, ly - 8);
+      c.restore();
+    }
+  },
+  readouts: function (s) {
+    var m = s.mag(s.probe.x, s.probe.y);
+    var e = fmtE(m);
+    var ideal = s.st.U / (s.st.d / 100);
+    var id = fmtE(ideal);
+    var out = [
+      { k: "Sonde misst E", v: e.n, u: e.u, c: "hot" },
+      { k: "Modell U / d", v: id.n, u: id.u, c: "cool" },
+      { k: "Abweichung", v: nf((m - ideal) / ideal * 100, 1), u: "%" }
+    ];
+    if (s.el) {
+      out.push({ k: "Ablenkung", v: nf(Math.abs(s.el.y - s.el.y0), 2), u: "cm" });
+      if (!s.el.alive) {
+        out.push({
+          k: "Ergebnis", v: s.el.hit ? "Platte getroffen" : "durchgeflogen",
+          u: "", c: s.el.hit ? "warn" : "cool"
+        });
+      }
+    }
+    return out;
+  },
+  controls: [
+    {
+      label: "Kondensator", items: [
+        { t: "slider", key: "U", name: "Spannung <var>U</var>", min: -1000, max: 1000, step: 25, fmt: function (v) { return nf(v, 0) + " V"; }, on: function (s) { s.rebuild(); } },
+        { t: "slider", key: "d", name: "Plattenabstand <var>d</var>", min: 1.5, max: 7, step: 0.1, fmt: function (v) { return nf(v, 1) + " cm"; }, on: function (s) { s.rebuild(); } }
+      ]
+    },
+    {
+      label: "Elektronenkanone", items: [
+        { t: "slider", key: "v0", name: "Startgeschwindigkeit", min: 0.6, max: 4, step: 0.1, fmt: function (v) { return nf(v, 1) + "·10⁷ m/s"; } },
+        {
+          t: "btn", primary: true, name: "Elektron abschießen", act: function (s) {
+            s.el = {
+              x: -PLATE_L / 2 - 2.2, y: 0, y0: 0,
+              vx: s.st.v0 * 1e7, vy: 0, alive: true, hit: false, path: []
+            };
+          }
+        },
+        { t: "text", html: "Vergleiche die grüne Bahnkurve mit den violetten Feldlinien." }
+      ]
+    },
+    { label: "Darstellung", items: [{ t: "layers" }] }
+  ]
+};
+
+/* ------------------------------------------------------------------
+   14. Modul 5 - Abschirmung und Faradaykaefig
+   ------------------------------------------------------------------ */
+var CAGE_W = 9.0, CAGE_H = 6.4;
+
+var M5 = {
+  kind: "grid", worldW: 24, gx: LOWPOW ? 140 : 192,
+  eLo: 900, eHi: 230000, vLo: 20, vHi: 2600, maxIter: 1800,
+  state: { cage: "zu", mesh: 1.0, src: "kugel", U: 1500 },
+  layers: { lines: true, flow: true, equi: false, arrows: false, map: "E" },
+  legend: [
+    { t: "s", c: "#b7c6d8", n: "Metallhülle (Leiter)" },
+    { t: "s", c: "#ffd24a", n: "Sonde im Innenraum" }
+  ],
+  init: function (s) {
+    s.src = { x: -9.0, y: 0 };
+    s.probe = { x: 0, y: 0 };
+    s.bars = [];
+  },
+  geom: function (s, sol) {
+    var nx = sol.nx, ny = sol.ny, i, j, k;
+    function gi(x) { return clamp(Math.round((x - s.box[0]) / s.worldW * (nx - 1)), 1, nx - 2); }
+    function gj(y) { return clamp(Math.round((y - s.box[1]) / s.worldH * (ny - 1)), 1, ny - 2); }
+    var i0 = gi(-CAGE_W / 2), i1 = gi(CAGE_W / 2);
+    var j0 = gj(-CAGE_H / 2), j1 = gj(CAGE_H / 2);
+    var cell = s.worldW / (nx - 1);
+    var mesh = s.st.mesh, mode = s.st.cage;
+    var barW = Math.max(2, Math.round(0.26 / cell));
+    var period = Math.max(barW + 1, Math.round(mesh / cell));
+
+    s.bars = [];
+    function put(i, j) {
+      if (i < 1 || i > nx - 2 || j < 1 || j > ny - 2) return;
+      sol.cond[j * nx + i] = 1;
+    }
+    /* Nur in der Stellung "Gitter" wird die Wand perforiert.
+       "offen" laesst die Wand geschlossen und entfernt eine ganze Seite. */
+    function solid(idx) {
+      if (mode !== "gitter") return true;
+      return (idx % period) < barW;
+    }
+    /* Waagerechte Seiten */
+    for (i = i0; i <= i1; i++) {
+      if (solid(i - i0)) { put(i, j0); put(i, j0 - 1); put(i, j1); put(i, j1 + 1); }
+    }
+    /* Senkrechte Seiten; bei "offen" fehlt die rechte Wand */
+    for (j = j0; j <= j1; j++) {
+      if (solid(j - j0)) {
+        put(i0, j); put(i0 - 1, j);
+        if (mode !== "offen") { put(i1, j); put(i1 + 1, j); }
+      }
+    }
+    /* Quelle */
+    for (i = 0; i < nx; i++) { sol.V[i] = 0; sol.V[(ny - 1) * nx + i] = 0; }
+    for (j = 0; j < ny; j++) { sol.V[j * nx] = 0; sol.V[j * nx + nx - 1] = 0; }
+
+    if (s.st.src === "kugel") {
+      var ci = gi(s.src.x), cj = gj(s.src.y);
+      var rad = Math.max(2, Math.round(0.8 / cell));
+      for (j = -rad; j <= rad; j++) {
+        for (i = -rad; i <= rad; i++) {
+          if (i * i + j * j > rad * rad) continue;
+          var ii = ci + i, jj = cj + j;
+          if (ii < 1 || ii > nx - 2 || jj < 1 || jj > ny - 2) continue;
+          k = jj * nx + ii;
+          sol.cond[k] = 0; sol.fix[k] = 1; sol.V[k] = s.st.U;
+        }
+      }
+    } else {
+      /* Homogenes Aussenfeld ueber die Randbedingung */
+      var Uh = s.st.U;
+      for (j = 0; j < ny; j++) { sol.V[j * nx] = Uh / 2; sol.V[j * nx + nx - 1] = -Uh / 2; }
+      for (i = 0; i < nx; i++) {
+        var t = i / (nx - 1);
+        sol.V[i] = Uh / 2 - t * Uh;
+        sol.V[(ny - 1) * nx + i] = Uh / 2 - t * Uh;
+      }
+    }
+    s.cageGeom = { i0: i0, i1: i1, j0: j0, j1: j1, period: period, barW: barW, cell: cell, mode: mode };
+  },
+  apply: function (s) { s.rebuild(); },
+  seeds: function (s) {
+    var out = [], i, a, n;
+    if (s.st.src === "kugel") {
+      n = 26;
+      for (i = 0; i < n; i++) {
+        a = (i + 0.5) / n * 6.283185;
+        out.push({ x: s.src.x + Math.cos(a) * 0.95, y: s.src.y + Math.sin(a) * 0.95, d: 1 });
+      }
+    } else {
+      n = 13;
+      for (i = 0; i < n; i++) {
+        out.push({ x: s.box[0] + 0.25, y: s.box[1] + (i + 0.5) / n * s.worldH, d: 1 });
+      }
+    }
+    return out;
+  },
+  stopFn: function (s) {
+    var g = s.cageGeom, sol = s.solver;
+    if (!g || !sol) return null;
+    return function (x, y) {
+      var gx = Math.round((x - s.box[0]) / s.worldW * (sol.nx - 1));
+      var gy = Math.round((y - s.box[1]) / s.worldH * (sol.ny - 1));
+      if (gx < 0 || gx >= sol.nx || gy < 0 || gy >= sol.ny) return true;
+      return sol.cond[gy * sol.nx + gx] === 1;
+    };
+  },
+  levels: function (s) {
+    var U = Math.abs(s.st.U), L = [], i;
+    for (i = 1; i <= 9; i++) L.push(U * i / 11);
+    for (i = 1; i <= 4; i++) L.push(-U * i / 11);
+    return L;
+  },
+  handles: function (s) {
+    var h = [];
+    if (s.st.src === "kugel") {
+      h.push({
+        o: s.src, r: 2.0, move: function (st, x, y) {
+          /* Kugel bleibt ausserhalb der Huelle */
+          var mx = CAGE_W / 2 + 1.5, my = CAGE_H / 2 + 1.5;
+          if (Math.abs(x) < mx && Math.abs(y) < my) {
+            if (mx - Math.abs(x) < my - Math.abs(y)) x = (x < 0 ? -mx : mx);
+            else y = (y < 0 ? -my : my);
+          }
+          st.src.x = clamp(x, st.box[0] + 1.1, st.box[2] - 1.1);
+          st.src.y = clamp(y, st.box[1] + 1.1, st.box[3] - 1.1);
+          st.rebuild();
+        }
+      });
+    }
+    h.push({
+      o: s.probe, r: 1.8, move: function (st, x, y) {
+        st.probe.x = clamp(x, -CAGE_W / 2 + 0.55, CAGE_W / 2 - 0.55);
+        st.probe.y = clamp(y, -CAGE_H / 2 + 0.55, CAGE_H / 2 - 0.55);
+      }
+    });
+    return h;
+  },
+  decorUI: function (s, c) {
+    var g = s.cageGeom, sol = s.solver;
+    if (!g || !sol) return;
+    var cell = g.cell;
+    var pxPer = s.scale * cell;
+    var i, j;
+    c.save();
+    /* Huelle aus der Leitermaske zeichnen */
+    c.fillStyle = "#b7c6d8";
+    c.shadowColor = "rgba(183,198,216,.55)"; c.shadowBlur = 8;
+    for (j = 1; j < sol.ny - 1; j++) {
+      var runStart = -1;
+      for (i = 1; i < sol.nx; i++) {
+        var on = (i < sol.nx - 1) && sol.cond[j * sol.nx + i] === 1;
+        if (on && runStart < 0) runStart = i;
+        if (!on && runStart >= 0) {
+          var x0 = s.sx(s.box[0] + runStart / (sol.nx - 1) * s.worldW);
+          var x1 = s.sx(s.box[0] + i / (sol.nx - 1) * s.worldW);
+          var yy = s.sy(s.box[1] + j / (sol.ny - 1) * s.worldH);
+          c.fillRect(x0, yy - pxPer * 0.55, Math.max(1.5, x1 - x0), pxPer * 1.1);
+          runStart = -1;
+        }
+      }
+    }
+    c.shadowBlur = 0;
+
+    /* Influenzladungen an der Oberflaeche */
+    var vc = sol.vc, fi = sol.faceIdx, fo = sol.faceOwn;
+    var maxs = 1e-6, sig = [];
+    for (i = 0; i < fi.length; i++) {
+      /* Flaechenladungsdichte: sigma = eps0 * E_n mit der nach aussen
+         gerichteten Normalen, also sigma ~ -(V_aussen - V_Huelle).
+         Auf der einer positiven Quelle zugewandten Seite wird damit
+         negative Influenzladung angezeigt. */
+      var sg = vc - sol.V[fi[i]];
+      sig.push(sg);
+      if (Math.abs(sg) > maxs) maxs = Math.abs(sg);
+    }
+    var stepF = Math.max(1, Math.round(fi.length / 90));
+    for (i = 0; i < fi.length; i += stepF) {
+      var rel = sig[i] / maxs;
+      if (Math.abs(rel) < 0.10) continue;
+      var kk = fo[i];
+      var gi2 = kk % sol.nx, gj2 = (kk / sol.nx) | 0;
+      var px = s.sx(s.box[0] + gi2 / (sol.nx - 1) * s.worldW);
+      var py = s.sy(s.box[1] + gj2 / (sol.ny - 1) * s.worldH);
+      var R = 2.2 + 4.6 * Math.abs(rel);
+      c.fillStyle = rel > 0 ? "rgba(255,105,84,.92)" : "rgba(70,180,255,.92)";
+      c.beginPath(); c.arc(px, py, R, 0, 6.2832); c.fill();
+      c.strokeStyle = "rgba(255,255,255,.85)"; c.lineWidth = 1.3; c.lineCap = "round";
+      c.beginPath();
+      c.moveTo(px - R * 0.55, py); c.lineTo(px + R * 0.55, py);
+      if (rel > 0) { c.moveTo(px, py - R * 0.55); c.lineTo(px, py + R * 0.55); }
+      c.stroke();
+    }
+
+    /* Geladene Kugel */
+    if (s.st.src === "kugel") {
+      var sx = s.sx(s.src.x), sy = s.sy(s.src.y), R2 = 0.8 * s.scale;
+      var gg = c.createRadialGradient(sx, sy, R2 * 0.3, sx, sy, R2 * 3.4);
+      var pos = s.st.U >= 0;
+      var col = pos ? "255,105,84" : "70,180,255";
+      gg.addColorStop(0, "rgba(" + col + ",.5)");
+      gg.addColorStop(1, "rgba(" + col + ",0)");
+      c.fillStyle = gg;
+      c.beginPath(); c.arc(sx, sy, R2 * 3.4, 0, 6.2832); c.fill();
+      var g2 = c.createRadialGradient(sx - R2 * .3, sy - R2 * .3, R2 * .1, sx, sy, R2);
+      g2.addColorStop(0, "#fff");
+      g2.addColorStop(0.45, pos ? "#ff8f78" : "#7fd0ff");
+      g2.addColorStop(1, pos ? "#c22c22" : "#0d69b8");
+      c.fillStyle = g2;
+      c.beginPath(); c.arc(sx, sy, R2, 0, 6.2832); c.fill();
+      c.fillStyle = "#fff"; c.font = "700 13px Arial, sans-serif"; c.textAlign = "center";
+      c.fillText(pos ? "+" : "−", sx, sy + 5);
+    }
+    c.restore();
+  },
+  readouts: function (s) {
+    var mi = s.mag(s.probe.x, s.probe.y);
+    var refx, refy;
+    if (s.st.src === "kugel") {
+      var dx = 0 - s.src.x, dy = 0 - s.src.y, L = Math.sqrt(dx * dx + dy * dy) || 1;
+      refx = s.src.x + dx / L * (L - CAGE_W / 2 - 1.6);
+      refy = s.src.y + dy / L * (L - CAGE_W / 2 - 1.6);
+    } else { refx = s.box[0] + 2.5; refy = 0; }
+    var mo = s.mag(refx, refy);
+    var ei = fmtE(mi), eo = fmtE(mo);
+    var shield = mo > 1 ? clamp((1 - mi / mo) * 100, 0, 100) : 100;
+    return [
+      { k: "E innen (Sonde)", v: ei.n, u: ei.u, c: mi < mo * 0.05 ? "cool" : "warn" },
+      { k: "E außen (Referenz)", v: eo.n, u: eo.u, c: "hot" },
+      { k: "Abschirmung", v: nf(shield, 1), u: "%" },
+      { k: "Potential der Hülle", v: nf(s.solver ? s.solver.vc : 0, 0), u: "V" }
+    ];
+  },
+  controls: [
+    {
+      label: "Metallhülle", items: [
+        {
+          t: "seg", key: "cage", opts: [["zu", "geschlossen"], ["gitter", "Gitter"], ["offen", "offen"]],
+          on: function (s) { s.rebuild(); }
+        },
+        {
+          t: "slider", key: "mesh", name: "Maschenweite", min: 0.35, max: 2.8, step: 0.05,
+          fmt: function (v) { return nf(v * 10, 0) + " mm"; }, on: function (s) { s.rebuild(); }
+        },
+        { t: "text", html: "Die Maschenweite wirkt nur in der Stellung <b>Gitter</b>." }
+      ]
+    },
+    {
+      label: "Störquelle", items: [
+        {
+          t: "seg", key: "src", opts: [["kugel", "geladene Kugel"], ["homogen", "homogenes Feld"]],
+          on: function (s) { s.rebuild(); }
+        },
+        {
+          t: "slider", key: "U", name: "Spannung der Quelle", min: -3000, max: 3000, step: 100,
+          fmt: function (v) { return nf(v, 0) + " V"; }, on: function (s) { s.rebuild(); }
+        }
+      ]
+    },
+    { label: "Darstellung", items: [{ t: "layers" }] },
+    {
+      label: "", items: [{
+        t: "btn", name: "Zurücksetzen", act: function (s) {
+          s.st.cage = "zu"; s.st.mesh = 1.0; s.st.src = "kugel"; s.st.U = 1500;
+          s.src.x = -9.0; s.src.y = 0; s.probe.x = 0; s.probe.y = 0;
+          s.buildPanel(); s.rebuild();
+        }
+      }]
+    }
+  ]
+};
+/* ------------------------------------------------------------------
+   15. Kopfbild: frei stroemendes Feld dreier wandernder Ladungen
+   ------------------------------------------------------------------ */
+function initHero() {
+  var cv = document.getElementById("heroCv");
+  if (!cv) return null;
+  var ctx = cv.getContext("2d");
+  var W = 0, H = 0, scale = 1, worldW = 34, worldH = 1;
+  var n = LOWPOW ? 220 : 520;
+  var px = new Float32Array(n), py = new Float32Array(n);
+  var pl = new Float32Array(n), pt = new Float32Array(n);
+  var cs = [{ x: -8, y: 0, q: 6 }, { x: 8, y: 0, q: -6 }, { x: 0, y: 3, q: 3 }];
+  var ev = [0, 0], t0 = 0;
+
+  function size() {
+    W = cv.clientWidth || window.innerWidth;
+    H = cv.clientHeight || 300;
+    cv.width = Math.round(W * DPR); cv.height = Math.round(H * DPR);
+    ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+    scale = W / worldW; worldH = H / scale;
+    ctx.clearRect(0, 0, W, H);
+    for (var i = 0; i < n; i++) spawn(i, true);
+  }
+  function spawn(i, first) {
+    px[i] = -worldW / 2 + Math.random() * worldW;
+    py[i] = -worldH / 2 + Math.random() * worldH;
+    pl[i] = 30 + Math.random() * 95;
+    pt[i] = first ? Math.random() * 70 : 0;
+  }
+  function SX(x) { return (x + worldW / 2) * scale; }
+  function SY(y) { return (y + worldH / 2) * scale; }
+  function tE(m) { return clamp(Math.log(1 + m / 280) / Math.log(1 + 340000 / 280), 0, 1); }
+
+  function step() {
+    t0 += 0.0042;
+    cs[0].x = -8 + 2.6 * Math.sin(t0 * 0.9);
+    cs[0].y = 1.6 * Math.sin(t0 * 1.35);
+    cs[1].x = 8 + 2.2 * Math.sin(t0 * 1.1 + 1.2);
+    cs[1].y = 1.9 * Math.cos(t0 * 0.8);
+    cs[2].x = 3.2 * Math.cos(t0 * 0.65);
+    cs[2].y = -1.2 + 2.4 * Math.sin(t0 * 0.5);
+
+    ctx.save();
+    ctx.globalCompositeOperation = "destination-out";
+    ctx.fillStyle = "rgba(0,0,0,0.10)";
+    ctx.fillRect(0, 0, W, H);
+    ctx.restore();
+
+    ctx.save();
+    ctx.globalCompositeOperation = "lighter";
+    ctx.lineCap = "round";
+    for (var i = 0; i < n; i++) {
+      var x = px[i], y = py[i];
+      chargeField(cs, x, y, ev);
+      var m = Math.sqrt(ev[0] * ev[0] + ev[1] * ev[1]);
+      pt[i]++;
+      if (m < 14 || pt[i] > pl[i] || x < -worldW / 2 - 1 || x > worldW / 2 + 1 ||
+          y < -worldH / 2 - 1 || y > worldH / 2 + 1) { spawn(i, false); continue; }
+      var t = tE(m), sp = 0.05 + 0.34 * t * t;
+      var nx2 = x + ev[0] / m * sp, ny2 = y + ev[1] / m * sp;
+      px[i] = nx2; py[i] = ny2;
+      var age = pt[i] / pl[i], fade = 1;
+      if (age > 0.78) fade = (1 - age) / 0.22;
+      if (age < 0.09) fade = age / 0.09;
+      ctx.strokeStyle = lutRGB(LUT_E, clamp(0.32 + t * 0.68, 0, 1));
+      ctx.globalAlpha = clamp(0.26 + 0.62 * t, 0, 1) * fade;
+      ctx.lineWidth = 0.9 + 1.7 * t;
+      ctx.beginPath();
+      ctx.moveTo(SX(x), SY(y)); ctx.lineTo(SX(nx2), SY(ny2));
+      ctx.stroke();
+    }
+    /* Leuchtkerne der Ladungen */
+    for (var k = 0; k < cs.length; k++) {
+      var c0 = cs[k], gx = SX(c0.x), gy = SY(c0.y);
+      var col = c0.q > 0 ? "255,120,84" : "80,190,255";
+      var R = 26;
+      var g = ctx.createRadialGradient(gx, gy, 1, gx, gy, R);
+      g.addColorStop(0, "rgba(255,246,238,.62)");
+      g.addColorStop(0.13, "rgba(" + col + ",.42)");
+      g.addColorStop(1, "rgba(" + col + ",0)");
+      ctx.globalAlpha = 1;
+      ctx.fillStyle = g;
+      ctx.beginPath(); ctx.arc(gx, gy, R, 0, 6.2832); ctx.fill();
+    }
+    ctx.restore();
+  }
+  size();
+  window.addEventListener("resize", size);
+  return { step: step, el: cv };
+}
+
+/* ------------------------------------------------------------------
+   16. Navigation und Bildschleife
+   ------------------------------------------------------------------ */
+var MODS = [
+  { id: "m1", n: "Punktladung", acc: "#ff9a4c", cfg: M1 },
+  { id: "m2", n: "Dipol", acc: "#c79bff", cfg: M2 },
+  { id: "m3", n: "Überlagerung", acc: "#4ee0b0", cfg: M3 },
+  { id: "m4", n: "Kondensator", acc: "#ffd24a", cfg: M4 },
+  { id: "m5", n: "Faradaykäfig", acc: "#58b0ff", cfg: M5 }
+];
+
+var stages = [], cur = -1, hero = null, navBtns = [];
+
+function activate(idx) {
+  var i, sec;
+  for (i = 0; i < MODS.length; i++) {
+    sec = document.getElementById(MODS[i].id);
+    if (i === idx) { sec.className = "mod on"; } else { sec.className = "mod"; }
+    navBtns[i].setAttribute("aria-current", String(i === idx));
+  }
+  document.documentElement.style.setProperty("--acc", MODS[idx].acc);
+  cur = idx;
+  sec = document.getElementById(MODS[idx].id);
+  if (!stages[idx]) {
+    var st = new Stage(sec.querySelector("[data-stage]"), MODS[idx].cfg);
+    if (MODS[idx].cfg.apply) MODS[idx].cfg.apply(st);
+    st.needBase = true;
+    stages[idx] = st;
+  } else {
+    stages[idx].resize();
+  }
+}
+
+function buildNav() {
+  var row = document.getElementById("navrow"), i;
+  var mk = function (m, k) {
+    var b = document.createElement("button");
+    b.type = "button"; b.className = "navbtn";
+    b.style.setProperty("--na", m.acc);
+    b.innerHTML = '<span class="num">' + (k + 1) + "</span>" + m.n;
+    b.setAttribute("aria-current", "false");
+    b.addEventListener("pointerdown", function (e) {
+      e.preventDefault();
+      activate(k);
+      var nav = document.querySelector("nav.modnav");
+      var y = nav.getBoundingClientRect().bottom + window.pageYOffset - nav.offsetHeight;
+      if (window.pageYOffset > y) window.scrollTo(0, y);
+    });
+    return b;
+  };
+  for (i = 0; i < MODS.length; i++) {
+    var b = mk(MODS[i], i);
+    navBtns.push(b);
+    row.appendChild(b);
+  }
+}
+
+function loop() {
+  if (hero) {
+    var r = hero.el.getBoundingClientRect();
+    if (r.bottom > 0 && r.top < window.innerHeight) hero.step();
+  }
+  if (cur >= 0 && stages[cur]) stages[cur].tick();
+  requestAnimationFrame(loop);
+}
+
+function boot() {
+  hero = initHero();
+  buildNav();
+  activate(0);
+  requestAnimationFrame(loop);
+}
+
+if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", boot);
+else boot();
+
+})();
+</script>

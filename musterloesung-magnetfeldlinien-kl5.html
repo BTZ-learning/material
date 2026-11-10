@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Magnetfeldlinien Musterlösung</title>
+<style>
+  :root{
+    --bg:#ffffff; --surface:#ffffff; --surface-2:#f3f1ea;
+    --ink:#1d201c; --ink-soft:#454a43; --line:#bdb8aa;
+    --accent:#1f5f8f; --accent-soft:#e3edf5;
+    --nord:#c8322d; --sued:#2e8b3e; --field:#1f5f8f; --sol:#b0306a;
+    color-scheme: light;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#181a17; --surface:#20231f; --surface-2:#272a25;
+      --ink:#eae7dd; --ink-soft:#b6b8ae; --line:#4a4d46;
+      --accent:#7fb3dd; --accent-soft:#1f2a33;
+      --nord:#e56a64; --sued:#5cc06d; --field:#7fb3dd; --sol:#e889b6;
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#181a17; --surface:#20231f; --surface-2:#272a25;
+    --ink:#eae7dd; --ink-soft:#b6b8ae; --line:#4a4d46;
+    --accent:#7fb3dd; --accent-soft:#1f2a33;
+    --nord:#e56a64; --sued:#5cc06d; --field:#7fb3dd; --sol:#e889b6;
+    color-scheme: dark;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; background:var(--bg); color:var(--ink);
+    font-family:"Segoe UI",system-ui,sans-serif; font-size:16px;
+    padding:28px 16px;
+  }
+  .page{ max-width:760px; margin:0 auto; display:flex; flex-direction:column; gap:18px; }
+  header{ border-bottom:2px solid var(--ink); padding-bottom:10px; display:flex; justify-content:space-between; gap:16px; flex-wrap:wrap; align-items:flex-end; }
+  .eyebrow{ text-transform:uppercase; letter-spacing:0.1em; font-size:0.75rem; color:var(--accent); font-weight:700; }
+  h1{ font-family:Georgia,serif; font-size:1.9rem; margin:2px 0 0; }
+  .name-field{ font-size:0.85rem; color:var(--ink-soft); display:flex; gap:18px; }
+  .name-field span{ display:inline-block; border-bottom:1px solid var(--ink-soft); min-width:150px; }
+  .name-field span.short{ min-width:70px; }
+
+  .info{ background:var(--accent-soft); border-left:5px solid var(--accent); border-radius:10px; padding:12px 16px; }
+  .info h2{ margin:0 0 6px; font-size:1rem; color:var(--accent); }
+  .info ul{ margin:0; padding-left:1.2em; line-height:1.5; }
+  .n{ color:var(--nord); font-weight:700; } .s{ color:var(--sued); font-weight:700; }
+
+  .task{ border:1.5px solid var(--line); border-radius:12px; padding:14px 16px; display:flex; flex-direction:column; gap:10px; break-inside:avoid; }
+  .task-head{ display:flex; align-items:baseline; gap:10px; }
+  .task-num{ font-weight:700; color:#fff; background:var(--accent); border-radius:8px; padding:1px 9px; font-size:0.9rem; }
+  .task-title{ font-weight:700; }
+  .task p{ margin:0; line-height:1.5; }
+  .stars{ margin-left:auto; color:var(--ink-soft); font-size:0.85rem; }
+
+  .cloze{ line-height:2.3; }
+  .gap{ display:inline-block; min-width:120px; border-bottom:1.5px solid var(--ink-soft); text-align:center; }
+  .wordbank{ display:flex; flex-wrap:wrap; gap:6px; }
+  .wordbank span{ border:1px dashed var(--line); border-radius:6px; padding:2px 8px; font-size:0.9rem; }
+
+  .lines .l{ border-bottom:1px solid var(--line); height:2em; }
+  svg{ width:100%; height:auto; display:block; }
+  .box{ border:1.5px dashed var(--line); border-radius:10px; }
+
+  table.tf{ border-collapse:collapse; width:100%; font-size:0.95rem; }
+  table.tf td, table.tf th{ border:1px solid var(--line); padding:6px 8px; }
+  table.tf th{ background:var(--surface-2); text-align:left; }
+  table.tf td.c{ width:70px; text-align:center; }
+
+  .two{ display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+  @media (max-width:560px){ .two{ grid-template-columns:1fr; } }
+  .cap{ text-align:center; font-size:0.9rem; color:var(--ink-soft); }
+
+  /* Lösungen: nur sichtbar, wenn body die Klasse "loesung" hat */
+  .sol{ display:none; }
+  body.loesung .sol{ display:revert; }
+  body.loesung g.sol{ display:inline; }
+  .soltext{ color:var(--sol); font-weight:600; font-family:"Segoe Print","Comic Sans MS",cursive; }
+  body.loesung .gap{ color:var(--sol); font-weight:600; }
+  .badge{ display:none; }
+  body.loesung .badge{ display:inline-block; background:var(--sol); color:#fff; border-radius:6px; padding:1px 8px; font-size:0.75rem; font-weight:700; margin-left:8px; vertical-align:middle; }
+
+  .pb{ break-before:page; }
+  @page{ size:A4; margin:12mm 14mm; }
+  @media print{
+    :root{ --bg:#fff; --surface:#fff; --ink:#000; --ink-soft:#333; --line:#999; color-scheme:light; }
+    body{ padding:0; font-size:14.5px; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+    .page{ gap:12px; }
+  }
+</style>
+</head>
+<body class="loesung">
+<div class="page">
+
+<header>
+  <div>
+    <div class="eyebrow">Physik · Klasse 5 · Magnetismus</div>
+    <h1>Magnetfeldlinien<span class="badge">Musterlösung</span></h1>
+  </div>
+  <div class="name-field">
+    <div>Name: <span></span></div>
+    <div>Datum: <span class="short"></span></div>
+  </div>
+</header>
+
+<div class="info">
+  <h2>Das musst du wissen</h2>
+  <ul>
+    <li>Jeder Magnet hat einen <span class="n">Nordpol (N, rot)</span> und einen <span class="s">Südpol (S, grün)</span>.</li>
+    <li>Um einen Magneten herum ist ein <b>Magnetfeld</b>. Man kann es nicht sehen – aber mit <b>Eisenfeilspänen</b> oder kleinen <b>Kompassen</b> sichtbar machen.</li>
+    <li>Wir zeichnen das Magnetfeld mit <b>Feldlinien</b>. Sie verlaufen außen <b>vom Nordpol zum Südpol</b> (Pfeilrichtung).</li>
+    <li>Feldlinien <b>kreuzen sich nie</b>. Wo sie <b>dicht</b> beieinander liegen, ist das Magnetfeld <b>stark</b> – das ist an den Polen.</li>
+  </ul>
+</div>
+
+<!-- Aufgabe 1 -->
+<div class="task">
+  <div class="task-head"><span class="task-num">1</span><span class="task-title">Versuch: Eisenfeilspäne</span><span class="stars">★</span></div>
+  <p>Lege einen Stabmagneten unter ein Blatt Papier. Streue vorsichtig Eisenfeilspäne auf das Papier und klopfe leicht mit dem Finger dagegen.<br>
+  <b>a)</b> Zeichne in das Kästchen, wie sich die Eisenfeilspäne anordnen.</p>
+  <div class="box">
+    <svg viewBox="0 0 600 200" aria-label="Kästchen mit Stabmagnet">
+      <g class="sol" fill="none" stroke="var(--ink-soft)" stroke-width="1.3" stroke-dasharray="3 5" stroke-linecap="round">
+        <path d="M210,92 C150,62 450,62 390,92"/><path d="M210,88 C130,30 470,30 390,88"/><path d="M210,84 C110,-5 490,-5 390,84"/>
+        <path d="M210,108 C150,138 450,138 390,108"/><path d="M210,112 C130,170 470,170 390,112"/><path d="M210,116 C110,205 490,205 390,116"/>
+        <path d="M205,100 L130,100"/><path d="M395,100 L470,100"/>
+        <path d="M205,94 L140,70"/><path d="M205,106 L140,130"/><path d="M395,94 L460,70"/><path d="M395,106 L460,130"/>
+      </g>
+      <rect x="210" y="85" width="90" height="30" fill="var(--nord)"/><rect x="300" y="85" width="90" height="30" fill="var(--sued)"/>
+      <text x="255" y="106" text-anchor="middle" fill="#fff" font-weight="700" font-size="18">N</text>
+      <text x="345" y="106" text-anchor="middle" fill="#fff" font-weight="700" font-size="18">S</text>
+    </svg>
+  </div>
+  <p><b>b)</b> Wo sammeln sich die meisten Eisenfeilspäne? Was bedeutet das?</p>
+  <div class="lines">
+    <div class="l"><span class="sol soltext">An den beiden Polen sammeln sich die meisten Eisenfeilspäne.</span></div>
+    <div class="l"><span class="sol soltext">Dort ist das Magnetfeld am stärksten.</span></div>
+  </div>
+</div>
+
+<!-- Aufgabe 2 -->
+<div class="task">
+  <div class="task-head"><span class="task-num">2</span><span class="task-title">Lückentext</span><span class="stars">★</span></div>
+  <div class="wordbank"><span>Südpol</span><span>stark</span><span>Nordpol</span><span>Feldlinien</span><span>kreuzen</span><span>Magnetfeld</span><span>Pfeile</span></div>
+  <p class="cloze">
+    Um einen Magneten herum ist ein unsichtbares <span class="gap"><span class="sol">Magnetfeld</span></span>.
+    Wir stellen es mit <span class="gap"><span class="sol">Feldlinien</span></span> dar.
+    Außerhalb des Magneten verlaufen sie immer vom <span class="gap"><span class="sol">Nordpol</span></span> zum <span class="gap"><span class="sol">Südpol</span></span>.
+    Die Richtung zeigen wir mit kleinen <span class="gap"><span class="sol">Pfeilen</span></span>.
+    Feldlinien dürfen sich niemals <span class="gap"><span class="sol">kreuzen</span></span>.
+    Liegen die Feldlinien dicht beieinander, ist das Magnetfeld dort besonders <span class="gap"><span class="sol">stark</span></span>.
+  </p>
+</div>
+
+<!-- Aufgabe 3 -->
+<div class="task pb">
+  <div class="task-head"><span class="task-num">3</span><span class="task-title">Feldlinien zeichnen</span><span class="stars">★★</span></div>
+  <p>Zeichne mit einem Bleistift mindestens <b>6 Feldlinien</b> um den Stabmagneten. Denke an die <b>Pfeile</b>!<br>
+  <i>Tipp:</i> Die Feldlinien sind wie Bögen. Die Punkte zeigen dir, wo du anfangen kannst.</p>
+  <svg viewBox="0 0 600 260" aria-label="Stabmagnet zum Einzeichnen der Feldlinien">
+    <g class="sol" fill="none" stroke="var(--sol)" stroke-width="2">
+      <path d="M210,122 C140,80 460,80 390,122"/>
+      <path d="M210,122 C140,35 460,35 390,122"/>
+      <path d="M210,122 C140,-10 460,-10 390,122"/>
+      <path d="M210,138 C140,180 460,180 390,138"/>
+      <path d="M210,138 C140,225 460,225 390,138"/>
+      <path d="M210,138 C140,270 460,270 390,138"/>
+      <path d="M210,130 L90,130"/><path d="M510,130 L390,130"/>
+    </g>
+    <g class="sol" fill="var(--sol)">
+      <polygon points="294,86 306,91 294,96"/><polygon points="294,52 306,57 294,62"/><polygon points="294,18 306,23 294,28"/>
+      <polygon points="294,164 306,169 294,174"/><polygon points="294,198 306,203 294,208"/><polygon points="294,232 306,237 294,242"/>
+      <polygon points="120,125 108,130 120,135"/><polygon points="460,125 448,130 460,135"/>
+    </g>
+    <g fill="var(--ink-soft)">
+      <circle cx="210" cy="122" r="3"/><circle cx="210" cy="138" r="3"/><circle cx="210" cy="130" r="3"/>
+      <circle cx="390" cy="122" r="3"/><circle cx="390" cy="138" r="3"/><circle cx="390" cy="130" r="3"/>
+    </g>
+    <rect x="212" y="115" width="88" height="30" fill="var(--nord)"/><rect x="300" y="115" width="88" height="30" fill="var(--sued)"/>
+    <text x="256" y="136" text-anchor="middle" fill="#fff" font-weight="700" font-size="18">N</text>
+    <text x="344" y="136" text-anchor="middle" fill="#fff" font-weight="700" font-size="18">S</text>
+  </svg>
+</div>
+
+<!-- Aufgabe 4 -->
+<div class="task">
+  <div class="task-head"><span class="task-num">4</span><span class="task-title">Kompassnadeln</span><span class="stars">★★</span></div>
+  <p>Kompassnadeln richten sich nach den Feldlinien aus. Die <span class="n">rote Spitze</span> zeigt dabei in Richtung der Feldlinien.<br>
+  Zeichne in jeden Kreis die Kompassnadel ein. Male die Spitze, die in Pfeilrichtung zeigt, rot an.</p>
+  <svg viewBox="0 0 600 240" aria-label="Stabmagnet mit vier leeren Kompassen">
+    <g class="sol" fill="none" stroke="var(--field)" stroke-width="1" stroke-dasharray="4 4" opacity="0.7">
+      <path d="M210,112 C140,40 460,40 390,112"/><path d="M210,128 C140,200 460,200 390,128"/>
+      <path d="M210,120 L60,120"/><path d="M540,120 L390,120"/>
+    </g>
+    <g fill="none" stroke="var(--ink)" stroke-width="1.8">
+      <circle cx="110" cy="120" r="26"/><circle cx="490" cy="120" r="26"/>
+      <circle cx="300" cy="46" r="26"/><circle cx="300" cy="194" r="26"/>
+    </g>
+    <g class="sol">
+      <!-- links: Spitze nach links -->
+      <polygon points="90,120 110,114 110,126" fill="var(--nord)"/><polygon points="130,120 110,114 110,126" fill="#9a9a9a"/>
+      <!-- rechts: Spitze nach links -->
+      <polygon points="470,120 490,114 490,126" fill="var(--nord)"/><polygon points="510,120 490,114 490,126" fill="#9a9a9a"/>
+      <!-- oben: Spitze nach rechts -->
+      <polygon points="320,46 300,40 300,52" fill="var(--nord)"/><polygon points="280,46 300,40 300,52" fill="#9a9a9a"/>
+      <!-- unten: Spitze nach rechts -->
+      <polygon points="320,194 300,188 300,200" fill="var(--nord)"/><polygon points="280,194 300,188 300,200" fill="#9a9a9a"/>
+    </g>
+    <rect x="210" y="105" width="90" height="30" fill="var(--nord)"/><rect x="300" y="105" width="90" height="30" fill="var(--sued)"/>
+    <text x="255" y="126" text-anchor="middle" fill="#fff" font-weight="700" font-size="18">N</text>
+    <text x="345" y="126" text-anchor="middle" fill="#fff" font-weight="700" font-size="18">S</text>
+  </svg>
+</div>
+
+<!-- Aufgabe 5 -->
+<div class="task">
+  <div class="task-head"><span class="task-num">5</span><span class="task-title">Zwei Magnete</span><span class="stars">★★★</span></div>
+  <p>Hier siehst du die Feldlinien zwischen zwei Magneten. <b>a)</b> Beschrifte die fehlenden Pole mit <b>N</b> oder <b>S</b>.
+  <b>b)</b> Kreuze an: Ziehen sich die Magnete an oder stoßen sie sich ab?</p>
+  <div class="two">
+    <div>
+      <svg viewBox="0 0 500 200" aria-label="Bild A: zwei Magnete, die sich anziehen">
+        <g fill="none" stroke="var(--field)" stroke-width="1.8">
+          <path d="M300,100 L200,100"/><path d="M300,90 L200,90"/><path d="M300,110 L200,110"/>
+          <path d="M300,86 C265,70 235,70 200,86"/><path d="M300,114 C265,130 235,130 200,114"/>
+        </g>
+        <g fill="var(--field)">
+          <polygon points="256,95 244,100 256,105"/><polygon points="256,69 244,74 256,79"/><polygon points="256,121 244,126 256,131"/>
+        </g>
+        <rect x="40" y="82" width="80" height="36" fill="var(--nord)"/><rect x="120" y="82" width="80" height="36" fill="var(--surface-2)" stroke="var(--ink)"/>
+        <rect x="300" y="82" width="80" height="36" fill="var(--surface-2)" stroke="var(--ink)"/><rect x="380" y="82" width="80" height="36" fill="var(--sued)"/>
+        <text x="80" y="107" text-anchor="middle" fill="#fff" font-weight="700" font-size="18">N</text>
+        <text x="420" y="107" text-anchor="middle" fill="#fff" font-weight="700" font-size="18">S</text>
+        <text x="160" y="107" text-anchor="middle" font-size="20" fill="var(--ink)">?</text>
+        <text x="340" y="107" text-anchor="middle" font-size="20" fill="var(--ink)">?</text>
+        <g class="sol">
+          <rect x="120" y="82" width="80" height="36" fill="var(--sued)"/><text x="160" y="107" text-anchor="middle" fill="#fff" font-weight="700" font-size="18">S</text>
+          <rect x="300" y="82" width="80" height="36" fill="var(--nord)"/><text x="340" y="107" text-anchor="middle" fill="#fff" font-weight="700" font-size="18">N</text>
+        </g>
+      </svg>
+      <p class="cap"><b>Bild A:</b> ☐ ziehen sich an &nbsp; ☐ stoßen sich ab <span class="sol soltext">→ ziehen sich an</span></p>
+    </div>
+    <div>
+      <svg viewBox="0 0 500 200" aria-label="Bild B: zwei Magnete, die sich abstoßen">
+        <g fill="none" stroke="var(--field)" stroke-width="1.8">
+          <path d="M200,92 C232,86 240,55 244,15"/><path d="M300,92 C268,86 260,55 256,15"/>
+          <path d="M200,108 C232,114 240,145 244,185"/><path d="M300,108 C268,114 260,145 256,185"/>
+          <path d="M200,84 C220,70 225,40 222,15"/><path d="M300,84 C280,70 275,40 278,15"/>
+          <path d="M200,116 C220,130 225,160 222,185"/><path d="M300,116 C280,130 275,160 278,185"/>
+        </g>
+        <g fill="var(--field)">
+          <polygon points="236,56 241,44 246,57"/><polygon points="254,56 259,44 264,57"/>
+          <polygon points="236,144 241,156 246,143"/><polygon points="254,144 259,156 264,143"/>
+        </g>
+        <rect x="40" y="82" width="80" height="36" fill="var(--sued)"/><rect x="120" y="82" width="80" height="36" fill="var(--surface-2)" stroke="var(--ink)"/>
+        <rect x="300" y="82" width="80" height="36" fill="var(--surface-2)" stroke="var(--ink)"/><rect x="380" y="82" width="80" height="36" fill="var(--sued)"/>
+        <text x="80" y="107" text-anchor="middle" fill="#fff" font-weight="700" font-size="18">S</text>
+        <text x="420" y="107" text-anchor="middle" fill="#fff" font-weight="700" font-size="18">S</text>
+        <text x="160" y="107" text-anchor="middle" font-size="20" fill="var(--ink)">?</text>
+        <text x="340" y="107" text-anchor="middle" font-size="20" fill="var(--ink)">?</text>
+        <g class="sol">
+          <rect x="120" y="82" width="80" height="36" fill="var(--nord)"/><text x="160" y="107" text-anchor="middle" fill="#fff" font-weight="700" font-size="18">N</text>
+          <rect x="300" y="82" width="80" height="36" fill="var(--nord)"/><text x="340" y="107" text-anchor="middle" fill="#fff" font-weight="700" font-size="18">N</text>
+        </g>
+      </svg>
+      <p class="cap"><b>Bild B:</b> ☐ ziehen sich an &nbsp; ☐ stoßen sich ab <span class="sol soltext">→ stoßen sich ab</span></p>
+    </div>
+  </div>
+  <p class="sol"><span class="soltext">Tipp zum Erklären: Die Pfeile zeigen immer vom Nordpol weg und zum Südpol hin. In Bild A laufen die Linien von N nach S hinüber (ungleiche Pole → Anziehung). In Bild B zeigen alle Pfeile vom Magneten weg, beide Pole sind Nordpole (gleiche Pole → Abstoßung).</span></p>
+</div>
+
+<!-- Aufgabe 6 -->
+<div class="task">
+  <div class="task-head"><span class="task-num">6</span><span class="task-title">Richtig oder falsch?</span><span class="stars">★</span></div>
+  <table class="tf">
+    <tr><th>Aussage</th><th class="c">richtig</th><th class="c">falsch</th></tr>
+    <tr><td>Feldlinien kann man mit bloßem Auge sehen.</td><td class="c"></td><td class="c"><span class="sol soltext">✗</span></td></tr>
+    <tr><td>Außerhalb des Magneten zeigen die Feldlinien vom Nordpol zum Südpol.</td><td class="c"><span class="sol soltext">✗</span></td><td class="c"></td></tr>
+    <tr><td>Zwei Feldlinien können sich kreuzen.</td><td class="c"></td><td class="c"><span class="sol soltext">✗</span></td></tr>
+    <tr><td>An den Polen ist das Magnetfeld am stärksten.</td><td class="c"><span class="sol soltext">✗</span></td><td class="c"></td></tr>
+    <tr><td>Eisenfeilspäne machen das Magnetfeld sichtbar.</td><td class="c"><span class="sol soltext">✗</span></td><td class="c"></td></tr>
+  </table>
+</div>
+
+</div>
+</body>
+</html>

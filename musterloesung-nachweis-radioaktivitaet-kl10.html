@@ -1,0 +1,337 @@
+<title>Musterlösung Strahlungsnachweis</title>
+<style>
+  :root{
+    --paper:#eef1ee;
+    --ink:#1c2621;
+    --ink-soft:#4a564e;
+    --line:#9fae9f;
+    --line-soft:#c7d1c5;
+    --teal:#0e6b64;
+    --teal-soft:#dcece9;
+    --amber:#b5720f;
+    --amber-soft:#f3e4c8;
+    --card:#f8f9f6;
+    --white:#ffffff;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --paper:#161b18; --ink:#e7ece7; --ink-soft:#aab8ac;
+      --line:#3c4a3f; --line-soft:#2b352d;
+      --teal:#5fc9bd; --teal-soft:#1c332f;
+      --amber:#e0a94a; --amber-soft:#3a2f18;
+      --card:#1d2420; --white:#20271f;
+    }
+  }
+  :root[data-theme="dark"]{
+    --paper:#161b18; --ink:#e7ece7; --ink-soft:#aab8ac;
+    --line:#3c4a3f; --line-soft:#2b352d;
+    --teal:#5fc9bd; --teal-soft:#1c332f;
+    --amber:#e0a94a; --amber-soft:#3a2f18;
+    --card:#1d2420; --white:#20271f;
+  }
+
+  *{box-sizing:border-box;}
+  body{
+    background:var(--paper); color:var(--ink);
+    font-family:"IBM Plex Sans",system-ui,sans-serif;
+    line-height:1.5; padding:clamp(16px,4vw,40px);
+    max-width:900px; margin:0 auto;
+  }
+  h1,h2,h3{ font-family:"Source Serif 4",Georgia,serif; font-weight:600; text-wrap:balance; margin:0 0 6px 0; }
+  .kicker{
+    font-family:"IBM Plex Mono",monospace; text-transform:uppercase;
+    letter-spacing:.14em; font-size:11px; color:var(--teal); font-weight:600;
+  }
+  .masthead{
+    border-bottom:3px solid var(--ink); padding-bottom:16px; margin-bottom:18px;
+    display:flex; justify-content:space-between; align-items:flex-end; gap:16px; flex-wrap:wrap;
+  }
+  .masthead h1{font-size:clamp(24px,4vw,32px);}
+  .masthead .sub{color:var(--ink-soft); font-size:14px; margin-top:4px;}
+  .stamp{
+    font-family:"IBM Plex Mono",monospace; font-size:12px; font-weight:700;
+    color:var(--white); background:var(--teal);
+    padding:5px 12px; border-radius:999px; letter-spacing:.08em; text-transform:uppercase;
+  }
+
+  .intro{
+    background:var(--card); border:1px solid var(--line-soft); border-left:4px solid var(--teal);
+    border-radius:6px; padding:14px 18px; margin-bottom:26px; font-size:14.5px;
+  }
+
+  section.device{ margin-bottom:34px; break-inside:avoid-page; }
+  .device-head{ display:flex; align-items:center; gap:10px; margin-bottom:10px; }
+  .num{
+    font-family:"IBM Plex Mono",monospace; background:var(--teal); color:var(--white);
+    width:28px;height:28px;border-radius:50%; display:flex;align-items:center;justify-content:center;
+    font-weight:700; font-size:14px; flex:none;
+  }
+  .device h2{font-size:20px;}
+
+  .grid2{ display:grid; grid-template-columns:1.1fr 1fr; gap:20px; align-items:start; }
+  @media (max-width:640px){ .grid2{grid-template-columns:1fr;} }
+
+  .diagram-box{ background:var(--card); border:1px solid var(--line-soft); border-radius:8px; padding:12px; }
+  .diagram-box svg{width:100%; height:auto; display:block;}
+  .diagram-caption{ font-family:"IBM Plex Mono",monospace; font-size:11px; color:var(--ink-soft); margin-top:8px; text-align:center; }
+
+  .task-label{
+    font-family:"IBM Plex Mono",monospace; font-size:11px; text-transform:uppercase;
+    letter-spacing:.08em; color:var(--amber); font-weight:700; margin-bottom:6px;
+  }
+
+  .cloze{ background:var(--card); border:1px solid var(--line-soft); border-radius:8px; padding:14px 16px; font-size:14.5px; }
+  .cloze p{margin:0;}
+  .ans{ color:var(--teal); font-weight:700; }
+  .labels-answer{ font-size:13.5px; line-height:1.9; }
+  .labels-answer b{ color:var(--teal); }
+
+  .qbox{margin-top:10px;}
+  .qbox .q{font-weight:600; margin-bottom:6px; font-size:13.5px;}
+  .qbox .a{
+    background:var(--teal-soft); border-radius:6px; padding:8px 12px;
+    font-size:13.5px; color:var(--ink);
+  }
+
+  table.compare{
+    width:100%; border-collapse:collapse; font-size:13px;
+    background:var(--card); border:1px solid var(--line-soft); border-radius:8px; overflow:hidden;
+  }
+  table.compare th, table.compare td{ border:1px solid var(--line-soft); padding:8px 10px; text-align:left; vertical-align:top; }
+  table.compare th{
+    background:var(--teal-soft); font-family:"IBM Plex Mono",monospace;
+    font-size:11px; text-transform:uppercase; letter-spacing:.06em; color:var(--teal);
+  }
+
+  .section-title{
+    font-family:"IBM Plex Mono",monospace; text-transform:uppercase; letter-spacing:.1em; font-size:12px;
+    color:var(--ink-soft); border-top:1px solid var(--line); padding-top:6px; margin:34px 0 14px 0;
+  }
+
+  .footer-note{ margin-top:30px; font-size:11px; color:var(--ink-soft); text-align:center; font-family:"IBM Plex Mono",monospace; }
+
+  @media print{
+    body{background:#fff; color:#000; max-width:none; padding:14mm;}
+    .intro,.diagram-box,.cloze,table.compare{background:#fff;}
+  }
+</style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+
+<div class="masthead">
+  <div>
+    <div class="kicker">Physik · Klasse 10</div>
+    <h1>Nachweis radioaktiver Strahlung</h1>
+    <div class="sub">Elektroskop · Nebelkammer · Geiger-Müller-Zählrohr</div>
+  </div>
+  <div class="stamp">Musterlösung</div>
+</div>
+
+<div class="intro">
+Radioaktive Strahlung <strong>ionisiert</strong> Materie auf ihrem Weg. Alle drei Nachweisgeräte nutzen genau diesen Effekt, machen ihn aber auf unterschiedliche Weise sichtbar oder messbar.
+</div>
+
+<!-- ELEKTROSKOP -->
+<section class="device">
+  <div class="device-head"><div class="num">1</div><h2>Das Elektroskop</h2></div>
+  <div class="grid2">
+    <div class="diagram-box">
+      <svg viewBox="0 0 320 260" xmlns="http://www.w3.org/2000/svg">
+        <rect x="60" y="70" width="200" height="150" rx="4" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--ink)"/>
+        <circle cx="160" cy="40" r="16" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--ink)"/>
+        <line x1="160" y1="56" x2="160" y2="95" stroke="currentColor" stroke-width="2" style="color:var(--ink)"/>
+        <rect x="150" y="88" width="20" height="12" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--ink)"/>
+        <line x1="160" y1="100" x2="160" y2="150" stroke="currentColor" stroke-width="3" style="color:var(--ink)"/>
+        <line x1="160" y1="150" x2="185" y2="205" stroke="var(--teal)" stroke-width="3"/>
+        <path d="M110 200 h100" stroke="currentColor" stroke-width="1" stroke-dasharray="3 3" style="color:var(--ink-soft)"/>
+        <text x="118" y="196" font-size="9" font-family="IBM Plex Mono" fill="var(--ink-soft)">0</text>
+        <text x="215" y="196" font-size="9" font-family="IBM Plex Mono" fill="var(--ink-soft)">90°</text>
+        <line x1="20" y1="40" x2="130" y2="40" stroke="var(--amber)" stroke-width="2" stroke-dasharray="5 4"/>
+        <text x="20" y="30" font-size="10" font-family="IBM Plex Mono" fill="var(--amber)">Präparat</text>
+        <circle cx="160" cy="40" r="3" fill="var(--teal)"/>
+        <line x1="176" y1="40" x2="230" y2="20" stroke="var(--ink-soft)" stroke-width="1"/>
+        <circle cx="230" cy="20" r="8" fill="var(--card)" stroke="var(--ink-soft)"/>
+        <text x="230" y="24" font-size="9" text-anchor="middle" font-family="IBM Plex Mono">A</text>
+        <line x1="160" y1="70" x2="230" y2="70" stroke="var(--ink-soft)" stroke-width="1"/>
+        <circle cx="230" cy="70" r="8" fill="var(--card)" stroke="var(--ink-soft)"/>
+        <text x="230" y="74" font-size="9" text-anchor="middle" font-family="IBM Plex Mono">B</text>
+        <line x1="160" y1="125" x2="80" y2="110" stroke="var(--ink-soft)" stroke-width="1"/>
+        <circle cx="80" cy="110" r="8" fill="var(--card)" stroke="var(--ink-soft)"/>
+        <text x="80" y="114" font-size="9" text-anchor="middle" font-family="IBM Plex Mono">C</text>
+        <line x1="172" y1="177" x2="245" y2="150" stroke="var(--ink-soft)" stroke-width="1"/>
+        <circle cx="245" cy="150" r="8" fill="var(--card)" stroke="var(--ink-soft)"/>
+        <text x="245" y="154" font-size="9" text-anchor="middle" font-family="IBM Plex Mono">D</text>
+        <line x1="150" y1="200" x2="80" y2="230" stroke="var(--ink-soft)" stroke-width="1"/>
+        <circle cx="80" cy="230" r="8" fill="var(--card)" stroke="var(--ink-soft)"/>
+        <text x="80" y="234" font-size="9" text-anchor="middle" font-family="IBM Plex Mono">E</text>
+      </svg>
+      <div class="diagram-caption">Skizze: Blattelektroskop mit angenähertem radioaktivem Präparat</div>
+    </div>
+    <div>
+      <div class="task-label">Aufgabe 1a — Beschriften</div>
+      <div class="labels-answer">
+        A: <b>Metallkappe</b> &nbsp; B: <b>Metallstab</b> &nbsp; C: <b>Zeiger (Ausschlag)</b><br>
+        D: <b>Skala</b> &nbsp; E: <b>Gehäuse mit Sichtfenster</b>
+      </div>
+
+      <div class="task-label" style="margin-top:16px;">Aufgabe 1b — Was passiert im Inneren?</div>
+      <div class="cloze">
+        <p>Nähert man ein radioaktives Präparat einem geladenen Elektroskop, so wird die Luft zwischen den Metallteilen durch die Strahlung <span class="ans">ionisiert</span> (Ionen und freie Elektronen entstehen). Die Luft wird dadurch <span class="ans">elektrisch leitfähig</span>, sodass Ladung über die Luft <span class="ans">abfließen</span> kann. Der Zeigerausschlag wird deshalb mit der Zeit immer <span class="ans">kleiner</span>.</p>
+      </div>
+    </div>
+  </div>
+  <div class="qbox">
+    <div class="q">Warum ist das Elektroskop kein Gerät, mit dem man einzelne Teilchen zählen kann?</div>
+    <div class="a">Das Elektroskop registriert nur, wie schnell insgesamt Ladung über die ionisierte Luft abfließt – ein langsamer, kontinuierlicher Effekt der Gesamtionisation. Einzelne Teilchen erzeugen keine getrennt erkennbaren, kurzen Ereignisse, sondern verschmelzen zu einem gleichmäßigen Rückgang des Zeigerausschlags. Ob viele schwache oder wenige starke Ionisationen dafür verantwortlich sind, lässt sich nicht unterscheiden.</div>
+  </div>
+</section>
+
+<!-- NEBELKAMMER -->
+<section class="device">
+  <div class="device-head"><div class="num">2</div><h2>Die Nebelkammer</h2></div>
+  <div class="grid2">
+    <div class="diagram-box">
+      <svg viewBox="0 0 320 240" xmlns="http://www.w3.org/2000/svg">
+        <rect x="40" y="30" width="240" height="170" fill="#10151a" opacity="0.9" rx="4"/>
+        <rect x="40" y="30" width="240" height="170" fill="none" stroke="currentColor" stroke-width="2" rx="4" style="color:var(--ink)"/>
+        <rect x="40" y="30" width="240" height="26" fill="var(--amber)" opacity="0.35"/>
+        <rect x="40" y="174" width="240" height="26" fill="#8fd8ff" opacity="0.35"/>
+        <path d="M90 90 q20 5 50 5 t60 -3" stroke="#fff" stroke-width="2" fill="none" opacity="0.85"/>
+        <path d="M120 140 q10 15 5 35" stroke="#fff" stroke-width="1.5" fill="none" opacity="0.6"/>
+        <path d="M190 100 q25 10 15 45" stroke="#fff" stroke-width="1.5" fill="none" opacity="0.6"/>
+        <line x1="10" y1="70" x2="40" y2="70" stroke="var(--teal)" stroke-width="3"/>
+        <polygon points="40,64 40,76 55,70" fill="var(--teal)"/>
+        <line x1="150" y1="56" x2="150" y2="10" stroke="var(--ink-soft)" stroke-width="1"/>
+        <circle cx="150" cy="10" r="8" fill="var(--card)" stroke="var(--ink-soft)"/>
+        <text x="150" y="14" font-size="9" text-anchor="middle" font-family="IBM Plex Mono">A</text>
+        <line x1="20" y1="70" x2="20" y2="30" stroke="var(--ink-soft)" stroke-width="1"/>
+        <circle cx="20" cy="20" r="8" fill="var(--card)" stroke="var(--ink-soft)"/>
+        <text x="20" y="24" font-size="9" text-anchor="middle" font-family="IBM Plex Mono">B</text>
+        <line x1="160" y1="187" x2="230" y2="220" stroke="var(--ink-soft)" stroke-width="1"/>
+        <circle cx="230" cy="222" r="8" fill="var(--card)" stroke="var(--ink-soft)"/>
+        <text x="230" y="226" font-size="9" text-anchor="middle" font-family="IBM Plex Mono">C</text>
+        <line x1="115" y1="90" x2="90" y2="60" stroke="var(--ink-soft)" stroke-width="1"/>
+        <circle cx="80" cy="55" r="8" fill="var(--card)" stroke="var(--ink-soft)"/>
+        <text x="80" y="59" font-size="9" text-anchor="middle" font-family="IBM Plex Mono">D</text>
+      </svg>
+      <div class="diagram-caption">Skizze: Diffusionsnebelkammer im Querschnitt</div>
+    </div>
+    <div>
+      <div class="task-label">Aufgabe 2a — Beschriften</div>
+      <div class="labels-answer">
+        A: <b>warmer, alkoholgetränkter Filzring</b><br>
+        B: <b>Lichtquelle (seitlich)</b><br>
+        C: <b>gekühlter Boden (Trockeneis)</b><br>
+        D: <b>sichtbare Nebelspur</b>
+      </div>
+
+      <div class="task-label" style="margin-top:16px;">Aufgabe 2b — Was passiert im Inneren?</div>
+      <div class="cloze">
+        <p>Im Filzring verdunstet Alkohol. Der Alkoholdampf sinkt nach unten und kühlt am kalten Boden stark ab. Dort liegt er <span class="ans">übersättigt</span> vor: Er müsste eigentlich kondensieren, tut es aber (noch) nicht. Fliegt ein geladenes Teilchen durch den Dampf, so <span class="ans">ionisiert</span> es die Luftmoleküle entlang seiner Bahn. An diesen Ionen <span class="ans">kondensiert</span> der Alkoholdampf sofort zu winzigen Tröpfchen – es entsteht eine sichtbare <span class="ans">Nebelspur (Kondensationsspur)</span>.</p>
+      </div>
+    </div>
+  </div>
+  <div class="qbox">
+    <div class="q">Ein Alphateilchen erzeugt eine kurze, dicke, gerade Spur; ein Betateilchen eine lange, dünne, oft geknickte Spur. Nenne einen Grund für diesen Unterschied.</div>
+    <div class="a">Alphateilchen sind vergleichsweise schwer und zweifach positiv geladen. Sie ionisieren auf kurzer Strecke sehr viele Luftmoleküle dicht hintereinander, geben ihre Energie schnell ab und werden dabei kaum abgelenkt (kurz, dick, gerade). Betateilchen (Elektronen) sind sehr viel leichter und ionisieren seltener; sie werden bei Stößen mit Luftmolekülen leicht aus ihrer Bahn abgelenkt, wodurch eine lange, dünne und oft geknickte Spur entsteht.</div>
+  </div>
+</section>
+
+<!-- GEIGER-MÜLLER -->
+<section class="device">
+  <div class="device-head"><div class="num">3</div><h2>Das Geiger-Müller-Zählrohr</h2></div>
+  <div class="grid2">
+    <div class="diagram-box">
+      <svg viewBox="0 0 320 200" xmlns="http://www.w3.org/2000/svg">
+        <rect x="60" y="50" width="160" height="90" rx="10" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--ink)"/>
+        <rect x="45" y="60" width="16" height="70" fill="var(--teal-soft)" stroke="var(--ink)" stroke-width="1.5"/>
+        <line x1="80" y1="95" x2="200" y2="95" stroke="var(--amber)" stroke-width="2"/>
+        <circle cx="80" cy="95" r="3" fill="var(--amber)"/>
+        <circle cx="200" cy="95" r="3" fill="var(--amber)"/>
+        <path d="M20 95 h20" stroke="var(--ink-soft)" stroke-width="2" marker-end="url(#arrow)"/>
+        <defs>
+          <marker id="arrow" markerWidth="6" markerHeight="6" refX="3" refY="3" orient="auto">
+            <path d="M0,0 L6,3 L0,6 z" fill="var(--ink-soft)"/>
+          </marker>
+        </defs>
+        <line x1="220" y1="70" x2="270" y2="55" stroke="var(--ink)" stroke-width="1.5"/>
+        <line x1="220" y1="120" x2="270" y2="135" stroke="var(--ink)" stroke-width="1.5"/>
+        <rect x="270" y="45" width="30" height="100" rx="4" fill="none" stroke="var(--ink)" stroke-width="1.5"/>
+        <text x="285" y="98" font-size="9" text-anchor="middle" font-family="IBM Plex Mono">V</text>
+        <circle cx="285" cy="90" r="10" fill="none" stroke="var(--ink)" stroke-width="1.5"/>
+        <line x1="53" y1="60" x2="30" y2="20" stroke="var(--ink-soft)" stroke-width="1"/>
+        <circle cx="25" cy="16" r="8" fill="var(--card)" stroke="var(--ink-soft)"/>
+        <text x="25" y="20" font-size="9" text-anchor="middle" font-family="IBM Plex Mono">A</text>
+        <line x1="140" y1="95" x2="140" y2="20" stroke="var(--ink-soft)" stroke-width="1"/>
+        <circle cx="140" cy="14" r="8" fill="var(--card)" stroke="var(--ink-soft)"/>
+        <text x="140" y="18" font-size="9" text-anchor="middle" font-family="IBM Plex Mono">B</text>
+        <line x1="160" y1="70" x2="180" y2="30" stroke="var(--ink-soft)" stroke-width="1"/>
+        <circle cx="185" cy="24" r="8" fill="var(--card)" stroke="var(--ink-soft)"/>
+        <text x="185" y="28" font-size="9" text-anchor="middle" font-family="IBM Plex Mono">C</text>
+        <line x1="160" y1="120" x2="150" y2="170" stroke="var(--ink-soft)" stroke-width="1"/>
+        <circle cx="150" cy="178" r="8" fill="var(--card)" stroke="var(--ink-soft)"/>
+        <text x="150" y="182" font-size="9" text-anchor="middle" font-family="IBM Plex Mono">D</text>
+        <line x1="285" y1="80" x2="285" y2="20" stroke="var(--ink-soft)" stroke-width="1"/>
+        <circle cx="285" cy="14" r="8" fill="var(--card)" stroke="var(--ink-soft)"/>
+        <text x="285" y="18" font-size="9" text-anchor="middle" font-family="IBM Plex Mono">E</text>
+      </svg>
+      <div class="diagram-caption">Skizze: Zählrohr mit Zählgas und Auswerteelektronik</div>
+    </div>
+    <div>
+      <div class="task-label">Aufgabe 3a — Beschriften</div>
+      <div class="labels-answer">
+        A: <b>dünnes Eintrittsfenster</b> &nbsp; B: <b>Draht in der Mitte (Anode)</b><br>
+        C: <b>Metallzylinder (Kathode)</b><br>
+        D: <b>Zählgas (z. B. Argon)</b><br>
+        E: <b>Hochspannungsquelle / Zählgerät</b>
+      </div>
+
+      <div class="task-label" style="margin-top:16px;">Aufgabe 3b — Was passiert im Inneren?</div>
+      <div class="cloze">
+        <p>Strahlung tritt durch das dünne Fenster ein und <span class="ans">ionisiert</span> das Zählgas: Es entstehen freie Elektronen und positiv geladene Ionen. Wegen der hohen Spannung zwischen Draht und Zylinder werden die Elektronen stark zum <span class="ans">Draht (zur Anode)</span> hin beschleunigt. Auf dem Weg dorthin stoßen sie weitere Gasatome und ionisieren auch diese – man spricht von einer <span class="ans">Ladungslawine (Elektronenlawine)</span> (Gasverstärkung). Dadurch entsteht ein kurzer, gut messbarer <span class="ans">Stromstoß (Spannungsimpuls)</span>, der als Klick hörbar gemacht oder gezählt werden kann.</p>
+      </div>
+    </div>
+  </div>
+  <div class="qbox">
+    <div class="q">Warum lässt sich mit dem Zählrohr im Gegensatz zum Elektroskop eine Zählrate (Impulse pro Sekunde) bestimmen?</div>
+    <div class="a">Jedes einzeln durchfliegende Teilchen löst durch die Gasverstärkung einen eigenen, kurzen und klar abgegrenzten Spannungsimpuls aus, der elektronisch registriert wird. Da diese Impulse zeitlich getrennt sind und schnell wieder abklingen, können sie einzeln gezählt werden – anders als beim Elektroskop, wo die Ionisation nur zu einem langsamen, kontinuierlichen Ladungsabfluss führt.</div>
+  </div>
+</section>
+
+<div class="section-title">Zusammenfassung — Vergleich der drei Nachweisgeräte</div>
+<table class="compare">
+  <tr>
+    <th>Gerät</th>
+    <th>Genutzter Grundeffekt</th>
+    <th>Was wird sichtbar / messbar?</th>
+    <th>Einzelne Teilchen zählbar?</th>
+  </tr>
+  <tr>
+    <td>Elektroskop</td>
+    <td>Ionisierung der Luft durch die Strahlung</td>
+    <td>Geschwindigkeit, mit der der Zeigerausschlag zurückgeht (Ladungsabfluss)</td>
+    <td>Nein</td>
+  </tr>
+  <tr>
+    <td>Nebelkammer</td>
+    <td>Ionisierung entlang der Teilchenbahn; Kondensation an den Ionen im übersättigten Dampf</td>
+    <td>Sichtbare Nebel-/Kondensationsspuren (Form und Länge einzelner Teilchen)</td>
+    <td>Ja, aber nur optisch durch Beobachtung, nicht elektronisch</td>
+  </tr>
+  <tr>
+    <td>Geiger-Müller-Zählrohr</td>
+    <td>Ionisierung des Zählgases, Gasverstärkung (Elektronenlawine)</td>
+    <td>Elektrische Spannungsimpulse, hörbar als Klicks, elektronisch als Zählrate erfassbar</td>
+    <td>Ja, elektronisch (Impulse pro Zeiteinheit)</td>
+  </tr>
+</table>
+
+<div class="section-title">Transferaufgabe</div>
+<div class="qbox">
+  <div class="q">Alle drei Geräte beruhen letztlich auf demselben physikalischen Grundprinzip. Formuliere dieses Prinzip in einem Satz und erkläre kurz, wie es in jedem der drei Geräte jeweils unterschiedlich "sichtbar" gemacht wird.</div>
+  <div class="a">
+    Radioaktive Strahlung ionisiert Materie auf ihrem Weg, das heißt, sie schlägt Elektronen aus Atomen oder Molekülen und erzeugt so Ionenpaare. Im Elektroskop macht sich das dadurch bemerkbar, dass die ionisierte Luft leitfähig wird und Ladung langsam abfließt, sodass der Zeiger zurückgeht. In der Nebelkammer lagert sich übersättigter Alkoholdampf an den entstandenen Ionen an und kondensiert zu sichtbaren Tröpfchen, wodurch die Teilchenbahn als Nebelspur erscheint. Im Zählrohr werden die durch Ionisation freigesetzten Elektronen im elektrischen Feld beschleunigt, lösen eine Ladungslawine aus und erzeugen so einen elektrisch messbaren, einzeln zählbaren Spannungsimpuls.
+  </div>
+</div>
+
+<div class="footer-note">Musterlösung · Physik · Nachweis radioaktiver Strahlung · Klasse 10</div>
