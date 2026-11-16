@@ -1547,13 +1547,16 @@ var cfg2 = {
     var st = s.st; st.mode = '1'; st.rand = true; st.many = false; st.dirty = true;
     st.off = document.createElement('canvas');
     var g1 = grp(s, 'Lichtquelle');
-    chips(s, g1, [['1', 'eine Lampe'], ['2', 'zwei Lampen'], ['gross', 'lange Leuchtröhre']], { val: '1', on: function (v) { st.mode = v; cfg2.place(s); st.dirty = true; } });
+    chips(s, g1, [['1', 'eine Lampe'], ['2', 'zwei Lampen'], ['gross', 'lange Leuchtröhre']], { val: '1', on: function (v) { st.mode = v; cfg2.place(s); st.dirty = true; cfg2.leg(s); } });
     var g2 = grp(s, 'Anzeigen');
     chips(s, g2, [['rand', 'Randstrahlen', COL.ray], ['many', 'viele Lichtstrahlen', COL.ray2]], { multi: true, val: ['rand'], on: function (v) { st.rand = v.indexOf('rand') >= 0; st.many = v.indexOf('many') >= 0; } });
     button(s, g2, 'Gegenstand näher an die Lampe', false, function () { st.ball.x = st.lx + (st.ball.x - st.lx) * .7; cfg2.fix(s); st.dirty = true; });
     st.info = infoBox(grp(s, 'Beobachtung'));
-    s.legend([['#f08c00', 'Lampe A'], ['#d9480f', 'Lampe B'], ['#484c58', 'Kernschatten'], ['#a3a6a4', 'Halbschatten']]);
+    cfg2.leg(s);
   },
+  /* Name des Randbereichs: bei zwei Lampen „Halbschatten“, nur bei der ausgedehnten Lichtquelle (Leuchtröhre) „Übergangsschatten“ */
+  pn: function (st) { return st.mode === 'gross' ? 'Übergangsschatten' : 'Halbschatten'; },
+  leg: function (s) { s.legend([['#f08c00', 'Lampe A'], ['#d9480f', 'Lampe B'], ['#484c58', 'Kernschatten'], ['#a3a6a4', cfg2.pn(s.st)]]); },
   place: function (s) {
     var st = s.st, W = s.W, H = s.H;
     st.lx = W * .1;
@@ -1640,11 +1643,11 @@ var cfg2 = {
     var p = st.prof, core = 0, half = 0;
     p.forEach(function (q) { if (q[1] < .02) core += 2; else if (q[1] < .98) half += 2; });
     var K = 40, dist = Math.round((st.ball.x - st.lamps[0].x) / K * 2) / 2;
-    s.read([['Kernschatten', (Math.round(core / K * 2) / 2).toString().replace('.', ',') + ' Kästchen', 'hot'], ['Halbschatten', half ? (Math.round(half / K * 2) / 2).toString().replace('.', ',') + ' Kästchen' : 'keiner'], ['Lampe – Gegenstand', String(dist).replace('.', ',') + ' Kästchen']]);
+    s.read([['Kernschatten', (Math.round(core / K * 2) / 2).toString().replace('.', ',') + ' Kästchen', 'hot'], [cfg2.pn(st), half ? (Math.round(half / K * 2) / 2).toString().replace('.', ',') + ' Kästchen' : 'keiner'], ['Lampe – Gegenstand', String(dist).replace('.', ',') + ' Kästchen']]);
     var h;
     if (st.mode === '1') h = 'Eine kleine Lampe: hinter dem Gegenstand ein <b>scharfer Schatten</b>. Die Randstrahlen laufen genau über die beiden Enden des Striches und begrenzen den Schatten. Ziehe den Gegenstand näher an die Lampe: Der Schatten wird <b>größer</b>.';
     else if (st.mode === '2') h = 'Zwei Lampen: In der Mitte liegt der <b>Kernschatten</b>, dorthin kommt von keiner Lampe Licht. Daneben liegen zwei <b>Halbschatten</b>: Dort kommt nur von einer Lampe Licht an. Folge den farbigen Randstrahlen.';
-    else h = 'Eine lange Leuchtröhre ist wie viele kleine Lampen übereinander. Der Schatten bekommt einen <b>unscharfen Rand</b> (Halbschatten), der Kernschatten wird kleiner.';
+    else h = 'Eine lange Leuchtröhre ist wie viele kleine Lampen übereinander. Der Schatten bekommt einen <b>unscharfen Rand</b> (<b>Übergangsschatten</b>), der Kernschatten wird kleiner.';
     setHTML(st.info, h);
   },
   draw: function (s, c, W, H) {
@@ -1678,7 +1681,7 @@ var cfg2 = {
     segs.forEach(function (sg) { if (sg[0] === 'L' || sg[2] - sg[1] < 8) return; var bx = st.sx + 16; c.strokeStyle = sg[0] === 'K' ? COL.ink : COL.ink3; c.lineWidth = 1.5; c.beginPath(); c.moveTo(bx, sg[1]); c.lineTo(bx + 4, sg[1]); c.lineTo(bx + 4, sg[2]); c.lineTo(bx, sg[2]); c.stroke(); });
     var kseg = segs.filter(function (q) { return q[0] === 'K'; })[0];
     if (kseg) txt(c, 'Kernschatten', st.sx - 6, (kseg[1] + kseg[2]) / 2, { size: 12, w: 'bold', al: 'right', bl: 'middle', col: COL.ink, halo: true });
-    segs.filter(function (q) { return q[0] === 'H' && q[2] - q[1] > 14; }).forEach(function (q) { txt(c, 'Halbschatten', st.sx - 6, (q[1] + q[2]) / 2, { size: 11, al: 'right', bl: 'middle', col: COL.ink2, halo: true }); });
+    segs.filter(function (q) { return q[0] === 'H' && q[2] - q[1] > 14; }).forEach(function (q) { txt(c, cfg2.pn(st), st.sx - 6, (q[1] + q[2]) / 2, { size: 11, al: 'right', bl: 'middle', col: COL.ink2, halo: true }); });
     /* Gegenstand (senkrechter Strich, von oben gesehen) und Lampen */
     c.strokeStyle = '#2d3748'; c.lineWidth = 4; c.lineCap = 'butt'; c.beginPath(); c.moveTo(b.x, b.y - b.r); c.lineTo(b.x, b.y + b.r); c.stroke();
     txt(c, 'Gegenstand', b.x + 6, b.y - b.r - 12, { size: 12, w: 'bold', al: 'right', col: COL.ink, halo: true });
