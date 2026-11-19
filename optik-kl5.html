@@ -2051,7 +2051,7 @@ var cfg6 = {
     st.sl = slider(s, g0, 'Einfallswinkel α (zum Lot)', 0, 85, 1, 40, function (v) { return v + '°'; }, function (v) { if (st._syn) return; st.alpha = v; cfg6.setPhi(s); });
     button(s, g0, 'Totalreflexion einstellen (≈ 49°)', false, function () { var a = Math.ceil(deg(Math.asin(1 / st.n)) + .01); st.side = 'unten'; st.sideChips.set('unten'); st.sl.set(a); });
     var g2 = grp(s, 'Anzeigen');
-    chips(s, g2, [['lot', 'Lot', COL.sky], ['ang', 'Winkel', COL.acc], ['refl', 'Teilreflexion', COL.ray], ['grenz', 'Grenzwinkel', COL.bad]], { multi: true, val: ['lot', 'ang', 'refl', 'grenz'], on: function (v) { st.lot = v.indexOf('lot') >= 0; st.ang = v.indexOf('ang') >= 0; st.refl = v.indexOf('refl') >= 0; st.grenz = v.indexOf('grenz') >= 0; } });
+    chips(s, g2, [['lot', 'Lot', COL.sky], ['ang', 'Winkel', COL.acc], ['refl', 'Teilreflexion', COL.ray]], { multi: true, val: ['lot', 'ang', 'refl'], on: function (v) { st.lot = v.indexOf('lot') >= 0; st.ang = v.indexOf('ang') >= 0; st.refl = v.indexOf('refl') >= 0; } });
     var g3 = grp(s, 'Schnell einstellen');
     button(s, g3, 'Von oben, 45°', false, function () { st.phi = rad(-135); cfg6.sync(s); });
     button(s, g3, 'Von unten, 30°', false, function () { st.phi = rad(120); cfg6.sync(s); });
@@ -2100,13 +2100,6 @@ var cfg6 = {
     for (var k = 0; k < 36; k++) { var a = k * Math.PI / 18, big = k % 3 === 0, r1 = R - (big ? 10 : 5); c.beginPath(); c.moveTo(cx + Math.cos(a) * r1, y0 + Math.sin(a) * r1); c.lineTo(cx + Math.cos(a) * R, y0 + Math.sin(a) * R); c.stroke(); }
     [-90, 90].forEach(function (base) { for (var d = 0; d <= 90; d += 30) [-1, 1].forEach(function (sg) { if (d === 0 && sg < 0) return; var a = rad(base + sg * d); txt(c, d + '°', cx + Math.cos(a) * (R - 22), y0 + Math.sin(a) * (R - 22), { size: 10, mono: true, al: 'center', bl: 'middle', col: COL.ink3 }); }); });
     if (st.lot) { dashed(c, cx, y0 - R, cx, y0 + R, rgba(COL.sky,.9), 1.5); txt(c, 'Lot', cx + 6, y0 - R + 14, { size: 11, mono: true, col: COL.sky }); }
-    /* Grenzwinkel: unter der Oberflaeche beginnt ab hier der Bereich der Totalreflexion (beidseitig des Lots) */
-    if (st.grenz) {
-      /* nur Linie und Bogen, KEINE Schattierung: der Grenzwinkel wird wie alle Winkel zum LOT gemessen, nicht zur Wasseroberflaeche */
-      var ac = Math.asin(1 / st.n), RG = R * .95, P2 = Math.PI / 2;
-      [-1, 1].forEach(function (sg) { var ga = P2 + sg * ac; dashed(c, cx, y0, cx + Math.cos(ga) * RG, y0 + Math.sin(ga) * RG, rgba(COL.bad, .8), 1.6, [5, 4]); arcAng(c, cx, y0, R * .4, P2, ga, COL.bad, sg > 0 ? null : fmtDeg(deg(ac)), 18); });
-      txt(c, 'Grenzwinkel ≈ ' + fmtDeg(deg(ac)) + ' zum Lot', cx + Math.cos(P2 - ac) * RG - 6, y0 + Math.sin(P2 - ac) * RG + 16, { size: 11, w: 'bold', al: 'right', col: COL.bad, halo: true });
-    }
     var lx = cx + Math.cos(st.phi) * R, ly = y0 + Math.sin(st.phi) * R;
     ray(c, lx, ly, cx, y0, COL.ray, 2.6, 1, .55);
     if (!r.tr) txt(c, 'kein Licht kommt heraus', cx, y0 - 34, { size: 12, w: 'bold', al: 'center', col: COL.bad, halo: true });
