@@ -1834,7 +1834,7 @@ var cfg4 = {
   },
   resize: function (s) {
     var st = s.st, W = s.W, H = s.H, R = mulberry(11);
-    st.kk = clamp(H / 480, .62, 1.1); cfg4.setEye(s); st.moon = { x: W * .62, y: H * .17, r: Math.min(W, H) * .06 }; st.sun = { x: -W * .02, y: H * .55, r: H * .28 };
+    st.kk = clamp(H / 480, .62, 1.1); cfg4.setEye(s); st.moon = { x: W * .62, y: H * .17, r: Math.min(W, H) * .06 }; st.sun = { x: -W * .02, y: H * .36, r: H * .19 };
     st.dust = []; for (var i = 0; i < 70; i++) st.dust.push([W * (.3 + R() * .45), H * (.08 + R() * .45)]);
     st.air = []; for (var j = 0; j < 260; j++) st.air.push([R() * W, R() * H * .88]);
     st.vr = Math.min(W * .17, H * .2);
@@ -1897,7 +1897,7 @@ var cfg4 = {
     c.fillStyle = rgba(COL.sky,.07); c.beginPath(); c.moveTo(E.x, E.y); c.arc(E.x, E.y, Math.max(W, H), da - .26, da + .26); c.closePath(); c.fill();
     if (st.env === 'luft') st.dust.forEach(function (p, k) { var inC = cfg4.inCone(s, p[0], p[1]); circle(c, p[0], p[1], 2.2, inC ? '#fff1c4' : '#9aa3b2'); if (inC && k % 3 === 0) { var et = cfg4.eyeAt(s, p[0], p[1]); ray(c, p[0], p[1], et[0], et[1], COL.ray, 1, .5, .7); } else if (k % 5 === 0) { var a = k * 2.1; ray(c, p[0], p[1], p[0] + Math.cos(a) * 26, p[1] + Math.sin(a) * 26, COL.ray, 1, .4, false); } });
     if (st.env === 'luft') st.air.forEach(function (p, k) { circle(c, p[0], p[1], 1.1, COL.faint2); if (k % 11 === 0) ray(c, p[0], p[1], p[0] + (E.x - p[0]) * .25, p[1] + (E.y - p[1]) * .25, COL.sky, 1, .45, .8); });
-    if (st.look === 'sonne') { var sx0 = st.sun.x + st.sun.r * .8, sy0 = E.y - 30, et1 = cfg4.eyeAt(s, sx0, sy0); ray(c, sx0, sy0, et1[0], et1[1], COL.ray, 2.6, 1, .6); }
+    if (st.look === 'sonne') { var sa = Math.atan2(E.y - st.sun.y, E.x - st.sun.x), sx0 = st.sun.x + Math.cos(sa) * st.sun.r * .85, sy0 = st.sun.y + Math.sin(sa) * st.sun.r * .85, et1 = cfg4.eyeAt(s, sx0, sy0); ray(c, sx0, sy0, et1[0], et1[1], COL.ray, 2.6, 1, .6); }
     if (st.look === 'mond') { var mx0 = st.moon.x - st.moon.r * .6, my0 = st.moon.y + st.moon.r * .6, et2 = cfg4.eyeAt(s, mx0, my0); ray(c, st.sun.x + st.sun.r, st.moon.y, st.moon.x - st.moon.r, st.moon.y, COL.ray, 2.2, .9, .5); ray(c, mx0, my0, et2[0], et2[1], COL.ray, 2.2, .9, .5); }
     /* Astronaut */
     if (st.env === 'luft') drawKidStand(c, E.x, E.y, da, st.kk); else drawAstronaut(c, E.x, E.y, da, st.kk, t);
