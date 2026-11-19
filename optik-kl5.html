@@ -1824,7 +1824,7 @@ var cfg4 = {
     var g0 = grp(s, 'Versuch');
     chips(s, g0, [['schwarz', 'Schwarzes Weltall'], ['zeit', 'Wie lange braucht Licht?']], { val: 'schwarz', on: function (v) { st.mode = v; show(st.ga, v === 'schwarz'); show(st.gb, v === 'schwarz'); show(st.gc, v === 'zeit'); setHint(s, v === 'schwarz' ? 'Unten rechts siehst du, was das Auge sieht' : 'Nicht maßstabsgetreu'); } });
     st.ga = grp(s, 'Wo bist du?');
-    chips(s, st.ga, [['leer', 'im leeren Weltall'], ['luft', 'auf der Erde (mit Luft)']], { val: 'leer', on: function (v) { st.env = v; var mc = $('[data-v="mond"]', st.gb); if (mc) mc.hidden = v === 'luft'; if (v === 'luft' && st.look === 'mond') { st.look = 'oben'; st.lookChips.set('oben'); } } });
+    chips(s, st.ga, [['leer', 'im leeren Weltall'], ['luft', 'auf der Erde (mit Luft)']], { val: 'leer', on: function (v) { st.env = v; cfg4.setEye(s); var mc = $('[data-v="mond"]', st.gb); if (mc) mc.hidden = v === 'luft'; if (v === 'luft' && st.look === 'mond') { st.look = 'oben'; st.lookChips.set('oben'); } } });
     st.gb = grp(s, 'Wohin schaust du?');
     st.lookChips = chips(s, st.gb, [['oben', 'nach oben'], ['mond', 'zum Mond'], ['sonne', 'zur Sonne']], { val: 'oben', on: function (v) { st.look = v; } });
     st.gc = grp(s, 'Licht losschicken von …'); st.gc.hidden = true;
@@ -1834,10 +1834,21 @@ var cfg4 = {
   },
   resize: function (s) {
     var st = s.st, W = s.W, H = s.H, R = mulberry(11);
-    st.eye = { x: W * .45, y: H * .5 }; st.kk = clamp(H / 480, .62, 1.1); st.moon = { x: W * .62, y: H * .17, r: Math.min(W, H) * .06 }; st.sun = { x: -W * .02, y: H * .55, r: H * .28 };
+    st.kk = clamp(H / 480, .62, 1.1); cfg4.setEye(s); st.moon = { x: W * .62, y: H * .17, r: Math.min(W, H) * .06 }; st.sun = { x: -W * .02, y: H * .55, r: H * .28 };
     st.dust = []; for (var i = 0; i < 70; i++) st.dust.push([W * (.3 + R() * .45), H * (.08 + R() * .45)]);
     st.air = []; for (var j = 0; j < 260; j++) st.air.push([R() * W, R() * H * .88]);
     st.vr = Math.min(W * .17, H * .2);
+  },
+  /* Augenhoehe: auf der Erde steht das Kind auf dem Boden (Fuesse bei 88 % der Hoehe), im Weltall schwebt der Astronaut in der Mitte */
+  setEye: function (s) { var st = s.st; st.eye = { x: s.W * .45, y: st.env === 'luft' ? s.H * .88 - 150 * st.kk : s.H * .5 }; },
+  /* Punkt am Rand des naechsten Auges, an dem ein Strahl von (px, py) endet (nicht in der Kopfmitte) */
+  eyeAt: function (s, px, py) {
+    var st = s.st, E = st.eye, k = st.kk, a = cfg4.dirAng(s), ua = Math.cos(a), va = Math.sin(a), sg = px < E.x ? -1 : 1, ec, rr;
+    if (st.env === 'luft') { var r = 22 * k; ec = [E.x + sg * r * .36 + ua * 1.2 * k, E.y + r * .1 + va * 1.2 * k]; rr = r * .21; }
+    else { ec = [E.x + sg * 6.2 * k + ua * 1.4 * k, E.y + 1.2 * k + va * 1.2 * k]; rr = 4.6 * k; }
+    /* Strahl endet kurz VOR dem Auge (kleiner Abstand zum Augenrand), damit die Pfeilspitze das Auge nicht verdeckt */
+    var dx = px - ec[0], dy = py - ec[1], L = Math.hypot(dx, dy) || 1, gap = 6 * k;
+    return [ec[0] + dx / L * (rr + gap), ec[1] + dy / L * (rr + gap)];
   },
   dirAng: function (s) { var st = s.st; if (st.look === 'oben') return -Math.PI / 2; if (st.look === 'sonne') return Math.atan2(st.sun.y - st.eye.y, st.sun.x - st.eye.x); return Math.atan2(st.moon.y - st.eye.y, st.moon.x - st.eye.x); },
   inCone: function (s, x, y) { var st = s.st, a = Math.atan2(y - st.eye.y, x - st.eye.x); return Math.abs(angDiff(a, cfg4.dirAng(s))) < .26; },
@@ -1884,13 +1895,13 @@ var cfg4 = {
     var da = cfg4.dirAng(s), E = st.eye;
     /* Blickfeld */
     c.fillStyle = rgba(COL.sky,.07); c.beginPath(); c.moveTo(E.x, E.y); c.arc(E.x, E.y, Math.max(W, H), da - .26, da + .26); c.closePath(); c.fill();
-    if (st.env === 'luft') st.dust.forEach(function (p, k) { var inC = cfg4.inCone(s, p[0], p[1]); circle(c, p[0], p[1], 2.2, inC ? '#fff1c4' : '#9aa3b2'); if (inC && k % 3 === 0) ray(c, p[0], p[1], E.x, E.y, COL.ray, 1, .5, .7); else if (k % 5 === 0) { var a = k * 2.1; ray(c, p[0], p[1], p[0] + Math.cos(a) * 26, p[1] + Math.sin(a) * 26, COL.ray, 1, .4, false); } });
+    if (st.env === 'luft') st.dust.forEach(function (p, k) { var inC = cfg4.inCone(s, p[0], p[1]); circle(c, p[0], p[1], 2.2, inC ? '#fff1c4' : '#9aa3b2'); if (inC && k % 3 === 0) { var et = cfg4.eyeAt(s, p[0], p[1]); ray(c, p[0], p[1], et[0], et[1], COL.ray, 1, .5, .7); } else if (k % 5 === 0) { var a = k * 2.1; ray(c, p[0], p[1], p[0] + Math.cos(a) * 26, p[1] + Math.sin(a) * 26, COL.ray, 1, .4, false); } });
     if (st.env === 'luft') st.air.forEach(function (p, k) { circle(c, p[0], p[1], 1.1, COL.faint2); if (k % 11 === 0) ray(c, p[0], p[1], p[0] + (E.x - p[0]) * .25, p[1] + (E.y - p[1]) * .25, COL.sky, 1, .45, .8); });
-    if (st.look === 'sonne') ray(c, st.sun.x + st.sun.r * .8, E.y - 30, E.x, E.y, COL.ray, 2.6, 1, .6);
-    if (st.look === 'mond') { ray(c, st.sun.x + st.sun.r, st.moon.y, st.moon.x - st.moon.r, st.moon.y, COL.ray, 2.2, .9, .5); ray(c, st.moon.x - st.moon.r * .6, st.moon.y + st.moon.r * .6, E.x, E.y, COL.ray, 2.2, .9, .5); }
+    if (st.look === 'sonne') { var sx0 = st.sun.x + st.sun.r * .8, sy0 = E.y - 30, et1 = cfg4.eyeAt(s, sx0, sy0); ray(c, sx0, sy0, et1[0], et1[1], COL.ray, 2.6, 1, .6); }
+    if (st.look === 'mond') { var mx0 = st.moon.x - st.moon.r * .6, my0 = st.moon.y + st.moon.r * .6, et2 = cfg4.eyeAt(s, mx0, my0); ray(c, st.sun.x + st.sun.r, st.moon.y, st.moon.x - st.moon.r, st.moon.y, COL.ray, 2.2, .9, .5); ray(c, mx0, my0, et2[0], et2[1], COL.ray, 2.2, .9, .5); }
     /* Astronaut */
-    if (st.env === 'luft') drawHead(c, E.x, E.y, 14, da); else drawAstronaut(c, E.x, E.y, da, st.kk, t);
-    txt(c, st.env === 'luft' ? 'Du' : 'Astronaut', E.x, E.y + (st.env === 'luft' ? 56 : 128 * st.kk + 20), { size: 12, w: 'bold', al: 'center', col: COL.ink, halo: true });
+    if (st.env === 'luft') drawKidStand(c, E.x, E.y, da, st.kk); else drawAstronaut(c, E.x, E.y, da, st.kk, t);
+    txt(c, st.env === 'luft' ? 'Du' : 'Astronaut', E.x, st.env === 'luft' ? E.y - 22 * st.kk - 12 : E.y + 128 * st.kk + 20, { size: 12, w: 'bold', al: 'center', col: COL.ink, halo: true });
     /* Blick des Auges */
     var vx = W - st.vr - 12, vy = H - st.vr - 26, vr = st.vr;
     c.save(); c.beginPath(); c.arc(vx, vy, vr, 0, Math.PI * 2); c.clip();
@@ -3786,7 +3797,36 @@ function drawAstronaut(c, x, y, ang, k, t) {
   c.strokeStyle = '#6f84ad'; c.lineWidth = 2.2; c.beginPath(); c.ellipse(0, 1 * k, 20 * k, 18.5 * k, 0, 0, Math.PI * 2); c.stroke();
   c.strokeStyle = 'rgba(255,255,255,.75)'; c.lineWidth = 2.4 * k; c.lineCap = 'round'; c.beginPath(); c.arc(0, 1 * k, 14.5 * k, Math.PI * 1.12, Math.PI * 1.42); c.stroke();
   c.restore();
-}/* Kopfbild hell: Himmel, Regenbogen, Sonne, Sammellinse buendelt Licht */
+}
+/* Kind steht auf dem Boden, Gesicht von vorn mit zwei Augen, Pupillen schauen in Richtung ang.
+   (x, y) = Mitte des Kopfes, k = Groessenfaktor; die Fuesse stehen bei y + 150 * k. */
+function drawKidStand(c, x, y, ang, k) {
+  var ua = Math.cos(ang), va = Math.sin(ang), r = 22 * k, skin = '#f6c9a2', skinE = '#b07a52', cl = '#e8590c', gy = 150 * k;
+  c.save(); c.translate(x, y); c.lineCap = 'round'; c.lineJoin = 'round';
+  /* Beine und Schuhe */
+  c.strokeStyle = '#33415c'; c.lineWidth = 10 * k; c.beginPath(); c.moveTo(-8 * k, 86 * k); c.lineTo(-9 * k, gy - 4 * k); c.moveTo(8 * k, 86 * k); c.lineTo(9 * k, gy - 4 * k); c.stroke();
+  c.fillStyle = '#4a5568'; c.beginPath(); c.ellipse(-12 * k, gy - 1 * k, 9 * k, 4 * k, 0, 0, Math.PI * 2); c.ellipse(12 * k, gy - 1 * k, 9 * k, 4 * k, 0, 0, Math.PI * 2); c.fill();
+  /* Hals, Rumpf, Arme mit Haenden */
+  c.fillStyle = skin; c.fillRect(-6 * k, r - 6 * k, 12 * k, 16 * k);
+  c.fillStyle = cl; rrect(c, -17 * k, 26 * k, 34 * k, 64 * k, 12 * k); c.fill();
+  c.strokeStyle = cl; c.lineWidth = 8 * k; c.beginPath(); c.moveTo(-16 * k, 38 * k); c.lineTo(-25 * k, 82 * k); c.moveTo(16 * k, 38 * k); c.lineTo(25 * k, 82 * k); c.stroke();
+  circle(c, -25 * k, 86 * k, 5 * k, skin, skinE, 1.2); circle(c, 25 * k, 86 * k, 5 * k, skin, skinE, 1.2);
+  /* Kopf: Ohren, Gesicht, Haare */
+  circle(c, -r, 2 * k, 4.2 * k, skin, skinE, 1.2); circle(c, r, 2 * k, 4.2 * k, skin, skinE, 1.2);
+  circle(c, 0, 0, r, skin, skinE, 1.5);
+  c.fillStyle = '#6b3f1f'; c.beginPath(); c.arc(0, 0, r * 1.03, Math.PI * 1.04, Math.PI * 1.96); c.quadraticCurveTo(r * .45, -r * .5, 0, -r * .34); c.quadraticCurveTo(-r * .6, -r * .3, -r * 1.0, -r * .13); c.closePath(); c.fill();
+  /* zwei Augen, Pupillen schauen in Blickrichtung */
+  [-1, 1].forEach(function (sg) {
+    var ex = sg * r * .36 + ua * 1.2 * k, ey = r * .1 + va * 1.2 * k;
+    c.fillStyle = '#ffffff'; c.beginPath(); c.ellipse(ex, ey, r * .21, r * .2, 0, 0, Math.PI * 2); c.fill(); c.strokeStyle = '#4a5568'; c.lineWidth = 1; c.stroke();
+    var px = ex + ua * r * .09, py = ey + va * r * .09;
+    circle(c, px, py, r * .11, '#2b6cb0'); circle(c, px, py, r * .055, '#0b0d12'); circle(c, px - r * .04, py - r * .04, r * .03, '#ffffff');
+  });
+  c.strokeStyle = '#c98a63'; c.lineWidth = 1.3 * k; c.beginPath(); c.arc(ua * .8 * k, r * .22, 1.4 * k, .3, 2.8); c.stroke();
+  c.beginPath(); c.arc(ua * .8 * k, r * .38, r * .24, .35, Math.PI - .35); c.stroke();
+  c.restore();
+}
+/* Kopfbild hell: Himmel, Regenbogen, Sonne, Sammellinse buendelt Licht */
 function initHero() {
   var cv = $('#heroCv'), c = cv.getContext('2d'), W = 0, H = 0, t0 = 0;
   function rs() { var r = cv.getBoundingClientRect(), d = Math.min(2, window.devicePixelRatio || 1); W = r.width; H = r.height; cv.width = Math.round(W * d); cv.height = Math.round(H * d); c.setTransform(d, 0, 0, d, 0, 0); }
