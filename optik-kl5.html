@@ -2102,14 +2102,10 @@ var cfg6 = {
     if (st.lot) { dashed(c, cx, y0 - R, cx, y0 + R, rgba(COL.sky,.9), 1.5); txt(c, 'Lot', cx + 6, y0 - R + 14, { size: 11, mono: true, col: COL.sky }); }
     /* Grenzwinkel: unter der Oberflaeche beginnt ab hier der Bereich der Totalreflexion (beidseitig des Lots) */
     if (st.grenz) {
+      /* nur Linie und Bogen, KEINE Schattierung: der Grenzwinkel wird wie alle Winkel zum LOT gemessen, nicht zur Wasseroberflaeche */
       var ac = Math.asin(1 / st.n), RG = R * .95, P2 = Math.PI / 2;
-      c.save(); c.fillStyle = rgba(COL.bad, .09);
-      c.beginPath(); c.moveTo(cx, y0); c.arc(cx, y0, RG, P2 + ac, Math.PI); c.closePath(); c.fill();
-      c.beginPath(); c.moveTo(cx, y0); c.arc(cx, y0, RG, 0, P2 - ac); c.closePath(); c.fill();
-      c.restore();
-      [-1, 1].forEach(function (sg) { var ga = P2 + sg * ac; dashed(c, cx, y0, cx + Math.cos(ga) * RG, y0 + Math.sin(ga) * RG, rgba(COL.bad, .75), 1.6, [5, 4]); });
-      txt(c, 'Grenzwinkel ≈ ' + fmtDeg(deg(ac)), cx + Math.cos(P2 - ac) * RG - 6, y0 + Math.sin(P2 - ac) * RG + 16, { size: 11, w: 'bold', al: 'right', col: COL.bad, halo: true });
-      txt(c, 'Totalreflexion', cx + Math.cos(P2 - (ac + Math.PI / 2) / 2) * R * .68, y0 + Math.sin(P2 - (ac + Math.PI / 2) / 2) * R * .68, { size: 11, al: 'center', bl: 'middle', col: rgba(COL.bad, .9), halo: true });
+      [-1, 1].forEach(function (sg) { var ga = P2 + sg * ac; dashed(c, cx, y0, cx + Math.cos(ga) * RG, y0 + Math.sin(ga) * RG, rgba(COL.bad, .8), 1.6, [5, 4]); arcAng(c, cx, y0, R * .4, P2, ga, COL.bad, sg > 0 ? null : fmtDeg(deg(ac)), 18); });
+      txt(c, 'Grenzwinkel ≈ ' + fmtDeg(deg(ac)) + ' zum Lot', cx + Math.cos(P2 - ac) * RG - 6, y0 + Math.sin(P2 - ac) * RG + 16, { size: 11, w: 'bold', al: 'right', col: COL.bad, halo: true });
     }
     var lx = cx + Math.cos(st.phi) * R, ly = y0 + Math.sin(st.phi) * R;
     ray(c, lx, ly, cx, y0, COL.ray, 2.6, 1, .55);
@@ -3324,6 +3320,14 @@ text('br7', 'br', 'III', 'Beschreibe mit dem Begriff Lot, wie ein Lichtstrahl be
   ['Senkrecht: keine Brechung.', ['nicht gebrochen', 'keine brechung', 'geradeaus', 'kein knick', 'ohne knick', 'gerade weiter', 'nicht abgelenkt']]],
   'Geht Licht schräg von Luft in Wasser, wird es zum Lot hin gebrochen: Der Winkel im Wasser ist kleiner. Geht Licht schräg von Wasser in Luft, wird es vom Lot weg gebrochen: Der Winkel in der Luft ist größer. Trifft das Licht senkrecht auf, wird es nicht gebrochen.');
 
+/* Totalreflexion (leicht): Winkel immer zum Lot, Grenzwinkel Wasser etwa 49° */
+mc('br8', 'br', 'I', 'Ein Laserstrahl läuft im Wasser auf die Wasseroberfläche zu. Er trifft sie unter 60° zum Lot. Was passiert mit dem Licht?', [
+  ['Es wird vollständig im Wasser zurückgeworfen. Das heißt Totalreflexion.', 1, 'Richtig. 60° ist größer als der Grenzwinkel von etwa 49°. Dann kommt kein Licht mehr in die Luft.'],
+  ['Es wird vom Lot weg in die Luft gebrochen.', 0, 'So wäre es bei einem kleineren Winkel. Ab etwa 49° kommt gar kein Licht mehr heraus.'],
+  ['Es läuft ohne Knick in die Luft weiter.', 0, 'Ohne Knick läuft Licht nur bei senkrechtem Auftreffen weiter.'],
+  ['Es verschwindet im Wasser.', 0, 'Das Licht geht nicht verloren. Es wird an der Oberfläche zurückgeworfen.']]);
+gap('br9', 'br', 'II', 'Fülle die Lücken.', ['Totalreflexion gibt es, wenn Licht ', { o: ['vom Wasser in die Luft', 'aus der Luft ins Wasser'], c: 0, why: 'Nur auf dem Weg aus dem Wasser in die Luft gibt es einen Grenzwinkel. Ins Wasser hinein wird Licht immer gebrochen.' }, ' läuft. Der Grenzwinkel von etwa 49° wird zum ', { o: ['Lot', 'Wasseroberfläche'], c: 0, why: 'Alle Winkel misst man zum Lot, auch den Grenzwinkel.' }, ' gemessen. Ist der Einfallswinkel größer als der Grenzwinkel, kommt ', { o: ['kein Licht', 'noch etwas Licht'], c: 0, why: 'Bei Totalreflexion kommt gar kein Licht in die Luft.' }, ' in die Luft. Das Licht wird dann an der Oberfläche ', { o: ['zurückgeworfen', 'verschluckt'], c: 0, why: 'Das Licht wird vollständig zurück ins Wasser reflektiert.' }, '.']);
+
 /* ---------- Modul 7: Brechung im Alltag ---------- */
 mc('al1', 'al', 'I', 'Warum sieht ein Strohhalm im Wasserglas geknickt aus?', [
   ['Das Licht vom Teil im Wasser wird an der Wasseroberfläche gebrochen.', 1, 'Richtig. Dadurch erscheint der untere Teil angehoben.'],
@@ -3686,7 +3690,7 @@ var LZ = {
   m3: ['Ich kann erklären, dass wir nur sehen, wenn Licht in unser Auge fällt.', 'Ich kann den direkten und den indirekten Weg beschreiben und zeichnen.', 'Ich zeichne Pfeile immer zum Auge hin.'],
   m4: ['Ich kann erklären, warum das Weltall schwarz aussieht.', 'Ich kann erklären, warum der Himmel auf der Erde blau ist.', 'Ich weiß ungefähr, wie lange Licht von Mond, Sonne und Sternen zu uns braucht.'],
   m5: ['Ich kann Reflexion, Streuung und Absorption unterscheiden und Beispiele nennen.', 'Ich kenne das Reflexionsgesetz und weiß, dass man zum Lot misst.', 'Ich kann erklären, warum schwarze Kleidung in der Sonne warm wird.', 'Ich kann durchsichtig, durchscheinend und undurchsichtig unterscheiden.'],
-  m6: ['Ich kann erklären, was Brechung ist und was das Lot ist.', 'Ich weiß: Luft → Wasser zum Lot hin, Wasser → Luft vom Lot weg.', 'Ich weiß, dass senkrecht auftreffendes Licht nicht gebrochen wird.'],
+  m6: ['Ich kann erklären, was Brechung ist und was das Lot ist.', 'Ich weiß: Luft → Wasser zum Lot hin, Wasser → Luft vom Lot weg.', 'Ich weiß, dass senkrecht auftreffendes Licht nicht gebrochen wird.', 'Ich weiß, was Totalreflexion ist und dass der Grenzwinkel bei Wasser etwa 49° beträgt (zum Lot gemessen).'],
   m7: ['Ich kann erklären, warum ein Fisch höher erscheint, als er ist.', 'Ich kann begründen, wohin man mit Speer und Laser zielen muss.', 'Ich kann den geknickten Strohhalm und die Münze im Becher erklären.'],
   m8: ['Ich kann Sammellinse und Zerstreuungslinse an ihrer Form erkennen.', 'Ich kann beschreiben, wie beide Linsen paralleles Licht verändern.', 'Ich kenne die Begriffe Brennpunkt und Brennweite.', 'Ich weiß, dass das Bild einer Sammellinse auf dem Kopf steht.', 'Ich kann das Bild bei der Sammellinse mit Parallel-, Mittelpunkt- und Brennpunktstrahl konstruieren.'],
   m9: ['Ich kann die Teile des Auges benennen und ihre Aufgaben erklären.', 'Ich kann erklären, wie sich die Pupille an die Helligkeit anpasst.', 'Ich kann beschreiben, wie das Bild auf der Netzhaut entsteht und wie die Linse scharf stellt.'],
@@ -3707,7 +3711,7 @@ var MT = {
   m3: ['se1', 'se4', 'se2', 'se3', 'se5', 'se6', 'se7'],
   m4: ['wa1', 'wa5', 'wa2', 'wa3', 'wa4', 'wa6', 'wa7'],
   m5: ['ob1', 'ob2', 'ob3', 'ob4', 'ob5', 'ob6', 'ob7'],
-  m6: ['br1', 'br3', 'br2', 'br4', 'br5', 'br6', 'br7'],
+  m6: ['br1', 'br3', 'br8', 'br2', 'br4', 'br9', 'br5', 'br6', 'br7'],
   m7: ['al1', 'al5', 'al2', 'al3', 'al4', 'al6', 'al7'],
   m8: ['li1', 'li4', 'li2', 'li3', 'li5', 'li6', 'li7'],
   m9: ['ag1', 'ag2', 'ag3', 'ag4', 'ag5', 'ag6', 'ag7'],
