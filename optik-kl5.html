@@ -717,7 +717,7 @@ textarea{background:#fff;color:var(--ink)}
     <div class="card wiss">
       <span class="tag">Ausblick</span>
       <h3>Wenn gar kein Licht herauskommt</h3>
-      <p>Stelle den Laser <b>unter das Wasser</b> und erhöhe den Einfallswinkel mit dem Regler, bis etwa <b>49°</b> erreicht sind (der Knopf „Totalreflexion einstellen“ macht das für dich). Ab diesem <b>Grenzwinkel</b> kommt kein Licht mehr aus dem Wasser heraus. Es wird vollständig an der Oberfläche zurück ins Wasser geworfen. Das heißt <b>Totalreflexion</b>. In Glasfaserkabeln läuft so Licht für das Internet über weite Strecken. Genauer lernst du das in einer höheren Klasse.</p>
+      <p>Stelle den Laser <b>unter das Wasser</b> und erhöhe den Einfallswinkel mit dem Regler auf etwa <b>49°</b> (der Knopf „Totalreflexion einstellen“ macht das für dich). <b>Ab 49° bis 90°</b> kommt kein Licht mehr aus dem Wasser heraus. 49° heißt <b>Grenzwinkel</b>. Das Licht wird vollständig an der Oberfläche zurück ins Wasser geworfen. Das heißt <b>Totalreflexion</b>. In Glasfaserkabeln läuft so Licht für das Internet über weite Strecken. Genauer lernst du das in einer höheren Klasse.</p>
     </div>
   </div>
   <div class="tasks">
@@ -2083,7 +2083,7 @@ var cfg6 = {
     s.read([['Einfallswinkel', fmtDeg(r.alpha)], ['Brechungswinkel', r.tr ? fmtDeg(r.beta) : '–'], ['Ergebnis', st0[0], st0[1]]]);
     var h;
     if (r.alpha < 1.5) h = 'Das Licht trifft <b>senkrecht</b> auf (entlang des Lots). Es geht <b>ohne Knick</b> weiter.';
-    else if (!r.tr) h = 'Der Einfallswinkel ist größer als der <b>Grenzwinkel von etwa ' + fmtDeg(deg(Math.asin(1 / st.n))) + '</b>. Das Licht kommt im ' + stoff + ' so flach an, dass es <b>gar nicht mehr herauskommt</b>. Alles Licht wird an der Oberfläche zurück ins ' + stoff + ' geworfen: <b>Totalreflexion</b>. Mach den Winkel kleiner, dann kommt das Licht wieder heraus.';
+    else if (!r.tr) h = 'Der Einfallswinkel liegt <b>zwischen ' + fmtDeg(deg(Math.asin(1 / st.n))) + ' und 90°</b>. Ab dem <b>Grenzwinkel von etwa ' + fmtDeg(deg(Math.asin(1 / st.n))) + '</b> gibt es Totalreflexion. Das Licht kommt im ' + stoff + ' so flach an, dass es <b>gar nicht mehr herauskommt</b>. Alles Licht wird an der Oberfläche zurück ins ' + stoff + ' geworfen: <b>Totalreflexion</b>. Mach den Winkel kleiner, dann kommt das Licht wieder heraus.';
     else if (r.above) h = 'Luft → ' + stoff + ': Der Winkel wird kleiner (' + fmtDeg(r.alpha) + ' → ' + fmtDeg(r.beta) + '). Das Licht wird <b>zum Lot hin</b> gebrochen.' + (st.n > 1.4 ? ' Glas bricht stärker als Wasser.' : '');
     else h = stoff + ' → Luft: Der Winkel wird größer (' + fmtDeg(r.alpha) + ' → ' + fmtDeg(r.beta) + '). Das Licht wird <b>vom Lot weg</b> gebrochen.';
     setHTML(st.info, h);
@@ -3315,11 +3315,11 @@ text('br7', 'br', 'III', 'Beschreibe mit dem Begriff Lot, wie ein Lichtstrahl be
 
 /* Totalreflexion (leicht): Winkel immer zum Lot, Grenzwinkel Wasser etwa 49° */
 mc('br8', 'br', 'I', 'Ein Laserstrahl läuft im Wasser auf die Wasseroberfläche zu. Er trifft sie unter 60° zum Lot. Was passiert mit dem Licht?', [
-  ['Es wird vollständig im Wasser zurückgeworfen. Das heißt Totalreflexion.', 1, 'Richtig. 60° ist größer als der Grenzwinkel von etwa 49°. Dann kommt kein Licht mehr in die Luft.'],
+  ['Es wird vollständig im Wasser zurückgeworfen. Das heißt Totalreflexion.', 1, 'Richtig. Von etwa 49° bis 90° gibt es Totalreflexion, und 60° liegt in diesem Bereich. Dann kommt kein Licht mehr in die Luft.'],
   ['Es wird vom Lot weg in die Luft gebrochen.', 0, 'So wäre es bei einem kleineren Winkel. Ab etwa 49° kommt gar kein Licht mehr heraus.'],
   ['Es läuft ohne Knick in die Luft weiter.', 0, 'Ohne Knick läuft Licht nur bei senkrechtem Auftreffen weiter.'],
   ['Es verschwindet im Wasser.', 0, 'Das Licht geht nicht verloren. Es wird an der Oberfläche zurückgeworfen.']]);
-gap('br9', 'br', 'II', 'Fülle die Lücken.', ['Totalreflexion gibt es, wenn Licht ', { o: ['vom Wasser in die Luft', 'aus der Luft ins Wasser'], c: 0, why: 'Nur auf dem Weg aus dem Wasser in die Luft gibt es einen Grenzwinkel. Ins Wasser hinein wird Licht immer gebrochen.' }, ' läuft. Der Grenzwinkel von etwa 49° wird zum ', { o: ['Lot', 'Wasseroberfläche'], c: 0, why: 'Alle Winkel misst man zum Lot, auch den Grenzwinkel.' }, ' gemessen. Ist der Einfallswinkel größer als der Grenzwinkel, kommt ', { o: ['kein Licht', 'noch etwas Licht'], c: 0, why: 'Bei Totalreflexion kommt gar kein Licht in die Luft.' }, ' in die Luft. Das Licht wird dann an der Oberfläche ', { o: ['zurückgeworfen', 'verschluckt'], c: 0, why: 'Das Licht wird vollständig zurück ins Wasser reflektiert.' }, '.']);
+gap('br9', 'br', 'II', 'Fülle die Lücken.', ['Totalreflexion gibt es, wenn Licht ', { o: ['vom Wasser in die Luft', 'aus der Luft ins Wasser'], c: 0, why: 'Nur auf dem Weg aus dem Wasser in die Luft gibt es einen Grenzwinkel. Ins Wasser hinein wird Licht immer gebrochen.' }, ' läuft. Der Grenzwinkel von etwa 49° wird zum ', { o: ['Lot', 'Wasseroberfläche'], c: 0, why: 'Alle Winkel misst man zum Lot, auch den Grenzwinkel.' }, ' gemessen. Liegt der Einfallswinkel zwischen 49° und 90°, kommt ', { o: ['kein Licht', 'noch etwas Licht'], c: 0, why: 'Bei Totalreflexion kommt gar kein Licht in die Luft.' }, ' in die Luft. Das Licht wird dann an der Oberfläche ', { o: ['zurückgeworfen', 'verschluckt'], c: 0, why: 'Das Licht wird vollständig zurück ins Wasser reflektiert.' }, '.']);
 
 /* ---------- Modul 7: Brechung im Alltag ---------- */
 mc('al1', 'al', 'I', 'Warum sieht ein Strohhalm im Wasserglas geknickt aus?', [
@@ -3683,7 +3683,7 @@ var LZ = {
   m3: ['Ich kann erklären, dass wir nur sehen, wenn Licht in unser Auge fällt.', 'Ich kann den direkten und den indirekten Weg beschreiben und zeichnen.', 'Ich zeichne Pfeile immer zum Auge hin.'],
   m4: ['Ich kann erklären, warum das Weltall schwarz aussieht.', 'Ich kann erklären, warum der Himmel auf der Erde blau ist.', 'Ich weiß ungefähr, wie lange Licht von Mond, Sonne und Sternen zu uns braucht.'],
   m5: ['Ich kann Reflexion, Streuung und Absorption unterscheiden und Beispiele nennen.', 'Ich kenne das Reflexionsgesetz und weiß, dass man zum Lot misst.', 'Ich kann erklären, warum schwarze Kleidung in der Sonne warm wird.', 'Ich kann durchsichtig, durchscheinend und undurchsichtig unterscheiden.'],
-  m6: ['Ich kann erklären, was Brechung ist und was das Lot ist.', 'Ich weiß: Luft → Wasser zum Lot hin, Wasser → Luft vom Lot weg.', 'Ich weiß, dass senkrecht auftreffendes Licht nicht gebrochen wird.', 'Ich weiß, was Totalreflexion ist und dass der Grenzwinkel bei Wasser etwa 49° beträgt (zum Lot gemessen).'],
+  m6: ['Ich kann erklären, was Brechung ist und was das Lot ist.', 'Ich weiß: Luft → Wasser zum Lot hin, Wasser → Luft vom Lot weg.', 'Ich weiß, dass senkrecht auftreffendes Licht nicht gebrochen wird.', 'Ich weiß, was Totalreflexion ist: Ab dem Grenzwinkel von etwa 49° (bis 90°, zum Lot gemessen) kommt kein Licht mehr aus dem Wasser.'],
   m7: ['Ich kann erklären, warum ein Fisch höher erscheint, als er ist.', 'Ich kann begründen, wohin man mit Speer und Laser zielen muss.', 'Ich kann den geknickten Strohhalm und die Münze im Becher erklären.'],
   m8: ['Ich kann Sammellinse und Zerstreuungslinse an ihrer Form erkennen.', 'Ich kann beschreiben, wie beide Linsen paralleles Licht verändern.', 'Ich kenne die Begriffe Brennpunkt und Brennweite.', 'Ich weiß, dass das Bild einer Sammellinse auf dem Kopf steht.', 'Ich kann das Bild bei der Sammellinse mit Parallel-, Mittelpunkt- und Brennpunktstrahl konstruieren.'],
   m9: ['Ich kann die Teile des Auges benennen und ihre Aufgaben erklären.', 'Ich kann erklären, wie sich die Pupille an die Helligkeit anpasst.', 'Ich kann beschreiben, wie das Bild auf der Netzhaut entsteht und wie die Linse scharf stellt.'],
