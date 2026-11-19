@@ -680,7 +680,7 @@ textarea{background:#fff;color:var(--ink)}
     <p class="eyebrow">Modul 6 · Brechung</p>
     <h2>Licht ändert an Wasser die Richtung</h2>
     <div class="rule"></div>
-    <p class="lead">Ein Laserpointer leuchtet auf eine Wasseroberfläche. Ziehe den Laser im Kreis herum: über dem Wasser (Licht geht von Luft in Wasser) oder unter dem Wasser (Licht geht von Wasser in Luft). Lies die Winkel am Winkelkreis ab.</p>
+    <p class="lead">Ein Laserpointer leuchtet auf eine Wasseroberfläche. Ziehe den Laser im Kreis herum: über dem Wasser (Licht geht von Luft in Wasser) oder unter dem Wasser (Licht geht von Wasser in Luft). Lies die Winkel am Winkelkreis ab. Mit dem Regler stellst du den Einfallswinkel genau ein.</p>
   </div>
   <div class="card impuls poe" data-poe="m6"></div>
   <div class="stage" data-stage="m6">
@@ -717,7 +717,7 @@ textarea{background:#fff;color:var(--ink)}
     <div class="card wiss">
       <span class="tag">Ausblick</span>
       <h3>Wenn gar kein Licht herauskommt</h3>
-      <p>Ziehe den Laser unter das Wasser und mach ihn immer flacher. Ab etwa 49° kommt kein Licht mehr aus dem Wasser heraus. Es wird vollständig an der Oberfläche zurückgeworfen. Das heißt <b>Totalreflexion</b>. In Glasfaserkabeln läuft so Licht für das Internet über weite Strecken. Genauer lernst du das in einer höheren Klasse.</p>
+      <p>Stelle den Laser <b>unter das Wasser</b> und erhöhe den Einfallswinkel mit dem Regler, bis etwa <b>49°</b> erreicht sind (der Knopf „Totalreflexion einstellen“ macht das für dich). Ab diesem <b>Grenzwinkel</b> kommt kein Licht mehr aus dem Wasser heraus. Es wird vollständig an der Oberfläche zurück ins Wasser geworfen. Das heißt <b>Totalreflexion</b>. In Glasfaserkabeln läuft so Licht für das Internet über weite Strecken. Genauer lernst du das in einer höheren Klasse.</p>
     </div>
   </div>
   <div class="tasks">
@@ -2043,21 +2043,29 @@ var cfg5 = {
    ===================================================================== */
 var cfg6 = {
   init: function (s) {
-    var st = s.st; st.n = 1.33; st.phi = rad(-90 - 40); st.lot = true; st.ang = true; st.refl = true;
+    var st = s.st; st.n = 1.33; st.phi = rad(-90 - 40); st.lot = true; st.ang = true; st.refl = true; st.grenz = true; st.side = 'oben'; st.alpha = 40;
     var g1 = grp(s, 'Stoff unten');
     chips(s, g1, [['1.33', 'Wasser'], ['1.5', 'Glas']], { val: '1.33', on: function (v) { st.n = +v; } });
+    var g0 = grp(s, 'Einfallswinkel einstellen');
+    st.sideChips = chips(s, g0, [['oben', 'Laser über dem Wasser'], ['unten', 'Laser unter dem Wasser']], { val: 'oben', on: function (v) { st.side = v; cfg6.setPhi(s); } });
+    st.sl = slider(s, g0, 'Einfallswinkel α (zum Lot)', 0, 85, 1, 40, function (v) { return v + '°'; }, function (v) { if (st._syn) return; st.alpha = v; cfg6.setPhi(s); });
+    button(s, g0, 'Totalreflexion einstellen (≈ 49°)', false, function () { var a = Math.ceil(deg(Math.asin(1 / st.n)) + .01); st.side = 'unten'; st.sideChips.set('unten'); st.sl.set(a); });
     var g2 = grp(s, 'Anzeigen');
-    chips(s, g2, [['lot', 'Lot', COL.sky], ['ang', 'Winkel', COL.acc], ['refl', 'Teilreflexion', COL.ray]], { multi: true, val: ['lot', 'ang', 'refl'], on: function (v) { st.lot = v.indexOf('lot') >= 0; st.ang = v.indexOf('ang') >= 0; st.refl = v.indexOf('refl') >= 0; } });
+    chips(s, g2, [['lot', 'Lot', COL.sky], ['ang', 'Winkel', COL.acc], ['refl', 'Teilreflexion', COL.ray], ['grenz', 'Grenzwinkel', COL.bad]], { multi: true, val: ['lot', 'ang', 'refl', 'grenz'], on: function (v) { st.lot = v.indexOf('lot') >= 0; st.ang = v.indexOf('ang') >= 0; st.refl = v.indexOf('refl') >= 0; st.grenz = v.indexOf('grenz') >= 0; } });
     var g3 = grp(s, 'Schnell einstellen');
-    button(s, g3, 'Von oben, 45°', false, function () { st.phi = rad(-135); });
-    button(s, g3, 'Von unten, 30°', false, function () { st.phi = rad(120); });
-    button(s, g3, 'Senkrecht von oben', false, function () { st.phi = rad(-90); });
+    button(s, g3, 'Von oben, 45°', false, function () { st.phi = rad(-135); cfg6.sync(s); });
+    button(s, g3, 'Von unten, 30°', false, function () { st.phi = rad(120); cfg6.sync(s); });
+    button(s, g3, 'Senkrecht von oben', false, function () { st.phi = rad(-90); cfg6.sync(s); });
     st.info = infoBox(grp(s, 'Beobachtung'));
     s.legend([[COL.ray, 'Lichtstrahl'], [COL.sky, 'Lot'], [COL.water, 'Wasser/Glas']]);
   },
   resize: function (s) { var st = s.st; st.cx = s.W * .5; st.y0 = s.H * .5; st.R = Math.min(s.W * .42, s.H * .44); },
   down: function (s) { return true; },
-  move: function (s, x, y) { var st = s.st, a = Math.atan2(y - st.y0, x - st.cx); if (Math.abs(Math.sin(a)) < .08) a = Math.atan2(Math.sign(Math.sin(a) || -1) * .08, Math.cos(a)); st.phi = a; },
+  move: function (s, x, y) { var st = s.st, a = Math.atan2(y - st.y0, x - st.cx); if (Math.abs(Math.sin(a)) < .08) a = Math.atan2(Math.sign(Math.sin(a) || -1) * .08, Math.cos(a)); st.phi = a; cfg6.sync(s); },
+  /* Regler und Seitenwahl -> Laserstellung */
+  setPhi: function (s) { var st = s.st; st.phi = st.side === 'unten' ? rad(90 + st.alpha) : rad(-90 - st.alpha); },
+  /* Laserstellung (Ziehen, Knoepfe) -> Regler und Seitenwahl */
+  sync: function (s) { var st = s.st, up = Math.sin(st.phi) < 0, al = clamp(Math.round(deg(Math.acos(clamp(Math.abs(Math.sin(st.phi)), 0, 1)))), 0, 85); st.side = up ? 'oben' : 'unten'; st.alpha = al; st._syn = true; st.sideChips.set(st.side); st.sl.set(al); st._syn = false; },
   calc: function (s) {
     var st = s.st, above = Math.sin(st.phi) < 0, n1 = above ? 1 : st.n, n2 = above ? st.n : 1;
     var dx = -Math.cos(st.phi), dy = -Math.sin(st.phi), N = above ? [0, -1] : [0, 1];
@@ -2075,7 +2083,7 @@ var cfg6 = {
     s.read([['Einfallswinkel', fmtDeg(r.alpha)], ['Brechungswinkel', r.tr ? fmtDeg(r.beta) : '–'], ['Ergebnis', st0[0], st0[1]]]);
     var h;
     if (r.alpha < 1.5) h = 'Das Licht trifft <b>senkrecht</b> auf (entlang des Lots). Es geht <b>ohne Knick</b> weiter.';
-    else if (!r.tr) h = 'Das Licht kommt im ' + stoff + ' so flach an, dass es <b>gar nicht mehr herauskommt</b>. Es wird ganz zurückgeworfen: <b>Totalreflexion</b>. Mach den Winkel kleiner, dann kommt das Licht wieder heraus.';
+    else if (!r.tr) h = 'Der Einfallswinkel ist größer als der <b>Grenzwinkel von etwa ' + fmtDeg(deg(Math.asin(1 / st.n))) + '</b>. Das Licht kommt im ' + stoff + ' so flach an, dass es <b>gar nicht mehr herauskommt</b>. Alles Licht wird an der Oberfläche zurück ins ' + stoff + ' geworfen: <b>Totalreflexion</b>. Mach den Winkel kleiner, dann kommt das Licht wieder heraus.';
     else if (r.above) h = 'Luft → ' + stoff + ': Der Winkel wird kleiner (' + fmtDeg(r.alpha) + ' → ' + fmtDeg(r.beta) + '). Das Licht wird <b>zum Lot hin</b> gebrochen.' + (st.n > 1.4 ? ' Glas bricht stärker als Wasser.' : '');
     else h = stoff + ' → Luft: Der Winkel wird größer (' + fmtDeg(r.alpha) + ' → ' + fmtDeg(r.beta) + '). Das Licht wird <b>vom Lot weg</b> gebrochen.';
     setHTML(st.info, h);
@@ -2092,8 +2100,20 @@ var cfg6 = {
     for (var k = 0; k < 36; k++) { var a = k * Math.PI / 18, big = k % 3 === 0, r1 = R - (big ? 10 : 5); c.beginPath(); c.moveTo(cx + Math.cos(a) * r1, y0 + Math.sin(a) * r1); c.lineTo(cx + Math.cos(a) * R, y0 + Math.sin(a) * R); c.stroke(); }
     [-90, 90].forEach(function (base) { for (var d = 0; d <= 90; d += 30) [-1, 1].forEach(function (sg) { if (d === 0 && sg < 0) return; var a = rad(base + sg * d); txt(c, d + '°', cx + Math.cos(a) * (R - 22), y0 + Math.sin(a) * (R - 22), { size: 10, mono: true, al: 'center', bl: 'middle', col: COL.ink3 }); }); });
     if (st.lot) { dashed(c, cx, y0 - R, cx, y0 + R, rgba(COL.sky,.9), 1.5); txt(c, 'Lot', cx + 6, y0 - R + 14, { size: 11, mono: true, col: COL.sky }); }
+    /* Grenzwinkel: unter der Oberflaeche beginnt ab hier der Bereich der Totalreflexion (beidseitig des Lots) */
+    if (st.grenz) {
+      var ac = Math.asin(1 / st.n), RG = R * .95, P2 = Math.PI / 2;
+      c.save(); c.fillStyle = rgba(COL.bad, .09);
+      c.beginPath(); c.moveTo(cx, y0); c.arc(cx, y0, RG, P2 + ac, Math.PI); c.closePath(); c.fill();
+      c.beginPath(); c.moveTo(cx, y0); c.arc(cx, y0, RG, 0, P2 - ac); c.closePath(); c.fill();
+      c.restore();
+      [-1, 1].forEach(function (sg) { var ga = P2 + sg * ac; dashed(c, cx, y0, cx + Math.cos(ga) * RG, y0 + Math.sin(ga) * RG, rgba(COL.bad, .75), 1.6, [5, 4]); });
+      txt(c, 'Grenzwinkel ≈ ' + fmtDeg(deg(ac)), cx + Math.cos(P2 - ac) * RG - 6, y0 + Math.sin(P2 - ac) * RG + 16, { size: 11, w: 'bold', al: 'right', col: COL.bad, halo: true });
+      txt(c, 'Totalreflexion', cx + Math.cos(P2 - (ac + Math.PI / 2) / 2) * R * .68, y0 + Math.sin(P2 - (ac + Math.PI / 2) / 2) * R * .68, { size: 11, al: 'center', bl: 'middle', col: rgba(COL.bad, .9), halo: true });
+    }
     var lx = cx + Math.cos(st.phi) * R, ly = y0 + Math.sin(st.phi) * R;
     ray(c, lx, ly, cx, y0, COL.ray, 2.6, 1, .55);
+    if (!r.tr) txt(c, 'kein Licht kommt heraus', cx, y0 - 34, { size: 12, w: 'bold', al: 'center', col: COL.bad, halo: true });
     if (r.tr) ray(c, cx, y0, cx + r.tr[0] * R * 1.1, y0 + r.tr[1] * R * 1.1, COL.ray, 2.6, Math.max(.35, 1 - r.R), .5);
     if (st.refl || !r.tr) ray(c, cx, y0, cx + r.rf[0] * R * .95, y0 + r.rf[1] * R * .95, COL.ray, 2, r.tr ? clamp(r.R * 3, .18, .8) : 1, .5);
     if (st.ang && r.alpha > 1.5) {
