@@ -389,9 +389,9 @@ textarea{background:#fff;color:var(--ink)}
     <p class="eyebrow">Physik · Klasse 5 · Optik · Btz</p>
     <h1>Optik</h1>
     <p class="h1b">Üben für die Klassenarbeit Btz</p>
-    <p class="sub">Zwölf Versuchsplätze rund ums Licht: Du machst ein Zimmer dunkel, legst den Weg des Lichts ins Auge, fliegst ins schwarze Weltall, lässt Licht an Spiegeln, Papier und Samt abprallen, wirfst Schatten, fängst einen Fisch, bündelst Licht mit Linsen, setzt einem kurzsichtigen Auge eine Brille auf, spielst Sonnen- und Mondfinsternis und mischst Farben. Danach übst du mit Aufgaben, die dir bei jedem Fehler sagen, was genau nicht stimmt. Am Ende wartet ein Probetest.</p>
+    <p class="sub">Dreizehn Versuchsplätze rund ums Licht: Du machst ein Zimmer dunkel, legst den Weg des Lichts ins Auge, fliegst ins schwarze Weltall, lässt Licht an Spiegeln, Papier und Samt abprallen, erforschst das Spiegelbild, wirfst Schatten, fängst einen Fisch, bündelst Licht mit Linsen, setzt einem kurzsichtigen Auge eine Brille auf, spielst Sonnen- und Mondfinsternis und mischst Farben. Danach übst du mit Aufgaben, die dir bei jedem Fehler sagen, was genau nicht stimmt. Am Ende wartet ein Probetest.</p>
     <div class="kicker">
-      <span class="pill">Lichtquellen</span><span class="pill">Sehen</span><span class="pill">Weltall</span><span class="pill">Reflexion</span><span class="pill">Streuung</span><span class="pill">Absorption</span><span class="pill">Schatten</span><span class="pill">Brechung</span><span class="pill">Linsen</span><span class="pill">Auge</span><span class="pill">Brille</span><span class="pill">Finsternis</span><span class="pill">Farben</span>
+      <span class="pill">Lichtquellen</span><span class="pill">Sehen</span><span class="pill">Weltall</span><span class="pill">Reflexion</span><span class="pill">Streuung</span><span class="pill">Absorption</span><span class="pill">Spiegel</span><span class="pill">Schatten</span><span class="pill">Brechung</span><span class="pill">Linsen</span><span class="pill">Auge</span><span class="pill">Brille</span><span class="pill">Finsternis</span><span class="pill">Farben</span>
     </div>
   </div>
 </header>
@@ -462,7 +462,7 @@ textarea{background:#fff;color:var(--ink)}
 <!-- ============================= MODUL 2 ============================= -->
 <section class="mod" id="m2">
   <div class="modhead">
-    <p class="eyebrow">Modul 5 · Lichtausbreitung und Schatten</p>
+    <p class="eyebrow">Modul 6 · Lichtausbreitung und Schatten</p>
     <h2>Licht läuft geradeaus</h2>
     <div class="rule"></div>
     <p class="lead">Eine Lampe beleuchtet einen Gegenstand und einen Schirm. Du siehst alles von oben, der Gegenstand ist deshalb ein senkrechter Strich. Ziehe Gegenstand und Lampe hin und her, schalte eine zweite Lampe dazu und lass dir die Randstrahlen zeigen. Hinter dem Gegenstand entsteht ein Schatten, und du findest heraus, warum.</p>
@@ -674,10 +674,68 @@ textarea{background:#fff;color:var(--ink)}
   <div class="check" data-check="m5"></div>
 </section>
 
+<!-- ============================= MODUL 5 (neu): DER SPIEGEL ============================= -->
+<section class="mod" id="m15">
+  <div class="modhead">
+    <p class="eyebrow">Modul 5 · Der Spiegel</p>
+    <h2>Das Reflexionsgesetz und das Spiegelbild</h2>
+    <div class="rule"></div>
+    <p class="lead">Im Spiegel siehst du dich selbst. Wie kommt das Bild zustande, und wo ist es eigentlich? Lenke einen Laserstrahl auf den Spiegel und lies die Winkel ab. Stelle dann eine Kerze vor den Spiegel und finde heraus, wie ihr Spiegelbild aussieht.</p>
+  </div>
+  <div class="card impuls poe" data-poe="m15"></div>
+  <div class="stage" data-stage="m15">
+    <div class="stage-grid">
+      <div class="canvas-wrap" data-canvas><canvas></canvas><div class="readout" data-readout></div><span class="hint">Laser im Bogen ziehen</span></div>
+      <div class="panel" data-panel></div>
+    </div>
+    <div class="legend" data-legend></div>
+  </div>
+  <div class="card merk">
+    <span class="tag">Sicherung</span>
+    <h3>Reflexionsgesetz und Spiegelbild</h3>
+    <ul>
+      <li><b>Das Reflexionsgesetz:</b> Trifft ein Lichtstrahl auf einen Spiegel, ist der <b>Einfallswinkel α</b> gleich groß wie der <b>Reflexionswinkel α'</b>. Man schreibt: <b>α = α'</b>.</li>
+      <li>Beide Winkel misst man zum <b>Lot</b>, der Linie senkrecht zum Spiegel am Auftreffpunkt, <b>nicht</b> zur Spiegelfläche.</li>
+      <li>Der einfallende Strahl, das Lot und der reflektierte Strahl liegen in <b>einer Ebene</b>. Trifft das Licht senkrecht auf (α = 0°), geht es genau zurück.</li>
+      <li><b>Eigenschaften des Spiegelbildes</b> im ebenen Spiegel:
+        <ul>
+          <li>Es ist <b>genauso groß</b> wie der Gegenstand.</li>
+          <li>Es liegt <b>genauso weit hinter</b> dem Spiegel, wie der Gegenstand davor steht. Du stehst 2 m vor dem Spiegel: Dein Bild ist 2 m dahinter, also 4 m von dir entfernt.</li>
+          <li>Es ist <b>aufrecht</b>, aber <b>seitenverkehrt</b>: Oben bleibt oben, links und rechts sind vertauscht.</li>
+          <li>Es ist <b>scheinbar</b>: Das Licht kommt nicht wirklich von hinter dem Spiegel. Dein Gehirn verlängert die Strahlen geradlinig nach hinten. Man kann das Bild nicht auf einem Schirm auffangen.</li>
+        </ul>
+      </li>
+    </ul>
+    <div class="merksatz">Merksatz: Einfallswinkel = Reflexionswinkel, beide zum Lot. Das Spiegelbild ist gleich groß, liegt gleich weit hinter dem Spiegel, ist seitenverkehrt und nur scheinbar.</div>
+  </div>
+  <div class="grid2">
+    <div class="card warnc">
+      <span class="tag">Denkfalle</span>
+      <h3>Typische Verwechslungen</h3>
+      <ul>
+        <li><s>„Das Spiegelbild steht auf dem Kopf.“</s> Es ist <b>aufrecht</b>. Nur links und rechts sind vertauscht.</li>
+        <li><s>„Man misst den Winkel zur Spiegelfläche.“</s> Gemessen wird zum <b>Lot</b>.</li>
+        <li><s>„Hinter dem Spiegel ist wirklich ein zweiter Raum.“</s> Dort ist nur die Wand. Das Bild ist <b>scheinbar</b> dort.</li>
+        <li><s>„Je weiter ich weggehe, desto kleiner wird mein Spiegelbild.“</s> Im ebenen Spiegel bleibt es <b>genauso groß</b> wie du. Es sieht nur kleiner aus, weil es weiter weg ist.</li>
+      </ul>
+    </div>
+    <div class="card wiss">
+      <span class="tag">Zum Staunen</span>
+      <h3>Warum steht AMBULANZ spiegelverkehrt?</h3>
+      <p>Vorne auf Krankenwagen steht das Wort <b>spiegelverkehrt</b>. Autofahrer vor dem Wagen sehen es im Rückspiegel, und dort ist es wieder <b>richtig herum</b> lesbar. Probiere es im Versuch „Spiegelschrift“ mit dem Wort AMBULANZ aus.</p>
+    </div>
+  </div>
+  <div class="tasks">
+    <div class="modhead"><p class="eyebrow">Aufgaben</p><h2>Selbst überprüfen</h2><div class="rule"></div></div>
+    <div class="tlist" data-mtasks="m15"></div>
+  </div>
+  <div class="check" data-check="m15"></div>
+</section>
+
 <!-- ============================= MODUL 6 ============================= -->
 <section class="mod" id="m6">
   <div class="modhead">
-    <p class="eyebrow">Modul 6 · Brechung</p>
+    <p class="eyebrow">Modul 7 · Brechung</p>
     <h2>Licht ändert an Wasser die Richtung</h2>
     <div class="rule"></div>
     <p class="lead">Ein Laserpointer leuchtet auf eine Wasseroberfläche. Ziehe den Laser im Kreis herum: über dem Wasser (Licht geht von Luft in Wasser) oder unter dem Wasser (Licht geht von Wasser in Luft). Lies die Winkel am Winkelkreis ab. Mit dem Regler stellst du den Einfallswinkel genau ein.</p>
@@ -730,7 +788,7 @@ textarea{background:#fff;color:var(--ink)}
 <!-- ============================= MODUL 7 ============================= -->
 <section class="mod" id="m7">
   <div class="modhead">
-    <p class="eyebrow">Modul 7 · Brechung im Alltag</p>
+    <p class="eyebrow">Modul 8 · Brechung im Alltag</p>
     <h2>Fisch, Strohhalm und Münze</h2>
     <div class="rule"></div>
     <p class="lead">Drei Versuche, bei denen dich die Brechung täuscht. Fange einen Fisch mit dem Speer: Tippe dorthin, wohin du zielen willst. Schau dir einen Strohhalm im Wasserglas an. Und lass eine versteckte Münze auftauchen, nur indem du Wasser einfüllst.</p>
@@ -775,7 +833,7 @@ textarea{background:#fff;color:var(--ink)}
 <!-- ============================= MODUL 8 ============================= -->
 <section class="mod" id="m8">
   <div class="modhead">
-    <p class="eyebrow">Modul 8 · Linsen</p>
+    <p class="eyebrow">Modul 9 · Linsen</p>
     <h2>Sammellinse und Zerstreuungslinse</h2>
     <div class="rule"></div>
     <p class="lead">Schicke ein Lichtbündel durch eine Linse. Jeder Lichtstrahl wird an beiden Glasflächen gebrochen, das Programm rechnet das live aus. Ändere die Wölbung und vergleiche Sammel- und Zerstreuungslinse. Im zweiten Versuch erzeugst du mit einer Sammellinse das Bild einer Kerze auf einem Schirm.</p>
@@ -846,7 +904,7 @@ textarea{background:#fff;color:var(--ink)}
 <!-- ============================= MODUL 9 ============================= -->
 <section class="mod" id="m9">
   <div class="modhead">
-    <p class="eyebrow">Modul 9 · Das Auge</p>
+    <p class="eyebrow">Modul 10 · Das Auge</p>
     <h2>Aufbau des Auges</h2>
     <div class="rule"></div>
     <p class="lead">Das Auge von vorne und im Schnitt von der Seite. Tippe die Teile an und lies, wozu sie da sind. Danach regelst du die Helligkeit und beobachtest die Pupille. Im dritten Versuch schaust du einen Baum an und siehst, welches Bild auf der Netzhaut entsteht.</p>
@@ -911,7 +969,7 @@ textarea{background:#fff;color:var(--ink)}
 <!-- ============================= MODUL 10 ============================= -->
 <section class="mod" id="m10">
   <div class="modhead">
-    <p class="eyebrow">Modul 10 · Fehlsichtigkeit</p>
+    <p class="eyebrow">Modul 11 · Fehlsichtigkeit</p>
     <h2>Wenn das Bild nicht auf der Netzhaut liegt</h2>
     <div class="rule"></div>
     <p class="lead">Wähle ein Auge: normalsichtig, kurzsichtig, weitsichtig oder altersweitsichtig. Lass es eine ferne Tafel oder ein nahes Buch anschauen. Wo entsteht das Bild? Setze dann eine Brille auf und finde heraus, welche Linse hilft. Unten rechts siehst du, was die Person sieht.</p>
@@ -960,7 +1018,7 @@ textarea{background:#fff;color:var(--ink)}
 <!-- ============================= MODUL 11 ============================= -->
 <section class="mod" id="m11">
   <div class="modhead">
-    <p class="eyebrow">Modul 11 · Sonnen- und Mondfinsternis</p>
+    <p class="eyebrow">Modul 12 · Sonnen- und Mondfinsternis</p>
     <h2>Wenn Schatten durchs Weltall fallen</h2>
     <div class="rule"></div>
     <p class="lead">Sonne, Erde und Mond von oben gesehen (nicht maßstabsgetreu). Ziehe den Mond auf seiner Bahn um die Erde oder lass ihn laufen. Erde und Mond werfen Schatten ins Weltall. Unten rechts siehst du, was man von der Erde aus sieht.</p>
@@ -1025,7 +1083,7 @@ textarea{background:#fff;color:var(--ink)}
 <!-- ============================= MODUL 12 ============================= -->
 <section class="mod" id="m12">
   <div class="modhead">
-    <p class="eyebrow">Modul 12 · Farben</p>
+    <p class="eyebrow">Modul 13 · Farben</p>
     <h2>Weißes Licht ist bunt</h2>
     <div class="rule"></div>
     <p class="lead">Schicke weißes Licht durch ein Prisma und fange die Farben auf einem Schirm auf. Beleuchte dann eine Tomate, eine Gurke und andere Dinge mit farbigem Licht. Zum Schluss mischst du auf einer Bühne rotes, grünes und blaues Licht.</p>
@@ -2984,7 +3042,8 @@ function mkPic(w, h, alt, fn, dark) {
 function distSeg(px, py, x0, y0, x1, y1) { var dx = x1 - x0, dy = y1 - y0, t = clamp(((px - x0) * dx + (py - y0) * dy) / (dx * dx + dy * dy || 1), 0, 1); return Math.hypot(px - x0 - dx * t, py - y0 - dy * t); }
 function inEll(x, y, cx, cy, rx, ry) { var a = (x - cx) / rx, b = (y - cy) / ry; return a * a + b * b <= 1; }
 
-var TOP = { lq: ['Lichtquellen', 1], au: ['Ausbreitung und Schatten', 2], se: ['Sehvorgang', 3], wa: ['Licht im Weltall', 4], ob: ['Oberflächen', 5], br: ['Brechung', 6], al: ['Brechung im Alltag', 7], li: ['Linsen', 8], ag: ['Auge', 9], fs: ['Fehlsichtigkeit', 10], fi: ['Finsternisse', 11], fa: ['Farben', 12] };
+/* Nummern wie in der Navigation (Reihenfolge der Module) */
+var TOP = { lq: ['Lichtquellen', 1], se: ['Sehvorgang', 2], wa: ['Licht im Weltall', 3], ob: ['Oberflächen', 4], sp: ['Der Spiegel', 5], au: ['Ausbreitung und Schatten', 6], br: ['Brechung', 7], al: ['Brechung im Alltag', 8], li: ['Linsen', 9], ag: ['Auge', 10], fs: ['Fehlsichtigkeit', 11], fi: ['Finsternisse', 12], fa: ['Farben', 13] };
 var BANK = [];
 function mc(id, topic, ab, q, opts) { BANK.push({ id: id, kind: 'mc', topic: topic, ab: ab, q: q, opts: opts }); }
 function multi(id, topic, ab, q, st) { BANK.push({ id: id, kind: 'multi', topic: topic, ab: ab, q: q, st: st }); }
@@ -3267,6 +3326,70 @@ text('ob7', 'ob', 'III', 'Warum siehst du ein Blatt Papier von überall im Zimme
   ['Der Spiegel wirft das Licht nur in eine bestimmte Richtung zurück.', ['eine richtung', 'bestimmte richtung', 'gerichtet', 'gleichen winkel', 'reflexionsgesetz', 'einfallswinkel', 'nur in eine']],
   ['Sehen kann man nur, wenn das Licht ins Auge fällt.', ['auge']]],
   'Papier ist rau und streut das Licht in alle Richtungen. Von überall im Zimmer fällt deshalb etwas Licht vom Papier in mein Auge. Der Spiegel ist glatt und wirft das Licht nach dem Reflexionsgesetz nur in eine bestimmte Richtung. Nur wenn mein Auge genau dort ist, fällt das Licht der Lampe hinein und ich sehe ihr Spiegelbild.');
+
+/* ---------- Modul 5 (neu): Der Spiegel ---------- */
+mc('sp1', 'sp', 'I', 'Wie groß ist das Spiegelbild in einem ebenen Spiegel?', [
+  ['Genauso groß wie der Gegenstand.', 1, 'Richtig. Im ebenen Spiegel ist das Bild immer genauso groß wie der Gegenstand.'],
+  ['Kleiner als der Gegenstand.', 0, 'Es sieht nur kleiner aus, wenn es weit weg ist. In Wirklichkeit ist es genauso groß.'],
+  ['Größer als der Gegenstand.', 0, 'Vergrößert wird nur in gewölbten Spiegeln oder mit Lupen, nicht im ebenen Spiegel.'],
+  ['Das hängt vom Abstand zum Spiegel ab.', 0, 'Der Abstand ändert die Größe des Bildes nicht. Es bleibt genauso groß wie der Gegenstand.']]);
+gap('sp2', 'sp', 'I', 'Fülle die Lücken.', ['Nach dem Reflexionsgesetz ist der Einfallswinkel ', { o: ['gleich groß wie', 'größer als'], c: 0, why: 'Einfallswinkel und Reflexionswinkel sind gleich groß: α = α\'.' }, ' der Reflexionswinkel. Beide Winkel misst man zum ', { o: ['Lot', 'Spiegel'], c: 0, why: 'Man misst immer zum Lot, nicht zur Spiegelfläche.' }, '. Das Lot steht ', { o: ['senkrecht', 'waagerecht'], c: 0, why: 'Das Lot ist die Linie senkrecht zum Spiegel am Auftreffpunkt.' }, ' auf dem Spiegel.']);
+gen('sp3', 'sp', 'I', 'mc', function () {
+  var a = pick([20, 40, 50]);
+  var O = [[a + '°', 1, 'Richtig. Beim Spiegel gilt α = α\'. Der Reflexionswinkel ist genauso groß wie der Einfallswinkel.'],
+    [(90 - a) + '°', 0, 'Das wäre der Winkel zur Spiegelfläche. Beide Winkel misst man aber zum Lot.'],
+    [(2 * a) + '°', 0, 'Das ist der Winkel zwischen einfallendem und reflektiertem Strahl. Gefragt ist der Reflexionswinkel zum Lot.'],
+    [(a / 2) + '°', 0, 'Der Reflexionswinkel ist nicht halb so groß, sondern genauso groß wie der Einfallswinkel.']];
+  return { q: 'Ein Lichtstrahl trifft unter <b>' + a + '°</b> zum Lot auf einen ebenen Spiegel. Wie groß ist der Reflexionswinkel?', opts: shuffle(O) };
+});
+multi('sp4', 'sp', 'II', 'Kreuze alle richtigen Aussagen zum Spiegelbild im ebenen Spiegel an.', [
+  ['Das Spiegelbild ist genauso groß wie der Gegenstand.', true, 'Im ebenen Spiegel ist das Bild immer genauso groß.'],
+  ['Das Spiegelbild liegt genauso weit hinter dem Spiegel, wie der Gegenstand davor steht.', true, 'Beide Abstände zum Spiegel sind gleich.'],
+  ['Das Spiegelbild ist seitenverkehrt: Links und rechts sind vertauscht.', true, 'Darum ist Schrift im Spiegel nicht lesbar.'],
+  ['Das Spiegelbild steht auf dem Kopf.', false, 'Das Bild ist aufrecht. Oben bleibt oben, nur links und rechts sind vertauscht.'],
+  ['Man kann das Spiegelbild mit einem Blatt Papier hinter dem Spiegel auffangen.', false, 'Das Bild ist nur scheinbar hinter dem Spiegel. Dort kommt kein Licht an, also kann man es nicht auffangen.']]);
+gen('sp5', 'sp', 'II', 'mc', function () {
+  var d = pick([1, 2, 3]);
+  var O = [[(2 * d) + ' m', 1, 'Richtig. Dein Bild liegt ' + d + ' m hinter dem Spiegel. Von dir bis zum Bild sind es ' + d + ' m + ' + d + ' m = ' + (2 * d) + ' m.'],
+    [d + ' m', 0, 'Das ist nur der Abstand bis zum Spiegel. Das Bild liegt noch einmal ' + d + ' m dahinter.'],
+    [(3 * d) + ' m', 0, 'Zu weit. Das Bild liegt genauso weit hinter dem Spiegel, wie du davor stehst, also ' + d + ' m dahinter.'],
+    [(4 * d) + ' m', 0, 'Zu weit. Rechne: Abstand zum Spiegel plus Abstand des Bildes hinter dem Spiegel.']];
+  return { q: 'Du stehst <b>' + d + ' m</b> vor einem ebenen Spiegel. Wie weit bist du von deinem Spiegelbild entfernt?', opts: shuffle(O) };
+});
+gen('sp6', 'sp', 'II', 'tap', function () {
+  var Mx = 300, Fy = 250, ch = 96, g = pick([80, 120, 160, 200]), ox = Mx - g, ix = Mx + g, ty = candleTip15(Fy, ch), cyI = (ty + Fy) / 2, n = g / 40;
+  return {
+    q: 'Vor dem Spiegel steht eine Kerze. Ein Kästchen ist 1 Einheit breit. Tippe auf die Stelle, an der man das <b>Spiegelbild</b> der Kerze sieht.', h: 300, alt: 'Kerze vor einem Spiegel mit schraffierter Rückseite',
+    draw: function (c, W, H, o) {
+      bgGrid(c, W, H);
+      c.fillStyle = '#e7dcc8'; c.fillRect(0, Fy, W, H - Fy); c.strokeStyle = '#b9a98a'; c.lineWidth = 1.5; c.beginPath(); c.moveTo(0, Fy); c.lineTo(W, Fy); c.stroke();
+      c.fillStyle = 'rgba(110,120,140,.08)'; c.fillRect(Mx, 0, W - Mx, Fy);
+      mirror15(c, Mx, 20, Mx, Fy, 1, 0);
+      txt(c, 'Spiegel', Mx - 10, 36, { size: 12, w: 'bold', al: 'right', col: COL.ink2, halo: true });
+      candle15(c, ox, Fy, ch, false); txt(c, 'Kerze', ox, Fy + 22, { size: 12, w: 'bold', al: 'center', col: COL.ink });
+      if (o.reveal) {
+        candle15(c, ix, Fy, ch, true); txt(c, 'Spiegelbild', ix, Fy + 22, { size: 12, w: 'bold', al: 'center', col: '#1c7ed6' });
+        var ay = Fy + 36; arrow(c, ox + 3, ay, Mx - 3, ay, COL.acc, 1.6, 7); arrow(c, Mx - 3, ay, ox + 3, ay, COL.acc, 1.6, 7); arrow(c, Mx + 3, ay, ix - 3, ay, COL.acc, 1.6, 7); arrow(c, ix - 3, ay, Mx + 3, ay, COL.acc, 1.6, 7);
+        txt(c, n + ' Kästchen', (ox + Mx) / 2, ay - 6, { size: 11, w: 'bold', al: 'center', col: COL.acc, halo: true }); txt(c, n + ' Kästchen', (Mx + ix) / 2, ay - 6, { size: 11, w: 'bold', al: 'center', col: COL.acc, halo: true });
+      }
+    },
+    zones: [
+      { hit: function (x, y) { return inEll(x, y, ix, cyI, 36, 62); }, ok: true, msg: 'Richtig: Das Spiegelbild liegt genauso weit hinter dem Spiegel, wie die Kerze davor steht: ' + n + ' Kästchen.' },
+      { hit: function (x, y) { return x > Mx + 8 && Math.abs(x - ix) <= 36; }, msg: 'Der Abstand zum Spiegel stimmt. Das Bild steht aber genauso hoch wie die Kerze: aufrecht auf dem Boden.' },
+      { hit: function (x, y) { return x > Mx + 8 && x < ix - 36; }, msg: 'Zu nah am Spiegel. Das Bild liegt genauso weit hinter dem Spiegel, wie die Kerze davor steht (' + n + ' Kästchen).' },
+      { hit: function (x, y) { return x > ix + 36; }, msg: 'Zu weit hinten. Das Bild liegt nicht weiter hinter dem Spiegel, als die Kerze davor steht (' + n + ' Kästchen).' },
+      { hit: function (x, y) { return Math.abs(x - Mx) <= 8; }, msg: 'Auf dem Spiegel selbst liegt das Bild nicht. Es scheint hinter dem Spiegel zu liegen.' },
+      { hit: function (x, y) { return x < Mx - 8; }, msg: 'Das Spiegelbild liegt hinter dem Spiegel, nicht davor. Vor dem Spiegel steht nur die Kerze.' }],
+    miss: 'Daneben. Das Spiegelbild liegt hinter dem Spiegel, genauso weit entfernt wie die Kerze.',
+    why: 'Das Spiegelbild liegt genauso weit hinter dem Spiegel, wie der Gegenstand davor steht, und ist genauso groß. Der Spiegel liegt genau in der Mitte zwischen Kerze und Bild.'
+  };
+});
+text('sp7', 'sp', 'III', 'Nenne und erkläre drei Eigenschaften des Spiegelbildes im ebenen Spiegel.', [
+  ['gleich groß wie der Gegenstand', ['gleich groß', 'gleiche größe', 'genauso groß', 'gleichgroß', 'selbe größe', 'gleich gross', 'genau so groß']],
+  ['gleich weit hinter dem Spiegel', ['gleich weit', 'gleiche entfernung', 'gleichen abstand', 'gleicher abstand', 'genauso weit', 'gleiche abstand', 'hinter dem spiegel']],
+  ['seitenverkehrt', ['seitenverkehrt', 'links und rechts', 'rechts und links', 'vertauscht', 'spiegelverkehrt']],
+  ['scheinbar, nicht auffangbar', ['scheinbar', 'virtuell', 'nicht auffang', 'kein schirm', 'nicht auf einem schirm']]],
+  'Das Spiegelbild ist genauso groß wie der Gegenstand und liegt genauso weit hinter dem Spiegel, wie der Gegenstand davor steht. Es ist aufrecht, aber seitenverkehrt: Links und rechts sind vertauscht. Außerdem ist es nur scheinbar hinter dem Spiegel, denn das Licht kommt nicht wirklich von dort. Man kann das Bild nicht mit einem Schirm auffangen.');
 
 /* ---------- Modul 6: Brechung ---------- */
 mc('br1', 'br', 'I', 'Licht fällt schräg von der Luft ins Wasser. Was passiert an der Wasseroberfläche?', [
@@ -3655,6 +3778,9 @@ var POES = {
   m5: { q: 'Ein Spiegel und ein weißes Blatt Papier werden gleich hell angestrahlt. Du schaust von der Seite, nicht aus der Spiegelrichtung. Was sieht heller aus?', opts: ['das Papier', 'der Spiegel', 'beide gleich'], c: 0,
     why: { 1: 'Der Spiegel wirft das Licht nur in eine Richtung. Von der Seite kommt davon nichts in dein Auge.', 2: 'Spiegel und Papier werfen das Licht ganz verschieden zurück.' },
     act: 'Wähle „Spiegel“ und ziehe das Auge weg von der Spiegelrichtung. Wähle dann „weißes Papier“.', expl: 'Das Papier sieht heller aus: Es streut das Licht in alle Richtungen, also auch zu dir. Der Spiegel schickt alles in eine Richtung, von der Seite sieht er dunkel aus.' },
+  m15: { q: 'Du stehst 2 m vor einem Spiegel. Wo scheint dein Spiegelbild zu stehen?', opts: ['2 m hinter dem Spiegel', 'genau auf dem Spiegel', '1 m hinter dem Spiegel'], c: 0,
+    why: { 1: 'Das Bild liegt nicht auf der Spiegelfläche, sondern dahinter.', 2: 'So nah wäre das Bild nur, wenn du nur 1 m vor dem Spiegel stündest.' },
+    act: 'Wähle „Spiegelbild“ und ziehe die Kerze näher an den Spiegel und wieder weg. Vergleiche die beiden Abstände.', expl: 'Das Spiegelbild liegt genauso weit hinter dem Spiegel, wie du davor stehst: 2 m. Von dir aus gesehen scheint dein Bild also 4 m entfernt zu sein.' },
   m6: { q: 'Ein Lichtstrahl fällt schräg von der Luft ins Wasser. Wie läuft er im Wasser weiter?', opts: ['zum Lot hin geknickt', 'vom Lot weg geknickt', 'ohne Knick geradeaus'], c: 0,
     why: { 1: 'Vom Lot weg wird Licht geknickt, wenn es aus dem Wasser herauskommt.', 2: 'Ohne Knick läuft es nur, wenn es senkrecht auftrifft.' },
     act: 'Ziehe den Laser in die obere Hälfte und lies die Winkel ab.', expl: 'Im Wasser ist der Winkel zum Lot kleiner: Das Licht wird zum Lot hin gebrochen. Ziehe den Laser jetzt nach unten ins Wasser: Dann wird es vom Lot weg gebrochen.' },
@@ -3683,6 +3809,7 @@ var LZ = {
   m3: ['Ich kann erklären, dass wir nur sehen, wenn Licht in unser Auge fällt.', 'Ich kann den direkten und den indirekten Weg beschreiben und zeichnen.', 'Ich zeichne Pfeile immer zum Auge hin.'],
   m4: ['Ich kann erklären, warum das Weltall schwarz aussieht.', 'Ich kann erklären, warum der Himmel auf der Erde blau ist.', 'Ich weiß ungefähr, wie lange Licht von Mond, Sonne und Sternen zu uns braucht.'],
   m5: ['Ich kann Reflexion, Streuung und Absorption unterscheiden und Beispiele nennen.', 'Ich kenne das Reflexionsgesetz und weiß, dass man zum Lot misst.', 'Ich kann erklären, warum schwarze Kleidung in der Sonne warm wird.', 'Ich kann durchsichtig, durchscheinend und undurchsichtig unterscheiden.'],
+  m15: ['Ich kann das Reflexionsgesetz nennen: Einfallswinkel = Reflexionswinkel, beide zum Lot gemessen.', 'Ich kann Einfallswinkel und Reflexionswinkel in eine Zeichnung eintragen.', 'Ich kenne die Eigenschaften des Spiegelbildes: gleich groß, gleich weit hinter dem Spiegel, aufrecht, seitenverkehrt und scheinbar.', 'Ich kann erklären, warum das Spiegelbild nur scheinbar hinter dem Spiegel liegt.'],
   m6: ['Ich kann erklären, was Brechung ist und was das Lot ist.', 'Ich weiß: Luft → Wasser zum Lot hin, Wasser → Luft vom Lot weg.', 'Ich weiß, dass senkrecht auftreffendes Licht nicht gebrochen wird.', 'Ich weiß, was Totalreflexion ist: Ab dem Grenzwinkel von etwa 49° (bis 90°, zum Lot gemessen) kommt kein Licht mehr aus dem Wasser.'],
   m7: ['Ich kann erklären, warum ein Fisch höher erscheint, als er ist.', 'Ich kann begründen, wohin man mit Speer und Laser zielen muss.', 'Ich kann den geknickten Strohhalm und die Münze im Becher erklären.'],
   m8: ['Ich kann Sammellinse und Zerstreuungslinse an ihrer Form erkennen.', 'Ich kann beschreiben, wie beide Linsen paralleles Licht verändern.', 'Ich kenne die Begriffe Brennpunkt und Brennweite.', 'Ich weiß, dass das Bild einer Sammellinse auf dem Kopf steht.', 'Ich kann das Bild bei der Sammellinse mit Parallel-, Mittelpunkt- und Brennpunktstrahl konstruieren.'],
@@ -3695,8 +3822,8 @@ var LZ = {
 var MODS = [
   /* Reihenfolge: Schatten kommt nach Oberflächen (Ids bleiben, nur Reihenfolge und Nummern geaendert) */
   { id: 'm1', n: '1', t: 'Lichtquellen' }, { id: 'm3', n: '2', t: 'Sehen' }, { id: 'm4', n: '3', t: 'Weltall' },
-  { id: 'm5', n: '4', t: 'Oberflächen' }, { id: 'm2', n: '5', t: 'Schatten' }, { id: 'm6', n: '6', t: 'Brechung' }, { id: 'm7', n: '7', t: 'Fisch & Co.' }, { id: 'm8', n: '8', t: 'Linsen' },
-  { id: 'm9', n: '9', t: 'Auge' }, { id: 'm10', n: '10', t: 'Brille' }, { id: 'm11', n: '11', t: 'Finsternis' }, { id: 'm12', n: '12', t: 'Farben' },
+  { id: 'm5', n: '4', t: 'Oberflächen' }, { id: 'm15', n: '5', t: 'Spiegel' }, { id: 'm2', n: '6', t: 'Schatten' }, { id: 'm6', n: '7', t: 'Brechung' }, { id: 'm7', n: '8', t: 'Fisch & Co.' }, { id: 'm8', n: '9', t: 'Linsen' },
+  { id: 'm9', n: '10', t: 'Auge' }, { id: 'm10', n: '11', t: 'Brille' }, { id: 'm11', n: '12', t: 'Finsternis' }, { id: 'm12', n: '13', t: 'Farben' },
   { id: 'm13', n: 'T', t: 'Training' }, { id: 'm14', n: 'P', t: 'Probetest' }];
 var MT = {
   m1: ['lq1', 'lq3', 'lq5', 'lq2', 'lq4', 'lq6', 'lq7'],
@@ -3704,6 +3831,7 @@ var MT = {
   m3: ['se1', 'se4', 'se2', 'se3', 'se5', 'se6', 'se7'],
   m4: ['wa1', 'wa5', 'wa2', 'wa3', 'wa4', 'wa6', 'wa7'],
   m5: ['ob1', 'ob2', 'ob3', 'ob4', 'ob5', 'ob6', 'ob7'],
+  m15: ['sp1', 'sp2', 'sp3', 'sp4', 'sp5', 'sp6', 'sp7'],
   m6: ['br1', 'br3', 'br8', 'br2', 'br4', 'br9', 'br5', 'br6', 'br7'],
   m7: ['al1', 'al5', 'al2', 'al3', 'al4', 'al6', 'al7'],
   m8: ['li1', 'li4', 'li2', 'li3', 'li5', 'li6', 'li7'],
@@ -4531,6 +4659,186 @@ var cfg8k = {
   }
 };
 
+
+/* =====================================================================
+   MODUL 5 (neu): Der Spiegel
+   Drei Versuche: Reflexionsgesetz (Laser, Lot, Winkel), Spiegelbild einer Kerze (Strahlen, Abstaende),
+   Spiegelschrift (Buchstabe und Bild, links/rechts vertauscht).
+   ===================================================================== */
+var K15 = 40;
+/* Spiegel als Linie: Glas hellblau, Rueckseite (Richtung bx,by) mit Schraffur */
+function mirror15(c, x0, y0, x1, y1, bx, by) {
+  var L = Math.hypot(x1 - x0, y1 - y0), ux = (x1 - x0) / L, uy = (y1 - y0) / L;
+  c.save(); c.lineCap = 'butt';
+  c.strokeStyle = COL.ink3; c.lineWidth = 1.4;
+  for (var d = 4; d < L - 6; d += 9) { var px = x0 + ux * d + bx * 5, py = y0 + uy * d + by * 5; c.beginPath(); c.moveTo(px, py); c.lineTo(px + bx * 8 + ux * 7, py + by * 8 + uy * 7); c.stroke(); }
+  c.strokeStyle = '#bfe3ff'; c.lineWidth = 6; c.beginPath(); c.moveTo(x0, y0); c.lineTo(x1, y1); c.stroke();
+  c.strokeStyle = '#33415c'; c.lineWidth = 2; c.beginPath(); c.moveTo(x0 + bx * 3, y0 + by * 3); c.lineTo(x1 + bx * 3, y1 + by * 3); c.stroke();
+  c.restore();
+}
+/* Kerze: Hoehe h gesamt, Fusspunkt (x, by); img = gestrichelt und blau (Spiegelbild) */
+function candle15(c, x, by, h, img) {
+  var w = Math.max(14, h * .22), bodyH = h * .72, fh = h * .22, fy = by - bodyH - 6;
+  c.save();
+  c.fillStyle = img ? 'rgba(28,126,214,.12)' : '#fff5dc'; c.strokeStyle = img ? '#1c7ed6' : '#8d6e3f'; c.lineWidth = 2; if (img) c.setLineDash([6, 4]);
+  rrect(c, x - w / 2, by - bodyH, w, bodyH, 4); c.fill(); c.stroke();
+  c.setLineDash([]); c.strokeStyle = img ? '#1c7ed6' : '#3a3a3a'; c.lineWidth = 2; c.beginPath(); c.moveTo(x, by - bodyH); c.lineTo(x, fy); c.stroke();
+  c.beginPath(); c.moveTo(x, fy - fh); c.quadraticCurveTo(x + w * .55, fy - fh * .35, x, fy + 1); c.quadraticCurveTo(x - w * .55, fy - fh * .35, x, fy - fh);
+  c.fillStyle = img ? 'rgba(28,126,214,.2)' : '#ffb21f'; c.fill(); c.strokeStyle = img ? '#1c7ed6' : '#e8590c'; c.lineWidth = 1.6; if (img) c.setLineDash([4, 3]); c.stroke();
+  c.restore();
+}
+function candleTip15(by, h) { return by - (h * .72 + 6 + h * .22); }
+var cfg15 = {
+  init: function (s) {
+    var st = s.st; st.mode = 'gesetz'; st.al = 35; st.g = 3; st.ey = null; st.let = 'R'; st.lot = true; st.ang = true; st.rays = true; st.img = true; st.abst = true; st.conn = true;
+    var g0 = grp(s, 'Versuch');
+    chips(s, g0, [['gesetz', 'Reflexionsgesetz'], ['bild', 'Spiegelbild'], ['seiten', 'Spiegelschrift']], { val: 'gesetz', on: function (v) {
+      st.mode = v; show(st.gA, v === 'gesetz'); show(st.gB, v === 'bild'); show(st.gC, v === 'seiten'); cfg15.leg(s);
+      setHint(s, v === 'gesetz' ? 'Laser im Bogen ziehen' : v === 'bild' ? 'Kerze oder Auge ziehen' : 'Buchstaben wählen');
+    } });
+    st.gA = grp(s, 'Laser einstellen');
+    st.sl = slider(s, st.gA, 'Einfallswinkel α (zum Lot)', 0, 80, 1, 35, function (v) { return v + '°'; }, function (v) { if (st._syn) return; st.al = v; });
+    chips(s, st.gA, [['lot', 'Lot', COL.sky], ['ang', 'Winkel', COL.acc]], { multi: true, val: ['lot', 'ang'], on: function (v) { st.lot = v.indexOf('lot') >= 0; st.ang = v.indexOf('ang') >= 0; } });
+    button(s, st.gA, 'Senkrecht (0°)', false, function () { st.sl.set(0); });
+    button(s, st.gA, 'α = 45°', false, function () { st.sl.set(45); });
+    st.gB = grp(s, 'Kerze und Spiegelbild'); st.gB.hidden = true;
+    st.slg = slider(s, st.gB, 'Abstand Kerze – Spiegel', 1, 6, .5, 3, function (v) { return String(v).replace('.', ',') + ' Kästchen'; }, function (v) { if (st._syn) return; st.g = v; });
+    chips(s, st.gB, [['rays', 'Strahlen', COL.ray], ['img', 'Spiegelbild', '#1c7ed6'], ['abst', 'Abstände', COL.acc]], { multi: true, val: ['rays', 'img', 'abst'], on: function (v) { st.rays = v.indexOf('rays') >= 0; st.img = v.indexOf('img') >= 0; st.abst = v.indexOf('abst') >= 0; } });
+    st.gC = grp(s, 'Spiegelschrift'); st.gC.hidden = true;
+    chips(s, st.gC, [['R', 'R'], ['F', 'F'], ['AMBULANZ', 'AMBULANZ']], { val: 'R', on: function (v) { st.let = v; } });
+    chips(s, st.gC, [['conn', 'Hilfslinien', COL.acc]], { multi: true, val: ['conn'], on: function (v) { st.conn = v.indexOf('conn') >= 0; } });
+    st.info = infoBox(grp(s, 'Beobachtung'));
+    cfg15.leg(s);
+  },
+  leg: function (s) {
+    var m = s.st.mode;
+    s.legend(m === 'gesetz' ? [[COL.ray, 'Lichtstrahl'], [COL.sky, 'Lot'], ['#bfe3ff', 'Spiegel']]
+      : m === 'bild' ? [[COL.ray, 'Lichtstrahl'], [rgba(COL.ray, .7), 'gedachte Verlängerung (Gehirn)'], ['#1c7ed6', 'Spiegelbild (scheinbar)'], ['#bfe3ff', 'Spiegel']]
+      : [[COL.ink, 'Gegenstand'], ['#1c7ed6', 'Spiegelbild'], ['#bfe3ff', 'Spiegel']]);
+  },
+  resize: function (s) {
+    var st = s.st, W = s.W, H = s.H, f = rsc(st, W, H);
+    st.cx = W * .5; st.y0 = H * .76; st.R = Math.min(W * .4, H * .64);
+    st.Mx = W * .62; st.Fy = H * .88; st.Ex = Math.max(36, W * .09); st.ch = clamp(H * .2, 60, 110);
+    st.gmax = Math.max(1, Math.min(6, Math.floor((st.Mx - st.Ex - 80) / K15 * 2) / 2));
+    if (st.g > st.gmax) { st.g = st.gmax; st._syn = true; st.slg.set(st.gmax); st._syn = false; }
+    if (st.ey == null) st.ey = H * .4; else if (f) st.ey *= f[1];
+    st.ey = clamp(st.ey, H * .16, candleTip15(st.Fy, st.ch) - 28);
+  },
+  down: function (s, x, y) {
+    var st = s.st;
+    if (st.mode === 'gesetz') { st.dr = 'l'; cfg15.move(s, x, y); return true; }
+    if (st.mode === 'bild') { st.dr = (Math.hypot(x - st.Ex, y - st.ey) < 46 || x < st.Ex + 40) ? 'e' : (x < st.Mx - 6 ? 'o' : null); if (!st.dr) return false; cfg15.move(s, x, y); return true; }
+    return false;
+  },
+  move: function (s, x, y) {
+    var st = s.st;
+    if (st.dr === 'l') {
+      var a = Math.atan2(st.cx - x, st.y0 - Math.min(y, st.y0 - 6)) * 180 / Math.PI; st.al = Math.round(clamp(a, 0, 80));
+      st._syn = true; st.sl.set(st.al); st._syn = false;
+    } else if (st.dr === 'o') {
+      st.g = clamp(Math.round((st.Mx - x) / K15 * 2) / 2, 1, st.gmax); st._syn = true; st.slg.set(st.g); st._syn = false;
+    } else if (st.dr === 'e') {
+      st.ey = clamp(y, s.H * .16, candleTip15(st.Fy, st.ch) - 28);
+    }
+  },
+  up: function (s) { s.st.dr = null; },
+  tick: function (s) {
+    var st = s.st, h;
+    if (st.mode === 'gesetz') {
+      s.read([['Einfallswinkel α', fmtDeg(st.al)], ['Reflexionswinkel α\'', fmtDeg(st.al)], ['Ergebnis', 'α = α\'', 'ok']]);
+      h = st.al < 1 ? 'Der Strahl trifft <b>senkrecht</b> auf, entlang des Lots (α = 0°). Er wird genau auf demselben Weg <b>zurückgeworfen</b>.'
+        : 'Der Strahl trifft unter <b>α = ' + fmtDeg(st.al) + '</b> auf den Spiegel und wird unter <b>α\' = ' + fmtDeg(st.al) + '</b> zurückgeworfen. Das ist das <b>Reflexionsgesetz</b>: Einfallswinkel und Reflexionswinkel sind gleich groß. Beide misst man zum <b>Lot</b>, nicht zum Spiegel. Verändere den Winkel mit dem Regler oder ziehe den Laser.';
+    } else if (st.mode === 'bild') {
+      var gs = String(st.g).replace('.', ',');
+      s.read([['Kerze – Spiegel', gs + ' Kästchen'], ['Spiegelbild – Spiegel', gs + ' Kästchen', 'ok'], ['Größe des Bildes', 'gleich groß', 'ok']]);
+      h = 'Das <b>Spiegelbild</b> der Kerze liegt genauso weit <b>hinter</b> dem Spiegel (' + gs + ' Kästchen), wie die Kerze davor steht, und es ist <b>genauso groß</b>. Die gestrichelten Linien zeigen: Dein Gehirn verlängert die Strahlen nach hinten. Dort scheint das Licht herzukommen, aber dort ist nur die Wand. Das Bild ist <b>scheinbar</b>.';
+    } else {
+      var seitenText = st.let === 'AMBULANZ' ? 'So lesen Autofahrer das Wort im Rückspiegel richtig.' : 'Links und rechts sind vertauscht, oben bleibt oben.';
+      s.read([['Größe', 'gleich', 'ok'], ['links / rechts', 'vertauscht', 'hot'], ['oben / unten', 'bleibt', 'ok']]);
+      h = 'Das Spiegelbild ist <b>seitenverkehrt</b>: Was links ist, erscheint rechts. Es steht aber <b>nicht auf dem Kopf</b>, oben bleibt oben. ' + seitenText;
+    }
+    setHTML(st.info, h);
+  },
+  draw: function (s, c, W, H) {
+    var st = s.st; bgGrid(c, W, H);
+    if (st.mode === 'gesetz') cfg15.drawGesetz(s, c, W, H);
+    else if (st.mode === 'bild') cfg15.drawBild(s, c, W, H);
+    else cfg15.drawSeiten(s, c, W, H);
+  },
+  drawGesetz: function (s, c, W, H) {
+    var st = s.st, cx = st.cx, y0 = st.y0, R = st.R, al = rad(st.al);
+    mirror15(c, W * .06, y0, W * .94, y0, 0, 1);
+    txt(c, 'Spiegel', W * .08, y0 + 40, { size: 12, w: 'bold', col: COL.ink2 });
+    if (st.lot) { dashed(c, cx, y0, cx, y0 - R * 1.05, rgba(COL.sky, .9), 1.5); txt(c, 'Lot', cx + 6, y0 - R * 1.05 + 12, { size: 11, mono: true, col: COL.sky }); }
+    var tx = cx - Math.sin(al) * R, ty = y0 - Math.cos(al) * R, rx = cx + Math.sin(al) * R * .96, ry = y0 - Math.cos(al) * R * .96;
+    ray(c, tx, ty, cx, y0, COL.ray, 2.6, 1, .55);
+    ray(c, cx, y0, rx, ry, COL.ray, 2.6, 1, .55);
+    if (st.ang && st.al >= 1) {
+      /* kurze Bezeichnungen am Bogen, die Zahlen stehen links in der Messwert-Leiste; bei kleinen Winkeln weiter aussen, damit sie sich nicht beruehren */
+      var lr = st.al < 22 ? 48 : 24;
+      arcAng(c, cx, y0, 58, -Math.PI / 2 - al, -Math.PI / 2, COL.acc, 'α', lr);
+      arcAng(c, cx, y0, 58, -Math.PI / 2, -Math.PI / 2 + al, COL.beta, 'α\'', lr);
+    }
+    txt(c, 'einfallender Strahl', (tx + cx) / 2 - 12, (ty + y0) / 2 - 4, { size: 11, mono: true, al: 'right', col: COL.ink2, halo: true });
+    txt(c, 'reflektierter Strahl', (rx + cx) / 2 + 12, (ry + y0) / 2 - 4, { size: 11, mono: true, al: 'left', col: COL.ink2, halo: true });
+    c.save(); c.translate(tx, ty); c.rotate(Math.atan2(y0 - ty, cx - tx)); c.fillStyle = '#3a4152'; rrect(c, -40, -8, 44, 16, 4); c.fill(); c.fillStyle = COL.ray; c.fillRect(2, -4, 4, 8); c.restore();
+    txt(c, 'Laser', tx, ty - 18, { size: 11, mono: true, al: 'center', col: COL.ink2, halo: true });
+  },
+  drawBild: function (s, c, W, H) {
+    var st = s.st, Mx = st.Mx, Fy = st.Fy, g = st.g, ch = st.ch, ox = Mx - g * K15, ix = Mx + g * K15, ty = candleTip15(Fy, ch), Ex = st.Ex, ey = st.ey, top = H * .08;
+    c.fillStyle = '#e7dcc8'; c.fillRect(0, Fy, W, H - Fy); c.strokeStyle = '#b9a98a'; c.lineWidth = 1.5; c.beginPath(); c.moveTo(0, Fy); c.lineTo(W, Fy); c.stroke();
+    c.fillStyle = 'rgba(110,120,140,.08)'; c.fillRect(Mx, 0, W - Mx, Fy);
+    mirror15(c, Mx, top, Mx, Fy, 1, 0);
+    txt(c, 'Spiegel', Mx - 10, top + 14, { size: 12, w: 'bold', al: 'right', col: COL.ink2, halo: true });
+    txt(c, 'hinter dem Spiegel: nur die Wand', Mx + 16, top + 14, { size: 11, mono: true, col: COL.ink3, halo: true });
+    /* Strahlen von der Flammenspitze ins Auge (Spiegelung der Spitze, Verlaengerung gestrichelt) */
+    var T = [ox, ty], Ti = [ix, ty];
+    if (st.rays) [-10, 12].forEach(function (dy) {
+      var E = [Ex + 17, ey + dy], t = (Mx - Ti[0]) / (E[0] - Ti[0]), Hy = Ti[1] + t * (E[1] - Ti[1]);
+      if (Hy < top + 4 || Hy > Fy) return;
+      ray(c, T[0], T[1], Mx, Hy, COL.ray, 2, 1, .5); ray(c, Mx, Hy, E[0], E[1], COL.ray, 2, 1, .55);
+      dashed(c, Mx, Hy, Ti[0], Ti[1], rgba(COL.ray, .7), 1.6, [5, 5]);
+    });
+    candle15(c, ox, Fy, ch, false);
+    if (st.img) candle15(c, ix, Fy, ch, true);
+    txt(c, 'Kerze', ox, Fy + 22, { size: 12, w: 'bold', al: 'center', col: COL.ink });
+    if (st.img) txt(c, 'Spiegelbild', ix, Fy + 22, { size: 12, w: 'bold', al: 'center', col: '#1c7ed6' });
+    if (st.abst) {
+      var ay = Fy + 40, gs = String(g).replace('.', ',');
+      if (ay < H - 6) {
+        arrow(c, ox + 3, ay, Mx - 3, ay, COL.acc, 1.6, 7); arrow(c, Mx - 3, ay, ox + 3, ay, COL.acc, 1.6, 7);
+        txt(c, gs + ' Kästchen', (ox + Mx) / 2, ay - 6, { size: 11, w: 'bold', al: 'center', col: COL.acc, halo: true });
+        if (st.img) { arrow(c, Mx + 3, ay, ix - 3, ay, COL.acc, 1.6, 7); arrow(c, ix - 3, ay, Mx + 3, ay, COL.acc, 1.6, 7); txt(c, gs + ' Kästchen', (Mx + ix) / 2, ay - 6, { size: 11, w: 'bold', al: 'center', col: COL.acc, halo: true }); }
+      }
+    }
+    drawHead(c, Ex, ey, 17, .05);
+    txt(c, 'Auge (ziehen)', Ex, ey + 38, { size: 12, w: 'bold', al: 'center', col: COL.ink, halo: true });
+  },
+  drawSeiten: function (s, c, W, H) {
+    var st = s.st, Mx = W * .5, Fy = H * .88, top = H * .08, word = st.let, base = H * .62, xr = Mx - 34;
+    var fs = clamp(Math.min(H * .46, (Mx - 90) / (word.length * .86)), 30, 170);
+    c.fillStyle = 'rgba(110,120,140,.08)'; c.fillRect(Mx, 0, W - Mx, H);
+    mirror15(c, Mx, top, Mx, Fy, 1, 0);
+    txt(c, 'Spiegel', Mx - 10, top + 14, { size: 12, w: 'bold', al: 'right', col: COL.ink2, halo: true });
+    c.save(); c.font = '800 ' + fs + 'px ' + FONT; c.textAlign = 'right'; c.textBaseline = 'alphabetic';
+    var wt = c.measureText(word).width, lx = xr - wt;
+    c.fillStyle = COL.ink; c.fillText(word, xr, base);
+    c.save(); c.translate(2 * Mx, 0); c.scale(-1, 1); c.fillStyle = '#1c7ed6'; c.globalAlpha = .85; c.fillText(word, xr, base); c.restore();
+    c.restore();
+    if (st.conn) {
+      /* Hilfslinien unter der Schrift: gleicher Abstand der Raender zum Spiegel */
+      [[lx, base + 16], [xr, base + 34]].forEach(function (p) {
+        dashed(c, p[0], p[1], 2 * Mx - p[0], p[1], rgba(COL.acc, .9), 1.5, [4, 5]);
+        circle(c, p[0], p[1], 3.5, COL.acc); circle(c, 2 * Mx - p[0], p[1], 3.5, COL.acc);
+      });
+    }
+    txt(c, 'Gegenstand', Mx - 34 - wt / 2, base - fs * .86 - 14, { size: 12, w: 'bold', al: 'center', col: COL.ink, halo: true });
+    txt(c, 'Spiegelbild', Mx + 34 + wt / 2, base - fs * .86 - 14, { size: 12, w: 'bold', al: 'center', col: '#1c7ed6', halo: true });
+    txt(c, 'links ↔ rechts vertauscht, oben bleibt oben', Mx, Fy + 8 > H - 8 ? H - 8 : Fy + 8, { size: 12, mono: true, al: 'center', col: COL.ink2, halo: true });
+  }
+};
+
 /* =====================================================================
    AUFGABEN-ENGINE: Darstellung, Auswertung, Rueckmeldung
    ===================================================================== */
@@ -4818,7 +5126,7 @@ function initTest() {
       '<li><b>Teil A</b> (★ leicht): 6 Aufgaben zum Wissen</li>' +
       '<li><b>Teil B</b> (★★ mittel): 6 Aufgaben zum Anwenden, oft mit Bildern</li>' +
       '<li><b>Teil C</b> (★★★ knifflig): 1 Auswahlaufgabe und 1 Begründung in ganzen Sätzen</li></ul>' +
-      '<p>Auswahl und Antippen geben 1 Punkt, Ankreuzen, Zuordnen und Lückentexte 2 Punkte (1 Punkt bei einem Fehler), die Begründung 1 Punkt pro Gedanke. Die Aufgaben kommen aus allen zwölf Modulen und werden jedes Mal neu gemischt. Die Rückmeldung gibt es erst am Ende, wie in der Klassenarbeit. Plane etwa 30 Minuten ein.</p>' +
+      '<p>Auswahl und Antippen geben 1 Punkt, Ankreuzen, Zuordnen und Lückentexte 2 Punkte (1 Punkt bei einem Fehler), die Begründung 1 Punkt pro Gedanke. Die Aufgaben kommen aus allen dreizehn Modulen und werden jedes Mal neu gemischt. Die Rückmeldung gibt es erst am Ende, wie in der Klassenarbeit. Plane etwa 30 Minuten ein.</p>' +
       (best ? '<p class="stat" style="display:inline-block">Beste Note bisher: ' + best + '</p>' : '') + '<div class="brow"><button type="button" class="btn primary" id="tGo">Probetest starten</button></div></div>';
     $('#tGo').addEventListener('click', start);
   }
@@ -4879,8 +5187,9 @@ function initTest() {
    NAVIGATION, ANIMATION, START
    ===================================================================== */
 var EXTRA = { m2: ['m2k', cfg2k], m8: ['m8k', cfg8k] };
-var SIMS = {}, SIMCFG = { m1: cfg1, m2: cfg2, m3: cfg3, m4: cfg4, m5: cfg5, m6: cfg6, m7: cfg7, m8: cfg8, m9: cfg9, m10: cfg10, m11: cfg11, m12: cfg12 }, cur = 0, heroTick = null;
-function hashOf(i) { return i < 12 ? 'modul' + (i + 1) : i === 12 ? 'training' : 'probetest'; }
+var SIMS = {}, SIMCFG = { m1: cfg1, m2: cfg2, m3: cfg3, m4: cfg4, m5: cfg5, m6: cfg6, m7: cfg7, m8: cfg8, m9: cfg9, m10: cfg10, m11: cfg11, m12: cfg12, m15: cfg15 }, cur = 0, heroTick = null;
+/* 13 Lernmodule (Index 0-12), danach Training (13) und Probetest (14) */
+function hashOf(i) { return i < 13 ? 'modul' + (i + 1) : i === 13 ? 'training' : 'probetest'; }
 function activate(idx, scroll) {
   cur = idx;
   MODS.forEach(function (m, i) { $('#' + m.id).classList.toggle('on', i === idx); navBtns[i].setAttribute('aria-current', String(i === idx)); });
@@ -4921,7 +5230,7 @@ function boot() {
   safe('Probetest', initTest);
   safe('Sortierspiel', initSort);
   var h = (location.hash || '').replace('#', ''), idx = 0;
-  var m = /^modul(\d+)$/.exec(h); if (m) idx = clamp(+m[1] - 1, 0, 11); if (h === 'training') idx = 12; if (h === 'probetest') idx = 13;
+  var m = /^modul(\d+)$/.exec(h); if (m) idx = clamp(+m[1] - 1, 0, 12); if (h === 'training') idx = 13; if (h === 'probetest') idx = 14;
   activate(idx, false); updateProgress();
   requestAnimationFrame(loop);
 }
