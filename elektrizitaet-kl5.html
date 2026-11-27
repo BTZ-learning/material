@@ -1,4 +1,5 @@
 <meta charset="utf-8">
+<meta name="robots" content="noindex, nofollow, noarchive">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="color-scheme" content="dark">
 <title>Üben für die Klassenarbeit Btz</title>
@@ -292,7 +293,6 @@ textarea:focus,.cloze select:focus{outline:2px solid var(--acc);outline-offset:1
 <div id="errBar" class="warnbar" hidden></div>
 
 <header class="hero">
-<meta name="robots" content="noindex, nofollow, noarchive">
   <canvas id="heroCv" aria-hidden="true"></canvas>
   <div class="hero-mask"></div>
   <div class="hero-txt">
@@ -1264,7 +1264,7 @@ function realNet(c, p, g, hr) {
   circle(c, M[0] - s * .28, M[1], s * .1, '#30384a'); circle(c, M[0] + s * .28, M[1], s * .1, '#30384a');
 }
 function hitC(C, x, y, types) {
-  var best = null, bd = 1e9, R = Math.max(24, (C._u || 40) * .55);
+  var best = null, bd = 1e9, R = Math.max(32, (C._u || 40) * .62);
   C.parts.forEach(function (p) {
     if (types.indexOf(p.t) < 0 || !p._g) return;
     var d = Math.hypot(x - p._g.M[0], y - p._g.M[1]);
@@ -1364,7 +1364,7 @@ function preset1(k) {
     parts = [P('w', 'bp', 'd', { cc: RED }), P('w', 'd', 'a', { cc: RED }), P('w', 'a', 'l1', { cc: RED }), P('lamp', 'l1', 'l2', { id: 'L', lab: 'Lampe' }),
       P(k === 'luecke' ? 'gap' : 'w', 'l2', 'b', { cc: BLUE }), P('w', 'b', 'c', { cc: BLUE }), P('w', 'c', 'bm', { cc: BLUE }), P('bat', 'bp', 'bm', { id: 'B' })];
     if (k === 'kurz') {
-      N.k1 = [1.5, 3.7]; N.k2 = [2.9, 3.7]; R.k1 = [.7, 3.8]; R.k2 = [1.75, 3.8];
+      N.k1 = [1.5, 3.7]; N.k2 = [2.9, 3.7]; R.k1 = [.45, 4.25]; R.k2 = [1.95, 4.25];
       parts.push(P('w', 'bp', 'k1', { cc: YEL }), P('sw', 'k1', 'k2', { id: 'K', lab: 'Draht-Schalter', on: false }), P('w', 'k2', 'bm', { cc: YEL }));
     }
   } else if (k === 'schalter' || k === 'motor') {
@@ -1393,6 +1393,10 @@ var cfg1 = {
     var st = s.st; st.k = 'lampe'; st.m = 0; st.dots = false; st.C = preset1('lampe');
     var g = grp(s, 'Schaltung');
     chips(s, g, [['lampe', 'Lampe'], ['schalter', 'Mit Schalter'], ['motor', 'Motor'], ['luecke', 'Lücke im Kabel'], ['plus', 'Beide am Pluspol'], ['kurz', 'Kurzschluss', COL.bad]], { val: 'lampe', on: function (v) { st.k = v; st.C = preset1(v); } });
+    /* Bedienknoepfe zusaetzlich zum Antippen im Bild (auf dem iPad sicherer zu treffen) */
+    var gb = grp(s, 'Bedienen');
+    st.bSw = button(s, gb, 'Schalter schließen', true, function () { var p = getP(st.C, 'S') || getP(st.C, 'K'); if (p) p.on = !p.on; });
+    st.bL = button(s, gb, 'Lampe herausdrehen', false, function () { var d = getP(st.C, 'L') || getP(st.C, 'M'); if (d) d.out = !d.out; });
     var g2 = grp(s, 'Ansicht');
     st.sl = slider(s, g2, 'Echte Schaltung ↔ Schaltskizze', 0, 100, 0, function (v) { return v < 5 ? 'echt' : v > 95 ? 'Skizze' : v + ' %'; }, function (v) { st.m = v / 100; st.anim = null; });
     var bw = document.createElement('div'); bw.className = 'chips'; g2.appendChild(bw);
@@ -1421,6 +1425,9 @@ var cfg1 = {
     else { msg = 'Der Stromkreis ist unterbrochen.'; state = ['unterbrochen', 'warn']; }
     var v = st.m < .05 ? 'Du siehst die <b>echte Schaltung</b>: echte Bauteile, krumme bunte Kabel.' : st.m > .95 ? 'Du siehst die <b>Schaltskizze</b>: Schaltzeichen, gerade Linien, rechte Winkel. Die Verbindungen sind dieselben wie in echt.' : 'Die Bauteile wandern an ihren Platz in der Schaltskizze. Achte darauf: Jede Verbindung bleibt erhalten.';
     setHTML(st.info, '<p>' + PRE1[st.k] + '</p><p>' + v + '</p><p>' + msg + '</p>');
+    st.bSw.hidden = !sw;
+    if (sw) setHTML(st.bSw, (sw.id === 'K' ? 'Draht-Schalter ' : 'Schalter ') + (sw.on ? 'öffnen' : 'schließen'));
+    setHTML(st.bL, dev.t === 'motor' ? (dev.out ? 'Motor wieder anschließen' : 'Motor abklemmen') : (dev.out ? 'Lampe hineindrehen' : 'Lampe herausdrehen'));
     s.read([['Stromkreis', state[0], state[1]], [dev.t === 'motor' ? 'Motor' : 'Lampe', brWord(dev)[0], dev.lit ? 'hot' : '']]);
   },
   draw: function (s, c, W, H) {
